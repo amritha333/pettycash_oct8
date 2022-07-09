@@ -123,34 +123,202 @@
 
        <span>{{employee_data_name}}</span>
     </td>
-
-
-    {% for i in request.user.id|get_user_leave_data:send_data %}
-
-
-
-    {% if i.col_before == 0 %}
-
-    {% else %}
-   
-    {% for j in "x"|rjust:i.col_before %}
-    <td>
+         {% for j in ays %}
         
-    </td>
+         
+         
+             {% if  request.user.id|get_leave_available:j %}
 
-    {% endfor %}
-    {% endif %}
 
-    <td colspan="{{i.colspan}}">
-        11
-    </td>
+          
+                
+             {% for i in request.user.id|get_leave_available:j %}
 
-    {% endfor %}
+            
+            {% if i.possible == False and i.leave_from_previous_months >= 1 %}
+
+            <td style="       background: #a506067d;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.leave_from_previous_months}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                  
+                 </center>
+                 <span style="    font-size: 8px;"> {{i.date_from }} To {{i.date_to}}</span>
+                
+             </td>
+             {% elif i.possible == False %}
+ 
+             
+             {% else %}
+
+
+
+             {% if i.holiday_status_id.1 == "Annual Vacation" %}
+             <td style="       background: #b392a4;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% elif i.holiday_status_id.1 == "Unpaid" %}
+             <td style="       background: #ed1f529e;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% elif i.holiday_status_id.1 == "Paid Time Off" %}
+             <td style="       background: #f6a096;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             
+             {% else %}
+             <td style="       background: #262435;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% endif %}
+             {% endif %}
+             {% endfor %}
+         
+          {% else %}
+ 
+          <td>
+            
+          
+          </td>
+          {% endif %}
+         
+ 
+         {% endfor %}
          </tr>
          
 
 
+         
+         {% for i in get_chile_response %}
+         <tr>
+         
+         
+             <td>
+                <img style="    width: 12%;
+                padding: 3px 9px;" src="{% static 'u1.png' %}"> 
+         
+                <span>  {{i.name}}</span>
+               
+             </td>
+
+
+             {% for j in ays %}
+        
+         
+         
+             {% if  i.id|get_leave_available1:j %}
+
+
+          
+                
+             {% for i in i.id|get_leave_available1:j %}
+
+            
+            {% if i.possible == False and i.leave_from_previous_months >= 1 %}
+
+            <td style="       background: #a506067d;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.leave_from_previous_months}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                  
+                 </center>
+                 <span style="    font-size: 8px;"> {{i.date_from }} To {{i.date_to}}</span>
+                
+             </td>
+             {% elif i.possible == False %}
  
+             
+             {% else %}
+
+
+
+             {% if i.holiday_status_id.1 == "Annual Vacation" %}
+             <td style="       background: #b392a4;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% elif i.holiday_status_id.1 == "Unpaid" %}
+             <td style="       background: #ed1f529e;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% elif i.holiday_status_id.1 == "Paid Time Off" %}
+             <td style="       background: #f6a096;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             
+             {% else %}
+             <td style="       background: #262435;
+             color: white;
+             padding: 12px 40px;
+             font-size: 12px;" colspan="{{i.number_of_days}}">
+                 <center>
+                    {{i.holiday_status_id.1}}
+                 </center>
+                
+             </td>
+             {% endif %}
+             {% endif %}
+             {% endfor %}
+         
+          {% else %}
+ 
+          <td>
+            
+          
+          </td>
+          {% endif %}
+         
+ 
+         {% endfor %}
+         </tr>
+
+
+         {% endfor %}
          
          <!-- <td style="    background: red;" colspan="2">
          

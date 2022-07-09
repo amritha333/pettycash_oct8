@@ -2550,7 +2550,7 @@ def user_leave_gantt_chart(request):
 
 
 
-  
+    send_data = str(year)+"-"+str(month)
 
     context = {
         'full_month_name':month_name,
@@ -2559,7 +2559,8 @@ def user_leave_gantt_chart(request):
         'ays':ays,
         'year':year,
         'month':month,
-        'get_chile_response':get_chile_response
+        'get_chile_response':get_chile_response,
+        'send_data':send_data
     }
 
     return render(request,'super_admin/user_leave_gantt_chart.html',context)
