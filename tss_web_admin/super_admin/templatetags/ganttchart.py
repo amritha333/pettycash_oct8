@@ -159,6 +159,50 @@ def get_user_leave_data(value,args):
         
     leave_history_response12  = leave_history_response1['result']
     response = leave_history_response12['result']
+    print("rrr122222222333444455555::")
+    print(response)
+
+    return response
+
+
+
+
+
+@register.filter(name='get_user_leave_data1')
+def get_user_leave_data1(value,args):
+    print("value:::::",str(value))
+    print("arg::::",str(args))
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+    
+    api_domain = "http://10.10.10.107:8069/"
+    
+    leave_history_response_url = api_domain+"api/get_leave_log_by_month"
+    print("rs122223444444::::")
+
+    print("odooo_id:::",str(value))
+    print("arggg:::::",str(args))
+
+    leave_history_payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+            "employee_id": int(value),
+            "date" : args
+        }
+    })
+    
+    leave_history_headers = {
+        'api_key': odoo_token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    print("rs122223444444::::")
+
+    leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers, data=leave_history_payload).json()
+    print("rs122223::::")
+        
+    leave_history_response12  = leave_history_response1['result']
+    response = leave_history_response12['result']
     print("r122222222333444455555::")
     print(response)
 

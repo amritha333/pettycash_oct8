@@ -2601,13 +2601,52 @@ def user_leave_gantt_chart_next_month_action(request):
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
     print("assss::::::")
     print(ays)
+    send_data = str(year)+"-"+str(month)
+    get_chile_response = ""
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+   
+    try:
+        get_chile_response_response_url = api_domain+"api/get_childs"
+        get_chile_response_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "employee_id": int(employee_data.odoo_id),
+                "exclud_parent" : "True"
+            }
+        })
+        get_chile_response_headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+
+        get_chile_response1 = requests.request("GET", get_chile_response_response_url, headers=get_chile_response_headers, data=get_chile_response_payload).json()
+        
+        
+        get_chile_response112  = get_chile_response1['result']
+        get_chile_response = get_chile_response112['result']
+        print("r122222::")
+       
+        
+
+    except:
+        pass
+
+    count1 = 0
+
+
+    print("ddddddd::::",str(get_chile_response))
     context = {
         'full_month_name':month_name,
         'days':days,
         'employee_data_name':employee_data.employee_name,
         'ays':ays,
         'year':year,
-        'month':month
+        'month':month,
+        'send_data':send_data,
+        'get_chile_response':get_chile_response,
+        'count1':0
     }
 
     return render(request,'super_admin/user_leave_gantt_chart1.html',context)
@@ -2648,13 +2687,47 @@ def user_leave_gantt_chart_prev_month_action(request):
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
     print("assss::::::")
     print(ays)
+    send_data = str(year)+"-"+str(month)
+    get_chile_response = ""
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+   
+    try:
+        get_chile_response_response_url = api_domain+"api/get_childs"
+        get_chile_response_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "employee_id": int(employee_data.odoo_id),
+                "exclud_parent" : "True"
+            }
+        })
+        get_chile_response_headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+
+        get_chile_response1 = requests.request("GET", get_chile_response_response_url, headers=get_chile_response_headers, data=get_chile_response_payload).json()
+        
+        
+        get_chile_response112  = get_chile_response1['result']
+        get_chile_response = get_chile_response112['result']
+        print("r122222::")
+       
+        
+
+    except:
+        pass
+
     context = {
         'full_month_name':month_name,
         'days':days,
         'employee_data_name':employee_data.employee_name,
         'ays':ays,
         'year':year,
-        'month':month
+        'month':month,
+        'get_chile_response':get_chile_response,
+        'send_data':send_data
     }
 
     return render(request,'super_admin/user_leave_gantt_chart1.html',context)

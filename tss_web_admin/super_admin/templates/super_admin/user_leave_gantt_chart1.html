@@ -4,201 +4,438 @@
 {% load ganttchart %}
 <div class="card-box ">
 
-
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     
 
-    <div class="row" style="    padding: 25px 18px;">
- 
-     <div class="col-md-2">
- 
-         <div class="row">
-             <div class="col-md-2">
-                 <!-- <form action="user_leave_gantt_chart_prev_month_action" method="POST">
-                     {% csrf_token %}
-                     <input type="hidden" value="{{year}}" name="year">
-                     <input type="hidden" value="{{month}}" name="month">
-                     <button style="background: #017e84;
-                     border: none;
-                     padding: 6px 14px;" type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
-                   
-                 </form> -->
-                 <a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_prev_month_action">
+   <div class="row" style="    padding: 25px 18px;">
+
+    <div class="col-md-2">
+
+        <div class="row">
+            <div class="col-md-2">
+                <!-- <form action="user_leave_gantt_chart_prev_month_action" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{year}}" name="year">
+                    <input type="hidden" value="{{month}}" name="month">
+                    <button style="background: #017e84;
+                    border: none;
+                    padding: 6px 14px;" type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
+                  
+                </form> -->
+
+                <a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_prev_month_action">
                     <button style="background: #017e84;
                     border: none;
                     padding: 6px 14px;" type="button" class="btn btn-primary "><i class="fa-solid fa-arrow-left"></i></button>
                   
                 </a>
-             </div>
-             <div class="col-md-4">
-                 <a href="">
-                     <button style="background: #017e84;
-                     border: none;
-                     padding: 6px 30px;" type="button" class="btn btn-primary">{{full_month_name}}</button>
-                   
-                 </a>
-             
-             </div>
-             <div class="col-md-2">
-                 <!-- <form action="user_leave_gantt_chart_next_month_action" method="POST">
-                     {% csrf_token %}
-                     <input type="hidden" value="{{year}}" name="year">
-                     <input type="hidden" value="{{month}}" name="month">
- 
-                
-                     <button  style="background: #017e84;
-                     border: none;
-                     padding: 6px 14px;" type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
-                   </form> -->
- 
-                   <a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_next_month_action">
-                     <button style="background: #017e84;
-                     border: none;
-                     padding: 6px 14px;" type="button" class="btn btn-primary "><i class="fa-solid fa-arrow-right"></i></button>
-                   
-                 </a>
-                
-             </div>
-         </div>
-     </div>
+            </div>
+            <div class="col-md-4">
+                <a href="">
+                    <button style="background: #017e84;
+                    border: none;
+                    padding: 6px 30px;" type="button" class="btn btn-primary">{{full_month_name}}</button>
+                  
+                </a>
+            
+            </div>
+            <div class="col-md-2">
+                <!-- <form action="user_leave_gantt_chart_next_month_action" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{year}}" name="year">
+                    <input type="hidden" value="{{month}}" name="month">
+
+               
+                    <button  style="background: #017e84;
+                    border: none;
+                    padding: 6px 14px;" type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+                  </form> -->
+
+                  <a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_next_month_action">
+                    <button style="background: #017e84;
+                    border: none;
+                    padding: 6px 14px;" type="button" class="btn btn-primary "><i class="fa-solid fa-arrow-right"></i></button>
+                  
+                </a>
+               
+            </div>
+        </div>
     </div>
- 
- 
-     <table  class="table table-bordered" border="1">
-     
-     
-  <tr>
-      <td>
-          Name
-      </td>
-      
-      {% for i in "x"|rjust:days %}
-      <td style=" text-align: center;  ">
-          {{forloop.counter}}
-      </td>
-  
-  
-      {% endfor %}
-  
-     
-      
-  
-      </tr>
- 
-  <tr>
+   </div>
+
+
+    <table  class="table table-bordered" border="1">
+    
+    
+ <tr>
      <td>
-        <img style="    width: 12%;
-        padding: 3px 9px;" src="{% static 'u1.png' %}"> 
- 
-        <span>{{employee_data_name}}</span>
+         Name
      </td>
-          {% for j in ays %}
-         
-          
-          
-              {% if  request.user.id|get_leave_available:j %}
- 
- 
-           
-                 
-              {% for i in request.user.id|get_leave_available:j %}
- 
-             
-             {% if i.possible == False and i.leave_from_previous_months >= 1 %}
- 
-             <td style="       background: #a506067d;
-              color: white;
-              padding: 12px 40px;
-              font-size: 12px;" colspan="{{i.leave_from_previous_months}}">
-                  <center>
-                     {{i.holiday_status_id.1}}
-                   
-                  </center>
-                  <span style="    font-size: 8px;"> {{i.date_from }} To {{i.date_to}}</span>
-                 
-              </td>
-              {% elif i.possible == False %}
+     
+     {% for i in "x"|rjust:days %}
+     <td style=" text-align: center;  ">
+         {{forloop.counter}}
+   
+     </td>
   
+ 
+ 
+     {% endfor %}
+ 
+    
+     
+ 
+     </tr>
+     <script>
+  
+        let count1 = 0 
+    </script>
+
+     <tr id="myLisss1">
+        <td>
+           <img style="    width: 12%;
+           padding: 3px 9px;" src="{% static 'u1.png' %}"> 
+    
+           <span>{{employee_data_name}}</span>
+        </td>
+    
+     
+ 
+    {% if request.user.id|get_user_leave_data:send_data %}
+        {% for i in request.user.id|get_user_leave_data:send_data %}
+    
+    
+    
+        {% if i.col_before == 0 %}
+    
+        {% else %}
+      
+        {% for j in "x"|rjust:i.col_before %}
+  
+        <td>
+            <script>
+            
+    
+                count1 = count1+1;
+                console.log("count11::::",count1)
+               
               
-              {% else %}
- 
- 
- 
-              {% if i.holiday_status_id.1 == "Annual Vacation" %}
-              <td style="       background: #b392a4;
-              color: white;
-              padding: 12px 40px;
-              font-size: 12px;" colspan="{{i.number_of_days}}">
-                  <center>
-                     {{i.holiday_status_id.1}}
-                  </center>
-                 
-              </td>
-              {% elif i.holiday_status_id.1 == "Unpaid" %}
-              <td style="       background: #ed1f529e;
-              color: white;
-              padding: 12px 40px;
-              font-size: 12px;" colspan="{{i.number_of_days}}">
-                  <center>
-                     {{i.holiday_status_id.1}}
-                  </center>
-                 
-              </td>
-              {% elif i.holiday_status_id.1 == "Paid Time Off" %}
-              <td style="       background: #f6a096;
-              color: white;
-              padding: 12px 40px;
-              font-size: 12px;" colspan="{{i.number_of_days}}">
-                  <center>
-                     {{i.holiday_status_id.1}}
-                  </center>
-                 
-              </td>
-              
-              {% else %}
-              <td style="       background: #262435;
-              color: white;
-              padding: 12px 40px;
-              font-size: 12px;" colspan="{{i.number_of_days}}">
-                  <center>
-                     {{i.holiday_status_id.1}}
-                  </center>
-                 
-              </td>
-              {% endif %}
-              {% endif %}
-              {% endfor %}
-          
-           {% else %}
-  
-           <td>
-             
+               
+        
+            
+        
+               
+             </script>
+            
+            
+            
+            
+        </td>
+    
+        {% endfor %}
+       
+        {% endif %}
+        {% if i.holiday_status_id.1 == "Annual Vacation" %}
+        <script>
+            
+    
+            count1 = count1+parseInt(`{{i.colspan}}`);
+            console.log("aaaa:::",count1)
+    
+        
+    
            
-           </td>
-           {% endif %}
-          
-  
-          {% endfor %}
-          </tr>
-
-
-
-
+         </script>
+        <td style="       background: #b392a4;
+        color: white;
+        padding: 12px 40px;
+        font-size: 12px;" colspan="{{i.colspan}}">
+            <center>
+               {{i.holiday_status_id.1}}
+            </center>
+           
+        </td>
+        {% elif i.holiday_status_id.1 == "Unpaid" %}
+        <script>
+    
+            count1 = count1+parseInt(`{{i.colspan}}`);
+            console.log(count1)
+    
+        
+    
+           
+         </script>
+        <td style="       background: #ed1f529e;
+        color: white;
+        padding: 12px 40px;
+        font-size: 12px;" colspan="{{i.colspan}}">
+            <center>
+               {{i.holiday_status_id.1}}
+            </center>
+           
+        </td>
+        {% elif i.holiday_status_id.1 == "Paid Time Off" %}
+        <script>
+    
+            count1 = count1+parseInt(`{{i.colspan}}`);
+            console.log(count1)
+    
+        
+    
+           
+         </script>
+        <td style="       background: #f6a096;
+        color: white;
+        padding: 12px 40px;
+        font-size: 12px;" colspan="{{i.colspan}}">
+            <center>
+               {{i.holiday_status_id.1}}
+            </center>
+           
+        </td>
+        
+        {% else %}
+        <script>
+    
+            count1 = count1+parseInt(`{{i.colspan}}`);
+            console.log(count1)
+    
+        
+    
+           
+         </script>
+        <td style="       background: #262435;
+        color: white;
+        padding: 12px 40px;
+        font-size: 12px;" colspan="{{i.colspan}}">
+            <center>
+               {{i.holiday_status_id.1}}
+            </center>
+           
+        </td>
+        {% endif %}
 
 
     
-          
+    
   
+    
+        {% endfor %}
+
+
+
+        {% else %}
+        <script>
+            count1 =  0
+        </script>
+
+
+        {% endif %}
+        <script>
+            console.log("finalq count:::",count1)
+            // alert("count1aaaaaa:::",count1)
+    
+            result1 = `{{days}}`-count1
+    
+            console.log("resssss:::",result1)
+            // alert(result1)
+    
           
-          <!-- <td style="    background: red;" colspan="2">
+    
           
-          <center>
-              Leave Type
-          </center>
-          </td> -->
-        </span>
-      </tr>
-     </table>
-     </div>
+            var a = "myLisss1"
+           
+            for (let i = 0; i < result1; i++) {
+    
+                $("#"+a).append("<td></td>")
+                console.log("hhhh")
+    
+    
+            }
+         
+          
+         </script>
+             </tr>
+         <script>
+            let count = 0 
+        </script>
+
+        {% for i in get_chile_response %}
+
+
+        
+        <tr id="myList1{{forloop.counter}}">
+        
+        
+            <td>
+               <img style="    width: 12%;
+               padding: 3px 9px;" src="{% static 'u1.png' %}"> 
+        
+               <span>  {{i.name}}</span>
+              
+            </td>
+
+
+            <script>
+                count = 0
+               console.log("countfirst:::",count)
+            </script>
+            {% for i in i.id|get_user_leave_data1:send_data %}
+
+
+
+            {% if i.col_before == 0 %}
+        
+            {% else %}
+           
+            {% for j in "x"|rjust:i.col_before %}
+
+            <script>
+
+               count = count+1;
+               console.log(count)
+
+           
+
+              
+            </script>
+            <td>
+             
+                
+            </td>
+        
+            {% endfor %}
+            {% endif %}
+            {% if i.holiday_status_id.1 == "Annual Vacation" %}
+            <script>
+
+               count = count+parseInt(`{{i.colspan}}`);
+               console.log(count)
+
+           
+
+              
+            </script>
+            <td style="       background: #b392a4;
+            color: white;
+            padding: 12px 40px;
+            font-size: 12px;" colspan="{{i.colspan}}">
+                <center>
+                   {{i.holiday_status_id.1}}
+                </center>
+               
+            </td>
+            {% elif i.holiday_status_id.1 == "Unpaid" %}
+            <script>
+
+               count = count+parseInt(`{{i.colspan}}`);
+               console.log(count)
+
+           
+
+              
+            </script>
+            <td style="       background: #ed1f529e;
+            color: white;
+            padding: 12px 40px;
+            font-size: 12px;" colspan="{{i.colspan}}">
+                <center>
+                   {{i.holiday_status_id.1}}
+                </center>
+               
+            </td>
+            {% elif i.holiday_status_id.1 == "Paid Time Off" %}
+            <script>
+
+               count = count+parseInt(`{{i.colspan}}`);
+               console.log(count)
+
+           
+
+              
+            </script>
+            <td style="       background: #f6a096;
+            color: white;
+            padding: 12px 40px;
+            font-size: 12px;" colspan="{{i.colspan}}">
+                <center>
+                   {{i.holiday_status_id.1}}
+                </center>
+               
+            </td>
+            
+            {% else %}
+            <script>
+
+               count = count+parseInt(`{{i.colspan}}`);
+               console.log(count)
+
+           
+
+              
+            </script>
+            <td style="       background: #262435;
+            color: white;
+            padding: 12px 40px;
+            font-size: 12px;" colspan="{{i.colspan}}">
+                <center>
+                   {{i.holiday_status_id.1}}
+                </center>
+               
+            </td>
+            {% endif %}
+        
+            {% endfor %}
+
+
+
+            <script>
+               console.log("final count:::",count)
+
+               result = `{{days}}`-count
+
+               console.log("resssss:::",result)
+
+               node = "";
+               append_list = `{{forloop.counter}}`;
+
+
+             
+               var a = "myList1"+append_list
+              
+               for (let i = 0; i < result; i++) {
+
+                   $("#"+a).append("<td></td>")
+                   console.log("hhhh")
+
+
+               }
+            
+             
+            </script>
+
+         
+
+            
+            </tr>
+            {% endfor %}
+
+   
+         
+
+
+ 
+         
+         <!-- <td style="    background: red;" colspan="2">
+         
+         <center>
+             Leave Type
+         </center>
+         </td> -->
+       </span>
+     </tr>
+    </table>
+    </div>
 
      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
