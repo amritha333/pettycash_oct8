@@ -751,6 +751,9 @@ $(".appnd_user_btn").click(function() {
     $("#emp_name").change (function () {  
        
         var selectedemploye_name = $(this).children("option:selected").val();  
+
+        var selected_employee_id = $('#emp_name_action').val();
+        
         // alert(selectedemploye_name)
 
         // if(selectedemploye_name == "Annual Vacation"){
@@ -768,7 +771,8 @@ $(".appnd_user_btn").click(function() {
             url: 'get_total_available_leave_count',
             // datatype: 'json',
             data: {
-                'leave_type': selectedemploye_name       
+                'leave_type': selectedemploye_name,
+                'selected_employee_id':selected_employee_id       
             },
             type: 'GET',
             success: function (data) {  

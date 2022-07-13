@@ -1910,7 +1910,7 @@ def get_total_available_leave_count(request):
 
     leave_type = request.GET.get("leave_type",False)
     print("leave_type:::::",str(leave_type))
-
+    selected_employee_id = request.GET.get("selected_employee_id",False)
     odoo_login_id = 0
     half_day_status = ""
     try:
@@ -1930,7 +1930,7 @@ def get_total_available_leave_count(request):
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
-                "employee_id" : int(odoo_login_id),
+                "employee_id" : int(selected_employee_id),
                 "type_id" : int(leave_type)
             }
         })
