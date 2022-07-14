@@ -46,22 +46,22 @@
                     {% for i1 in child_response %}
 
                     {% if emp_id ==  i1.registration_number %}
-                    <div class="col-md-2">
+                 
                         <a id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background: #262435;
                         color: white;
                         padding: 12px 40px;
                         font-size: 12px;">{{i1.name}}</a>
-                    </div>
+                 
 
                     {% else %}
 
                    
-                    <div class="col-md-2">
+                   
                         <a id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
                         color: white;
                         padding: 12px 40px;
                         font-size: 12px;">{{i1.name}}</a>
-                    </div>
+                 
                     {% endif %}
                     {% endfor %}
                    </div>

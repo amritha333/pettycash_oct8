@@ -103,10 +103,7 @@
     <table  class="table table-bordered" border="1" >
         <tfoot id="total_leave_count">
             <td >
-               <span style="float: right;
-               font-weight: bold;
-               margin: 4px 12px;">
-               Total</span>
+                Total
             </td>
             {% for i in "x"|rjust:days %}
             <td style=" text-align: center;  ">
@@ -372,8 +369,6 @@
          <script>
              let count = 0 
              let total_user_leave_count1 = 0
-
-             
          </script>
 
          {% for i in get_chile_response %}
@@ -427,16 +422,6 @@
              {% endif %}
              {% if i.holiday_status_id.1 == "Annual Vacation" %}
              <script>
-                total_user_leave_count10 = total_user_leave_count1 + 1
-                check_value1 =total_user_leave_count1+ parseInt(`{{i.colspan}}`)
-                for(total_user_leave_count10;total_user_leave_count10<=check_value1;total_user_leave_count10++){
-            total_user_leave_count1 = total_user_leave_count1+1
-           
-            arr[total_user_leave_count10] = arr[total_user_leave_count10]+1
-            document.getElementById("c"+total_user_leave_count10).innerHTML = arr[total_user_leave_count10];
-            
-            
-        }
                
 
                 count = count+parseInt(`{{i.colspan}}`);
@@ -457,17 +442,6 @@
              </td>
              {% elif i.holiday_status_id.1 == "Unpaid" %}
              <script>
-                 total_user_leave_count10 = total_user_leave_count1 + 1
-                check_value1 =total_user_leave_count1+ parseInt(`{{i.colspan}}`)
-                for(total_user_leave_count10;total_user_leave_count10<=check_value1;total_user_leave_count10++){
-            total_user_leave_count1 = total_user_leave_count1+1
-           
-            arr[total_user_leave_count10] = arr[total_user_leave_count10]+1
-            document.getElementById("c"+total_user_leave_count10).innerHTML = arr[total_user_leave_count10];
-            
-            
-        }
-               
 
                 count = count+parseInt(`{{i.colspan}}`);
                 console.log(count)
@@ -487,17 +461,6 @@
              </td>
              {% elif i.holiday_status_id.1 == "Paid Time Off" %}
              <script>
-                 total_user_leave_count10 = total_user_leave_count1 + 1
-                check_value1 =total_user_leave_count1+ parseInt(`{{i.colspan}}`)
-                for(total_user_leave_count10;total_user_leave_count10<=check_value1;total_user_leave_count10++){
-            total_user_leave_count1 = total_user_leave_count1+1
-           
-            arr[total_user_leave_count10] = arr[total_user_leave_count10]+1
-            document.getElementById("c"+total_user_leave_count10).innerHTML = arr[total_user_leave_count10];
-            
-            
-        }
-               
 
                 count = count+parseInt(`{{i.colspan}}`);
                 console.log(count)
@@ -518,17 +481,6 @@
              
              {% else %}
              <script>
-                 total_user_leave_count10 = total_user_leave_count1 + 1
-                check_value1 =total_user_leave_count1+ parseInt(`{{i.colspan}}`)
-                for(total_user_leave_count10;total_user_leave_count10<=check_value1;total_user_leave_count10++){
-            total_user_leave_count1 = total_user_leave_count1+1
-           
-            arr[total_user_leave_count10] = arr[total_user_leave_count10]+1
-            document.getElementById("c"+total_user_leave_count10).innerHTML = arr[total_user_leave_count10];
-            
-            
-        }
-               
 
                 count = count+parseInt(`{{i.colspan}}`);
                 console.log(count)
@@ -573,7 +525,6 @@
 
 
                 }
-                total_user_leave_count1 = 0
              
               
              </script>
