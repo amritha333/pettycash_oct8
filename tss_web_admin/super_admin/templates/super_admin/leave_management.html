@@ -43,27 +43,77 @@
     color: white;" ><i class="fa-solid fa-chart-gantt"></i></a>
 
                    <div class="row" style="       padding: 50px 0px;">
-                    {% for i1 in child_response %}
-
-                    {% if emp_id ==  i1.registration_number %}
+                    <style>
+                        .dropbtn {
+                          background-color: #04aa6d00;
+                          color: white;
+                          padding: 16px;
+                          font-size: 16px;
+                          border: none;
+                        }
+                        
+                        .dropdown {
+                          position: relative;
+                          display: inline-block;
+                        }
+                        
+                        .dropdown-content {
+                          display: none;
+                          position: absolute;
+                          background-color: #f1f1f1;
+                          min-width: 260px;
+                          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                          z-index: 1;
+                        }
+                        
+                        .dropdown-content a {
+                          color: black;
+                          padding: 12px 16px;
+                          text-decoration: none;
+                          display: block;
+                        }
+                        
+                        .dropdown-content a:hover {background-color: #ddd;}
+                        
+                        .dropdown:hover .dropdown-content {display: block;}
+                        
+                        .dropdown:hover .dropbtn {background-color: #02220300;}
+                        </style>
+                    <div class="dropdown">
+                        <button class="dropbtn">
+                            <img style="width: 9%;    float: left;" src="https://cdn-icons-png.flaticon.com/512/1736/1736143.png"><span style="    color: #0c0c0c;
+                            float: left;
+                            margin: 11px 1px;
+                            font-weight: bold;">Employee</span> 
+                        </button>
+                        <div class="dropdown-content" style="overflow:scroll; height:500px;">
+                            {% for i1 in child_response %}
+                            {% if emp_id ==  i1.registration_number %}
                  
-                        <a id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background: #262435;
-                        color: white;
-                        padding: 12px 40px;
-                        font-size: 12px;">{{i1.name}}</a>
-                 
+                            <a class="m-4" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background: #262435;
+                            color: white;
+                            padding: 12px 40px;
+                            font-size: 12px;">{{i1.name}}</a>
+                     
+    
+                        {% else %}
+    
+                       
+                       
+                            <a class="m-4" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
+                            color: white;
+                            padding: 12px 40px;
+                            font-size: 12px;">{{i1.name}}</a>
+                     
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                      </div>
+                    
 
-                    {% else %}
+                    
 
                    
-                   
-                        <a id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
-                        color: white;
-                        padding: 12px 40px;
-                        font-size: 12px;">{{i1.name}}</a>
-                 
-                    {% endif %}
-                    {% endfor %}
                    </div>
                     <div class="table_rspnsv" id="tableview">
                         <div class="row2 tbl_stngs commen_table">
