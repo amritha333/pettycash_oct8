@@ -1,4 +1,5 @@
 from ast import arg
+from posixpath import split
 from django import template
 
 register = template.Library()
@@ -159,8 +160,191 @@ def get_user_leave_data(value,args):
         
     leave_history_response12  = leave_history_response1['result']
     response = leave_history_response12['result']
-    print("rrr122222222333444455555::")
+    print("new1111111111111 response1111::")
     print(response)
+    data = []
+    count = 0
+    split_year_month = args.split("-")
+    year = split_year_month[0]
+    month = split_year_month[1]
+    print("year:::",str(year))
+    print("month:::",str(month))
+    for i in response:
+        print("iiii::::")
+        print(i)
+        col_before = 0
+        colspan = 0
+        if count == 0:
+            from datetime import date
+            import datetime
+            lastDayOfMonth = datetime.date(int(year), int(month), 1)
+            print("lastDayOfMonth:::::",str(lastDayOfMonth))
+            for_loop_from_date = i['date_from']
+            for_loop_from_date1 = datetime.datetime.fromisoformat(str(for_loop_from_date))
+            for_loop_from_date12 = for_loop_from_date1.date()
+            for_loop_from_year = str(for_loop_from_date12.year)
+            for_loop_from_month = str(for_loop_from_date12.month)
+
+            for_loop_to_date = i['date_to']
+            for_loop_to_date1 = datetime.datetime.fromisoformat(str(for_loop_to_date))
+            for_loop_to_date12 = for_loop_to_date1.date()
+            for_loop_to_year = str(for_loop_to_date12.year)
+            for_loop_to_month = str(for_loop_to_date12.month)
+            import calendar
+            import datetime
+
+            days = calendar.monthrange(int(year), int(month))[1]
+            print("total_days::::",str(days)) 
+
+            last_date = datetime.date(int(year), int(month), days)
+            print("last_date:::",str(last_date))
+
+            if (year == for_loop_from_year and for_loop_from_month == month) and (for_loop_to_year == year and for_loop_to_month == month):
+                print("---rrrssssssssssssss")
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                print("for_loop_to_date12::",str(for_loop_to_date12))
+                print("for_loop_from_date12:::",str(for_loop_from_date12))
+                col_span1 = for_loop_to_date12 - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+                print("colspan::::",str(colspan))
+            
+            elif year == for_loop_from_year and for_loop_from_month == month:
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = last_date - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+            elif for_loop_to_year == year and for_loop_to_month == month:
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = df11 - for_loop_from_date12 
+                col_before = 0
+                print("c111ounttt1111:::::",str(delta.days))
+                col_span1 = for_loop_to_date12 - df11
+                colspan = int(col_span1.days)+1
+            else:
+                print("rrrrrrrrrrrr11111111",str(count))
+               
+    
+                days = calendar.monthrange(int(year), int(month))[1]
+                print("total_days::::",str(days)) 
+                col_before =0
+                
+                colspan = int(days)
+                pass
+                
+        else:
+            c1 = count  - 1
+            previous_list = response[c1]
+            print("previous_list11::::",str(count)+":::data:::",str(previous_list))
+           
+            previous_list_to_date = previous_list['date_to']
+            print("previous_list_to_date:::",str(previous_list_to_date))
+            from datetime import date
+            import datetime
+            previous_list_to_date1 = datetime.datetime.fromisoformat(str(previous_list_to_date))
+            previous_list_to_date12 = previous_list_to_date1.date()
+            previous_list_to_date_year = str(previous_list_to_date12.year)
+            previous_list_to_date_month = str(previous_list_to_date12.month)
+
+            for_loop_from_date = i['date_from']
+            for_loop_from_date1 = datetime.datetime.fromisoformat(str(for_loop_from_date))
+            for_loop_from_date12 = for_loop_from_date1.date()
+            for_loop_from_year = str(for_loop_from_date12.year)
+            for_loop_from_month = str(for_loop_from_date12.month)
+
+            for_loop_to_date = i['date_to']
+            for_loop_to_date1 = datetime.datetime.fromisoformat(str(for_loop_to_date))
+            for_loop_to_date12 = for_loop_to_date1.date()
+            for_loop_to_year = str(for_loop_to_date12.year)
+            for_loop_to_month = str(for_loop_to_date12.month)
+            import calendar
+            import datetime
+
+            days = calendar.monthrange(int(year), int(month))[1]
+            print("total_days::::",str(days)) 
+
+            last_date = datetime.date(int(year), int(month), days)
+            print("last_date:::",str(last_date))
+
+            if (previous_list_to_date_year == for_loop_from_year and for_loop_from_month == previous_list_to_date_month) and (for_loop_to_year == previous_list_to_date_year and for_loop_to_month == previous_list_to_date_month):
+                print("---rrrssssssssssssss")
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)-1
+                print("c111ounttt:::::",str(delta.days))
+                print("for_loop_to_date12::",str(for_loop_to_date12))
+                print("for_loop_from_date12:::",str(for_loop_from_date12))
+                col_span1 = for_loop_to_date12 - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+                print("colspan::::",str(colspan))
+            elif previous_list_to_date_year == for_loop_from_year and for_loop_from_month == previous_list_to_date_month:
+                print("date1:::::",str(for_loop_from_date1)+":::count::",str(count))
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days) - 1
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = last_date - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+            elif for_loop_to_year == previous_list_to_date_year and for_loop_to_month == previous_list_to_date_month:
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = for_loop_to_date12 - df11
+                colspan = int(col_span1.days)+1
+            else:
+               
+    
+                days = calendar.monthrange(int(previous_list_to_date_year), int(previous_list_to_date_month))[1]
+                print("total_days::::",str(days)) 
+                col_before = int(days)
+                
+                colspan = int(days)
+                pass
+            print("countttt111:::::",str(count)+"::::data:::",str(col_before)+":::previous_list_to_date1::::",str(previous_list_to_date1))
+
+
+
+            
+            
+
+
+            pass
+
+
+
+
+           
+            
+
+
+        data.append({
+            'id':i['id'],
+            "holiday_status_id":i['holiday_status_id'],
+            "date_from":i['date_from'],
+            "date_to":i['date_to'],
+            "number_of_days":i['number_of_days'],
+            "col_before":col_before,
+            "colspan":colspan
+
+        })
+        count = count + 1
+        
+        
+
+
+
+    return data
 
     return response
 
@@ -205,5 +389,217 @@ def get_user_leave_data1(value,args):
     response = leave_history_response12['result']
     print("r122222222333444455555::")
     print(response)
+    data = []
+    count = 0
+    split_year_month = args.split("-")
+    year = split_year_month[0]
+    month = split_year_month[1]
+    print("year:::",str(year))
+    print("month:::",str(month))
+    for i in response:
+        print("iiii::::")
+        print(i)
+        col_before = 0
+        colspan = 0
+        if count == 0:
+            from datetime import date
+            import datetime
+            lastDayOfMonth = datetime.date(int(year), int(month), 1)
+            print("lastDayOfMonth:::::",str(lastDayOfMonth))
+            for_loop_from_date = i['date_from']
+            for_loop_from_date1 = datetime.datetime.fromisoformat(str(for_loop_from_date))
+            for_loop_from_date12 = for_loop_from_date1.date()
+            for_loop_from_year = str(for_loop_from_date12.year)
+            for_loop_from_month = str(for_loop_from_date12.month)
+
+            for_loop_to_date = i['date_to']
+            for_loop_to_date1 = datetime.datetime.fromisoformat(str(for_loop_to_date))
+            for_loop_to_date12 = for_loop_to_date1.date()
+            for_loop_to_year = str(for_loop_to_date12.year)
+            for_loop_to_month = str(for_loop_to_date12.month)
+            import calendar
+            import datetime
+
+            days = calendar.monthrange(int(year), int(month))[1]
+            print("total_days::::",str(days)) 
+
+            last_date = datetime.date(int(year), int(month), days)
+            print("last_date:::",str(last_date))
+
+            if (year == for_loop_from_year and for_loop_from_month == month) and (for_loop_to_year == year and for_loop_to_month == month):
+                print("---rrrssssssssssssss")
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                print("for_loop_to_date12::",str(for_loop_to_date12))
+                print("for_loop_from_date12:::",str(for_loop_from_date12))
+                col_span1 = for_loop_to_date12 - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+                print("colspan::::",str(colspan))
+            
+            elif year == for_loop_from_year and for_loop_from_month == month:
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = last_date - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+            elif for_loop_to_year == year and for_loop_to_month == month:
+                df1 = datetime.datetime.fromisoformat(str(lastDayOfMonth))
+                df11 = df1.date()
+                delta = df11 - for_loop_from_date12 
+                col_before = 0
+                print("c111ounttt1111:::::",str(delta.days))
+                col_span1 = for_loop_to_date12 - df11
+                colspan = int(col_span1.days)+1
+            else:
+                print("rrrrrrrrrrrr11111111",str(count))
+               
+    
+                days = calendar.monthrange(int(year), int(month))[1]
+                print("total_days::::",str(days)) 
+                col_before =0
+                
+                colspan = int(days)
+                pass
+                
+        else:
+            c1 = count  - 1
+            previous_list = response[c1]
+            print("previous_list11::::",str(count)+":::data:::",str(previous_list))
+           
+            previous_list_to_date = previous_list['date_to']
+            print("previous_list_to_date:::",str(previous_list_to_date))
+            from datetime import date
+            import datetime
+            previous_list_to_date1 = datetime.datetime.fromisoformat(str(previous_list_to_date))
+            previous_list_to_date12 = previous_list_to_date1.date()
+            previous_list_to_date_year = str(previous_list_to_date12.year)
+            previous_list_to_date_month = str(previous_list_to_date12.month)
+
+            for_loop_from_date = i['date_from']
+            for_loop_from_date1 = datetime.datetime.fromisoformat(str(for_loop_from_date))
+            for_loop_from_date12 = for_loop_from_date1.date()
+            for_loop_from_year = str(for_loop_from_date12.year)
+            for_loop_from_month = str(for_loop_from_date12.month)
+
+            for_loop_to_date = i['date_to']
+            for_loop_to_date1 = datetime.datetime.fromisoformat(str(for_loop_to_date))
+            for_loop_to_date12 = for_loop_to_date1.date()
+            for_loop_to_year = str(for_loop_to_date12.year)
+            for_loop_to_month = str(for_loop_to_date12.month)
+            import calendar
+            import datetime
+
+            days = calendar.monthrange(int(year), int(month))[1]
+            print("total_days::::",str(days)) 
+
+            last_date = datetime.date(int(year), int(month), days)
+            print("last_date:::",str(last_date))
+
+            if (previous_list_to_date_year == for_loop_from_year and for_loop_from_month == previous_list_to_date_month) and (for_loop_to_year == previous_list_to_date_year and for_loop_to_month == previous_list_to_date_month):
+                print("---rrrssssssssssssss")
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)-1
+                print("c111ounttt:::::",str(delta.days))
+                print("for_loop_to_date12::",str(for_loop_to_date12))
+                print("for_loop_from_date12:::",str(for_loop_from_date12))
+                col_span1 = for_loop_to_date12 - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+                print("colspan::::",str(colspan))
+            elif previous_list_to_date_year == for_loop_from_year and for_loop_from_month == previous_list_to_date_month:
+                print("date1:::::",str(for_loop_from_date1)+":::count::",str(count))
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days) - 1
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = last_date - for_loop_from_date12
+                colspan = int(col_span1.days)+1
+            elif for_loop_to_year == previous_list_to_date_year and for_loop_to_month == previous_list_to_date_month:
+                df1 = datetime.datetime.fromisoformat(str(previous_list_to_date1))
+                df11 = df1.date()
+                delta = for_loop_from_date12 - df11
+                col_before = int(delta.days)
+                print("c111ounttt:::::",str(delta.days))
+                col_span1 = for_loop_to_date12 - df11
+                colspan = int(col_span1.days)+1
+            else:
+               
+    
+                days = calendar.monthrange(int(previous_list_to_date_year), int(previous_list_to_date_month))[1]
+                print("total_days::::",str(days)) 
+                col_before = int(days)
+                
+                colspan = int(days)
+                pass
+            print("countttt111:::::",str(count)+"::::data:::",str(col_before)+":::previous_list_to_date1::::",str(previous_list_to_date1))
+
+
+
+            
+            
+
+
+            pass
+
+
+
+
+           
+            
+
+        
+        data.append({
+            'id':i['id'],
+            "holiday_status_id":i['holiday_status_id'],
+            "date_from":i['date_from'],
+            "date_to":i['date_to'],
+            "number_of_days":i['number_of_days'],
+            "col_before":col_before,
+            "colspan":colspan
+
+        })
+        count = count + 1
+        
+        
+
+
+
+    return data
 
     return response
+
+
+
+
+
+@register.filter(name='check_month_differnce')
+def check_month_differnce(value,args):
+    print("values::::::",str(value))
+    print("args::::",str(args))
+    print("type:::::",type(args))
+    import datetime
+    aDateTime = datetime.datetime.fromisoformat(str(args))
+    print("convert date11::::",str(aDateTime.date()))
+
+    split_year_month = value.split("-")
+    year = split_year_month[0]
+    month = split_year_month[1]
+    print("year:::",str(year))
+    print("month:::",str(month))
+    from datetime import date
+
+    
+    lastDayOfMonth = datetime.date(int(year), int(month), 1)
+    print("lastDayOfMonth:::::",str(lastDayOfMonth))
+
+
+
+    return True
+    pass
