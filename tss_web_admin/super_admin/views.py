@@ -2572,7 +2572,10 @@ def user_leave_gantt_chart_next_month_action(request):
     from datetime import date
     y = request.GET.get("year",False)
     m = request.GET.get("month",False)
-    df = date(int(y),int(m)+1,1)
+    try:
+        df = date(int(y),int(m)+1,1)
+    except:
+        df = date(int(y)+1,int(1),1)
     new_month = df.month
     new_year = df.year
     print("new_month::::::",str(new_month))
@@ -2658,7 +2661,18 @@ def user_leave_gantt_chart_prev_month_action(request):
     from datetime import date
     y = request.GET.get("year",False)
     m = request.GET.get("month",False)
-    df = date(int(y),int(m)-1,1)
+    try:
+        df = date(int(y),int(m)-1,1)
+    except:
+        if int(m)==12:
+
+            df = date(int(y)-1,int(1),1)
+        elif int(m) == 1:
+            df = date(int(y)-1,int(12),1)
+
+        else:
+            df = date(int(y)-1,int(1),1)
+
     new_month = df.month
     new_year = df.year
     print("new_month::::::",str(new_month))
