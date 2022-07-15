@@ -138,19 +138,18 @@
 </div>
 </div>
 <style>
+
+
+    /* Important part */
+    .modal-dialog{
+        overflow-y: initial !important
+    }
     .modal-body{
-    height: 100%;
-    overflow-x: auto;
-}
+        height: 80vh;
+        overflow-y: auto;
+    }
+    </style>
 
-@media (min-height: 500px) {
-    .modal-body { height: 580px; }
-}
-
-@media (min-height: 800px) {
-    .modal-body { height: 800px; }
-}
-</style>
 <div class="modal modal-right fade" id="newuser"  role="dialog" aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog modal-full" >
 <!-- <div id="newuser" class="modal fade" role="dialog" data-backdrop="static">
