@@ -1,0 +1,272 @@
+{% extends "super_admin/cal_menu.html" %}
+
+
+
+{% block content %}
+
+<style>
+    .fc-popover{
+        top: 0px!important;
+    }
+</style>
+<div class="container-fluid" style="   ">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="box_header">
+                    <div class="row">
+                        <div class="col-md-7 col-12">
+                            <div class="mainiconbox"><i class="fa fa-user"></i>
+                            </div>
+                            <h4 class="m-t-0 header-title">
+                                <div class="breadcrumbs ng-scope">
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a>Leave Calendar </a></li>
+                                        <!-- <li><a>User  Settings</a></li> -->
+                                    </ul>
+                                    <div>Leave Calendar</div>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="col-md-5 col-12">
+                            <div class="pull-right p-t-10">
+
+<!--                                <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newuser"> <i class="mdi mdi-plus-circle-outline"></i> APPLY NEW LEAVE-->
+<!--                                </a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-box " >
+<!--    <div class="container" >-->
+<!--                <center><select onclick="getServiceFeed(1)" id="sd1">-->
+<!--                    <option value="all" >All</option>-->
+<!--                    {% for i1 in child_response %}-->
+<!--                        <option value="{{i1.id}}" >{{i1.name}}</option>-->
+<!--                    {% endfor %}-->
+<!--                </select></center>-->
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div id="calendar"></div>
+                            <div id="leave_id"></div>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+                        </div>
+                        <div class="col-sm-3" style="overflow:scroll; height:1000px;">
+                            <input type="checkbox" value="all" id="all" onclick="getServiceFeed1()">
+                            <label for="all">All</label><br>
+                            {% for i1 in child_response %}
+                                <input type="checkbox" value="{{i1.id}}" id="sd1" onclick="getServiceFeed({{i1.id}})">
+                                <label for="sd1">{{i1.name}}</label><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css"/>
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.css"/>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    <style>
+        .fc-event {
+            position: relative;
+            display: block;
+            font-size: .85em;
+            line-height: 1.3;
+            border-radius: 3px;
+            background-color: #88a3b3;
+    border: 5px solid #88a3b3;
+<!--            #29efd4-->
+            font-weight: normal;
+            color: white;
+            color: white;
+            color: white!important;
+            margin: 4px 3px;
+        }
+
+<!--        .fc-event {-->
+<!--            background: repeating-linear-gradient(45deg, #F06050, #F06050 10px, rgba(240, 96, 80, 0.5) 10px, rgba(240, 96, 80, 0.5) 20px);-->
+<!--            border: 5px solid #f8b0a8;-->
+<!--        }-->
+
+<!--        .fc-basic-view .fc-content {-->
+<!--            color: black;-->
+<!--        }-->
+
+
+        .fc-unthemed th, .fc-unthemed td, .fc-unthemed thead, .fc-unthemed tbody, .fc-unthemed .fc-divider, .fc-unthemed .fc-row, .fc-unthemed .fc-content, .fc-unthemed .fc-popover, .fc-unthemed .fc-list-view, .fc-unthemed .fc-list-heading td {
+    border-color: #6c757d;
+}
+
+
+    </style>
+    <script>
+
+        $(document).ready(function () {
+            var calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/all_events',
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                eventLimit: true,
+<!--                select: function (start, end, allDay) {-->
+<!--                        var start = $.fullCalendar.formatDate(start, "Y-MM-DD");-->
+<!--                        var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");-->
+
+<!--                        $("#dt1").val(start)-->
+<!--&lt;!&ndash;                        console.log(start);&ndash;&gt;-->
+<!--                        $('#exampleModal').modal('show');-->
+<!--                        },-->
+                eventClick: function (event) {
+                        var id = event.id;
+                        alert(id)
+                        var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+                        var countryId = $(this).val();  // get the selected country ID from the HTML input
+                        $.ajax({                       // initialize an AJAX request
+                        url: "event_depended",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                        data: {
+                                'event_id': id       // add the country id to the GET parameters
+                        },
+                        success: function (data) {   // `data` is the return of the `load_cities` view function
+                        $("#leave_id").html(data);  // replace the contents of the city input with the data that came from the server
+                        $('#exampleModalLabel').modal('show');
+                }
+            });
+        },
+    });
+ });
+</script>
+
+
+
+
+
+<script>
+    function getServiceFeed(id){
+
+
+<!--    var sd1 = document.getElementById("sd1").value-->
+<!--    alert(sd1)-->
+
+<!--if(sd1 == "all"){-->
+
+<!--alert("helloo")-->
+<!--getServiceFeed1()-->
+
+<!--}-->
+<!--else{-->
+
+type = id
+
+        $('#calendar').fullCalendar('destroy');
+        var calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/all_events1?type='+type,
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                eventLimit: true,
+                select: function (start, end, allDay) {
+                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
+                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+
+                    $("#dt1").val(start)
+<!--                        console.log(start);-->
+
+
+                $('#exampleModal').modal('show');
+                },
+                eventClick: function (event) {
+                    var id = event.id;
+                    var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+                    var countryId = $(this).val();  // get the selected country ID from the HTML input
+                    $.ajax({                       // initialize an AJAX request
+                    url: "event_depended",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                    data: {
+                            'event_id': id       // add the country id to the GET parameters
+                    },
+                    success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $("#leave_id").html(data);  // replace the contents of the city input with the data that came from the server
+                    $('#exampleModalLabel').modal('show');
+                }
+
+            });
+
+
+
+                },
+
+
+            });
+<!--            }-->
+
+}
+</script>
+
+<script>
+
+    function getServiceFeed1(){
+    var all = document.getElementById("all").value
+    
+        $('#calendar').fullCalendar('destroy');
+        var calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/all_events',
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                eventLimit: true,
+                select: function (start, end, allDay) {
+                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
+                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+
+                    $("#dt1").val(start)
+<!--                        console.log(start);-->
+                $('#exampleModal').modal('show');
+                },
+                eventClick: function (event) {
+                        var id = event.id;
+                        var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+                        var countryId = $(this).val();  // get the selected country ID from the HTML input
+                        $.ajax({                       // initialize an AJAX request
+                        url: "event_depended",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                        data: {
+                                'event_id': id       // add the country id to the GET parameters
+                        },
+                        success: function (data) {   // `data` is the return of the `load_cities` view function
+                        $("#leave_id").html(data);  // replace the contents of the city input with the data that came from the server
+                        $('#exampleModalLabel').modal('show');
+                }
+            });
+
+
+                },
+
+            });
+
+}
+
+</script>
+
+
+    </body>
+{% endblock %}

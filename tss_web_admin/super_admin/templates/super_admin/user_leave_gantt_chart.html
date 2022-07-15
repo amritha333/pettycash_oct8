@@ -146,10 +146,20 @@
 
  <tr id="myLisss1">
     <td>
-       <img style="    width: 12%;
-       padding: 3px 9px;" src="{% static 'u1.png' %}"> 
 
-       <span>{{employee_data_name}}</span>
+        <div class="row">
+            <div class="col-md-3">
+                <img style="    width: 63%;
+               " src="{% static 'u1.png' %}"> 
+            </div>
+            <div class="col-md-8" style="     margin: 4px 0px!important;">
+                <span style="    margin: 19px -22px!important;
+                font-size: 10px;">{{employee_data_name}}</span>
+            </div>
+        </div>
+      
+
+     
     </td>
 
     <script>
@@ -227,7 +237,7 @@
      </script>
     <td style="       background: #b392a4;
     color: white;
-    padding: 12px 40px;
+    padding: 14px;
     font-size: 12px;" colspan="{{i.colspan}}">
         <center>
            {{i.holiday_status_id.1}}
@@ -260,7 +270,7 @@
      </script>
     <td style="       background: #ed1f529e;
     color: white;
-    padding: 12px 40px;
+    padding: 14px;
     font-size: 12px;" colspan="{{i.colspan}}">
         <center>
            {{i.holiday_status_id.1}}
@@ -293,7 +303,7 @@
      </script>
     <td style="       background: #f6a096;
     color: white;
-    padding: 12px 40px;
+    padding: 14px;
     font-size: 12px;" colspan="{{i.colspan}}">
         <center>
            {{i.holiday_status_id.1}}
@@ -327,7 +337,7 @@
      </script>
     <td style="       background: #262435;
     color: white;
-    padding: 12px 40px;
+  
     font-size: 12px;" colspan="{{i.colspan}}">
         <center>
            {{i.holiday_status_id.1}}
@@ -385,11 +395,19 @@
          
          
              <td>
-                <img style="    width: 12%;
-                padding: 3px 9px;" src="{% static 'u1.png' %}"> 
-         
-                <span>  {{i.name}}</span>
+                
+
+              <div class="row">
+                <div class="col-md-3">
+                    <img style="    width: 63%;
+                   " src="{% static 'u1.png' %}"> 
+                </div>
+                <div class="col-md-8" style="     margin: 4px 0px!important;">
+                    <span style="    margin: 19px -22px!important;
+                    font-size: 10px;"> {{i.name}}</span>
+                </div>
                
+              </div>
              </td>
 
 
@@ -448,7 +466,7 @@
              </script>
              <td style="       background: #b392a4;
              color: white;
-             padding: 12px 40px;
+             padding: 14px;
              font-size: 12px;" colspan="{{i.colspan}}">
                  <center>
                     {{i.holiday_status_id.1}}
@@ -478,7 +496,7 @@
              </script>
              <td style="       background: #ed1f529e;
              color: white;
-             padding: 12px 40px;
+             padding: 14px;
              font-size: 12px;" colspan="{{i.colspan}}">
                  <center>
                     {{i.holiday_status_id.1}}
@@ -508,7 +526,7 @@
              </script>
              <td style="       background: #f6a096;
              color: white;
-             padding: 12px 40px;
+             padding: 14px;
              font-size: 12px;" colspan="{{i.colspan}}">
                  <center>
                     {{i.holiday_status_id.1}}
@@ -539,7 +557,7 @@
              </script>
              <td style="       background: #262435;
              color: white;
-             padding: 12px 40px;
+             padding: 14px;
              font-size: 12px;" colspan="{{i.colspan}}">
                  <center>
                     {{i.holiday_status_id.1}}

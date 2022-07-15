@@ -2515,14 +2515,16 @@ def user_leave_gantt_chart(request):
     get_chile_response = ""
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
-   
+    send_data = str(year)+"-"+str(month)
     try:
         get_chile_response_response_url = api_domain+"api/get_childs"
         get_chile_response_payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
                 "employee_id": int(employee_data.odoo_id),
-                "exclud_parent" : "True"
+                "exclud_parent" : "True",
+                'leave_gantt':"True",
+                "date" : send_data
             }
         })
         get_chile_response_headers = {
@@ -2550,7 +2552,7 @@ def user_leave_gantt_chart(request):
 
 
 
-    send_data = str(year)+"-"+str(month)
+    
 
     context = {
         'full_month_name':month_name,
@@ -2615,7 +2617,9 @@ def user_leave_gantt_chart_next_month_action(request):
             "jsonrpc": "2.0",
             "params": {
                 "employee_id": int(employee_data.odoo_id),
-                "exclud_parent" : "True"
+                "exclud_parent" : "True",
+                'leave_gantt':"True",
+                "date" : send_data
             }
         })
         get_chile_response_headers = {
@@ -2712,7 +2716,9 @@ def user_leave_gantt_chart_prev_month_action(request):
             "jsonrpc": "2.0",
             "params": {
                 "employee_id": int(employee_data.odoo_id),
-                "exclud_parent" : "True"
+                "exclud_parent" : "True",
+                'leave_gantt':"True",
+                "date" : send_data
             }
         })
         get_chile_response_headers = {
@@ -2745,3 +2751,266 @@ def user_leave_gantt_chart_prev_month_action(request):
     }
 
     return render(request,'super_admin/user_leave_gantt_chart1.html',context)
+
+
+
+
+
+
+def calendar(request):
+    user_auth_id = request.user.id
+    print("user_auth_id::::", str(user_auth_id))
+    odoo_id = 0
+    try:
+
+        odoo_data = User_Management.objects.get(auth_user=user_auth_id)
+        odoo_id = odoo_data.odoo_id
+
+    except:
+        pass
+    print("odoo_id::::::", str(odoo_id))
+
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+
+
+
+    child_response = ""
+    try:
+        child_response_url = api_domain + "api/get_childs"
+        child_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "employee_id": int(odoo_id)
+
+            }
+        })
+        child_header = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+        child_response1 = requests.request("GET", child_response_url, headers=child_header, data=child_payload).json()
+        child_response12 = child_response1['result']
+        child_response = child_response12['result']
+    except:
+        pass
+    print("calllllllllllll",child_response)
+    context = {
+
+
+
+
+        'child_response': child_response,
+        'count':len(child_response)
+
+    }
+
+    return render(request, 'super_admin/calendar.html', context)
+    # return render(request, 'super_admin/calendar.html')
+def event_depended(request):
+    event_id = request.GET.get('event_id')
+    print("jijijijijiii",event_id)
+    leave_more_details_url = api_domain + "api/get_leave_details"
+    payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+            "leave_id": int(event_id)
+
+        }
+    })
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+
+    headers = {
+        'api_key': odoo_token_data.token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
+    print("resll::::")
+    print(response1.json())
+    response12 = response1.json()['result']
+    print("ressss:::::")
+    print(response12)
+    r1 = response12['result'][0]
+    print("new:")
+    print(r1)
+    emp_name = ""
+    try:
+        data_emp = User_Management.objects.get(auth_user=request.user)
+        emp_name = data_emp.employee_name
+    except:
+        pass
+    context = {
+        'r1': r1,
+        'emp_name': emp_name
+    }
+
+    return render(request, 'super_admin/event_depended.html',context)
+
+
+
+
+def all_events(request):
+    user_auth_id = request.user.id
+    print("user_auth_id::::", str(user_auth_id))
+    odoo_id = 0
+    try:
+
+        odoo_data = User_Management.objects.get(auth_user=user_auth_id)
+        odoo_id = odoo_data.odoo_id
+
+    except:
+        pass
+    print("odoo_id::::::", str(odoo_id))
+
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+    leave_history_response = ""
+    try:
+        leave_history_response_url = api_domain + "api/get_leave_history_calender"
+        leave_history_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+
+            "employee_id" : 2834,
+            "all": "True",
+            "start_date" : "2022-07-01",
+            "end_date" : "2022-07-31"
+            }
+        })
+        leave_history_headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+
+        leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
+                                                   data=leave_history_payload).json()
+        print("rs122223::::")
+        print("response1::::::::")
+        print(leave_history_response1)
+
+        leave_history_response12 = leave_history_response1['result']
+        leave_history_response = leave_history_response12['result']
+        print("r1::")
+        print(leave_history_response)
+
+
+    except:
+        pass
+    out = []
+    print(out)
+    print("jiyadddddddddddddddddddddddddddd:::::::",leave_history_response)
+    for event in leave_history_response:
+        print("id::::::::::::",str(event['id']))
+        print("date_from::",str(event['date_from']))
+        print("date_to::::",str(event['date_to']))
+        print(type(event['date_to']))
+        from datetime import datetime
+        print(datetime.fromisoformat(event['date_to']))
+        df = datetime.fromisoformat(event['date_to'])
+        print("date:::",str(df.date()))
+
+        from datetime import timedelta
+
+        date_time_obj = df+timedelta(days=1)
+        print("lll")
+        print(date_time_obj)
+
+        out.append({
+
+            'title':event['holiday_status_id'],
+            'id':event['id'],
+            'start': event['date_from'],
+            'end': date_time_obj,
+        })
+        print("----nnnnnnnnnnnnnnnnnn")
+    print("---------------")
+    print("---out-------")
+    print(out)
+    print("---leave_history_response-------")
+    print(leave_history_response)
+    return JsonResponse(out, safe=False)
+
+
+def all_events1(request):
+
+    type1 = request.GET.get("type")
+    print("type1111111111111111",type1)
+    user_auth_id = request.user.id
+    print("user_auth_id::::", str(user_auth_id))
+    odoo_id = 0
+    try:
+
+        odoo_data = User_Management.objects.get(auth_user=user_auth_id)
+        odoo_id = odoo_data.odoo_id
+
+    except:
+        pass
+    print("odoo_id::::::", str(odoo_id))
+
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+    leave_history_response = ""
+    try:
+        leave_history_response_url = api_domain + "api/get_leave_history_calender"
+        leave_history_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+
+            "employee_id" : 2834,
+            "all": "True",
+            "start_date" : "2022-07-01",
+            "end_date" : "2022-07-31"
+            }
+        })
+        leave_history_headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+
+        leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
+                                                   data=leave_history_payload).json()
+        print("rs122223::::")
+
+        leave_history_response12 = leave_history_response1['result']
+        leave_history_response = leave_history_response12['result']
+        print("r1::")
+        print(leave_history_response)
+
+
+    except:
+        pass
+    out = []
+    for event in leave_history_response:
+        print("id::::::::::::", str(event['id']))
+        a=event['employee_id']
+        print(type(a))
+        print("a::::::::::::", str(a[0]))
+        print("date_from::", str(event['date_from']))
+        print("date_to::::", str(event['date_to']))
+        print(type(event['date_to']))
+        from datetime import datetime
+        print(datetime.fromisoformat(event['date_to']))
+        df = datetime.fromisoformat(event['date_to'])
+        print("date:::", str(df.date()))
+
+        from datetime import timedelta
+
+        date_time_obj = df + timedelta(days=1)
+        print("lll")
+        print(date_time_obj)
+        print("id::::::::::::jiyad1111111", str(event['id']))
+        print("type::::::::::::")
+        if (str(a[0]) == type1):
+            print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            out.append({
+                'title':event['holiday_status_id'],
+                'id':event['id'],
+                'start': event['date_from'],
+                'end': date_time_obj,
+            })
+    print("---------------")
+    return JsonResponse(out, safe=False)

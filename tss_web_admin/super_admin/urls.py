@@ -65,6 +65,10 @@ urlpatterns = [
     path('user_leave_gantt_chart',views.user_leave_gantt_chart,name='user_leave_gantt_chart'),
     path('user_leave_gantt_chart_next_month_action',views.user_leave_gantt_chart_next_month_action,name='user_leave_gantt_chart_next_month_action'),
     path('user_leave_gantt_chart_prev_month_action',views.user_leave_gantt_chart_prev_month_action,name='user_leave_gantt_chart_prev_month_action'),
+    path('calendar', views.calendar, name='calendar'),
+    path('event_depended', views.event_depended, name='event_depended'),
+    path('all_events', views.all_events),
+    path('all_events1', views.all_events1),
     
 
     
