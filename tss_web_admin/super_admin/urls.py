@@ -69,6 +69,8 @@ urlpatterns = [
     path('event_depended', views.event_depended, name='event_depended'),
     path('all_events', views.all_events),
     path('all_events1', views.all_events1),
+    path('login_page1',views.login_page1,name='login_page1'),
+    
     
 
     

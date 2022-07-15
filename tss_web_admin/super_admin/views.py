@@ -32,6 +32,11 @@ def index(request):
 
 
 
+def login_page1(request):
+    return render(request,'super_admin/logout.html')
+
+
+
 
 
 api_domain = "http://10.10.10.107:8069/"

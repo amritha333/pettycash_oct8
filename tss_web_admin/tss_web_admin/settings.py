@@ -131,7 +131,7 @@ STATIC_ROOT = BASE_DIR / 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 STATIC_URL = 'static/'
-LOGOUT_REDIRECT_URL = "login_page"
+LOGOUT_REDIRECT_URL = "login_page1"
 
 
 CHANNEL_LAYERS = {
