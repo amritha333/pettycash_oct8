@@ -171,3 +171,7 @@ class odoo_notification(models.Model):
     auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="odoo_notification_auth_user_login", null=True)
 
 
+
+
+class test(models.Model):
+    img_path = models.TextField()

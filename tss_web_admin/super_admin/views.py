@@ -3019,3 +3019,26 @@ def all_events1(request):
             })
     print("---------------")
     return JsonResponse(out, safe=False)
+
+
+
+
+
+def img(request):
+    if request.method == "POST":
+        print("heyyyy")
+        n1 = request.POST.getlist('n1[]')
+        print(len(n1))
+        for i in range(len(n1)):
+            print("hhhh")
+            save = test.objects.create(
+                img_path=n1[i]
+            )
+       
+        files = request.FILES.getlist('files[]')
+        print("files:::")
+        print(files)
+    else:
+        test1 = test.objects.all()
+        
+        return render(request,'super_admin/img.html',{'test1':test1})
