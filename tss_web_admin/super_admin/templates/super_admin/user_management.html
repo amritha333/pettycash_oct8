@@ -778,14 +778,15 @@ else if(message == "already_exists"){
 
 
         }
-        else {
+        else{
 
-            Swal.fire({
-                icon: 'success',
-  title: 'create new user data successfully...',
-  text: message1,
- 
-})
+Swal.fire(
+      '',
+      '{{ message }}',
+      '{{message.tags}}'
+    )
+
+
       
         }
     {% endfor %}

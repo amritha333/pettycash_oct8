@@ -1148,13 +1148,27 @@ def user_add_action(request):
         print("effective_to_dt::::",str(effective_to_dt))
         if effective_to_dt == "":
             effective_to_dt = None
+        employee_branch = request.POST.get("employee_branch",False)
         
          
         employee_id = request.POST.get("employee_id",False)
         print("employee_id::::::::::",str(employee_id))
 
+        if employee_id == '0':
+            
+            pass
+        else:
+            print("branch::",str(employee_branch))
+            if employee_branch == "false":
+                messages.warning(request,str("An Branch is required or has an invalid value, please correct and try again!!!"))
+                return redirect("user_management")
+                
+            
+
         
-        employee_branch = request.POST.get("employee_branch",False)
+
+        
+        
         employee_department = request.POST.get("employee_department",False)
         employee_name = request.POST.get("employee_name",False)
 
@@ -3041,4 +3055,4 @@ def img(request):
     else:
         test1 = test.objects.all()
         
-        return render(request,'super_admin/img.html',{'test1':test1})
+        return render(request,'super_admin/img.html',{'test1':test})
