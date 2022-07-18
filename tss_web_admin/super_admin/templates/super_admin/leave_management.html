@@ -203,6 +203,44 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                     vertical-align: top;
                                     transition: none;
                                     border-radius: 12px;">Approved</span>
+
+                                    {% elif history.state == "refuse" %}
+                                    <span style="background: #e8e8e8;
+                                    color: black;
+                                    font-size: 12px;
+                                    padding: 4px 9px;
+                                    border: 0;
+                                    font-size: 12px;
+                                    user-select: none;
+                                    /* background-color: rgba(211, 211, 211, 0.5); */
+                                    font-weight: 500;
+                                    display: inline-block;
+                                    max-width: 100%;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    vertical-align: top;
+                                    transition: none;
+                                    border-radius: 12px;">Refused</span>
+
+                                    {% elif history.state == "validate1" %}
+                                    <span style="background: #fed47e;
+                                    color: black;
+                                    font-size: 12px;
+                                    padding: 4px 9px;
+                                    border: 0;
+                                    font-size: 12px;
+                                    user-select: none;
+                                    /* background-color: rgba(211, 211, 211, 0.5); */
+                                    font-weight: 500;
+                                    display: inline-block;
+                                    max-width: 100%;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    vertical-align: top;
+                                    transition: none;
+                                    border-radius: 12px;">	Second Approval</span>
                                     {% else %}
                                     {{ history.state}}
                                     {% endif %}
