@@ -2132,6 +2132,7 @@ def testr1(request):
 
 def user_leave_apply_action(request):
     if request.method == "POST":
+        leave_type_nm = request.POST.get("leave_type_nm",False)
         user_auth_id = request.user.id
         data_employee = User_Management.objects.get(auth_user=user_auth_id)
 
@@ -2375,6 +2376,7 @@ def view_leave_more_details(request):
 
 def get_selected_employee_entitlement_balance(request):
     employee_id = request.GET.get("employee_id",False)
+    print("emp_id::",str(employee_id))
 
     entitlement_balances_url = api_domain+"api/get_leave_entitlement"
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -2411,15 +2413,18 @@ def get_selected_employee_entitlement_balance(request):
     }
 
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
+    
     response12 =response1['result']
+    
     response = response12['result'][0]
     
    
     
-    
+    employee_name1 = response['name']
+    print("employee_name:::::",str(employee_name1))
     emp_registration_id = response['registration_number']
     print("emmm:::::",str(emp_registration_id))
-    return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':entitlement_balances_response,'emp_registration_id':emp_registration_id})
+    return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':entitlement_balances_response,'emp_registration_id':emp_registration_id,'employee_name1':employee_name1})
 
 
 

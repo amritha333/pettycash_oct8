@@ -154,6 +154,7 @@ class odoo_api_request_token(models.Model):
 
 notification_type_data = (
     ("leave_type","leave_type"),
+    ("leave_approve_request","leave_approve_request"),
    
 
 )
@@ -169,6 +170,9 @@ class odoo_notification(models.Model):
     read_status = models.IntegerField(default=0)
     status = models.CharField(max_length=255,null=True)
     auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="odoo_notification_auth_user_login", null=True)
+    leave_type_name = models.CharField(max_length=255,null=True)
+    leave_approve_status = models.IntegerField(null=True)
+    leave_apply_user_name = models.CharField(max_length=255,null=True)
 
 
 

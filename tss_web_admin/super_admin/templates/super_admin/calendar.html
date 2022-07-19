@@ -76,6 +76,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+    
+   
     <style>
         .fc-basic-view .fc-content {
     color: black!important;
@@ -117,25 +120,22 @@
     <script>
 
         $(document).ready(function () {
+          
             var calendar = $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
+
+                   
                 },
                 events: '/all_events',
                 selectable: true,
                 selectHelper: true,
                 editable: true,
                 eventLimit: true,
-<!--                select: function (start, end, allDay) {-->
-<!--                        var start = $.fullCalendar.formatDate(start, "Y-MM-DD");-->
-<!--                        var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");-->
+                
 
-<!--                        $("#dt1").val(start)-->
-<!--&lt;!&ndash;                        console.log(start);&ndash;&gt;-->
-<!--                        $('#exampleModal').modal('show');-->
-<!--                        },-->
                 eventClick: function (event) {
                         var id = event.id;
                         alert(id)
@@ -152,8 +152,29 @@
                 }
             });
         },
+
+        
     });
  });
+ 
+
+
+
+ 
+
+ $('body').on('click', 'button.fc-prev-button', function() {
+    var b = $('#calendar').fullCalendar('getDate');
+    alert(b)
+    alert("prev button")
+    
+  //do something
+});
+
+$('body').on('click', 'button.fc-next-button', function() {
+    var b = $('#calendar').fullCalendar('getDate');
+    alert(b)
+    alert("next button")
+});
 </script>
 
 
@@ -229,10 +250,12 @@ type = id
 <script>
 
     function getServiceFeed1(){
+        
     var all = document.getElementById("all").value
-    
+   
         $('#calendar').fullCalendar('destroy');
         var calendar = $('#calendar').fullCalendar({
+           
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -274,6 +297,8 @@ type = id
 }
 
 </script>
+
+
 
 
     </body>

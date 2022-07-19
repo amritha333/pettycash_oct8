@@ -138,8 +138,12 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                  
                                     <th>Created At</th>
                                     <th>
-                                        state
+                                        Absence Status
                                     </th>
+                                    <th>
+                                        State
+                                    </th>
+                                   
                                     <th>
                                         Action
                                     </th>
@@ -165,8 +169,12 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                    <td>
                                     {{history.create_date}}
                                    </td>
+                                   <td>
+                                    {{history.absence_status}}
+                                   </td>
                                    <td style="    background: white;
                                    color: red;"> 
+                                   <center>
                                     {% if history.state == "confirm" %}
                                     <span style="    background: #fed47e;
                                     color: black;
@@ -244,7 +252,9 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                     {% else %}
                                     {{ history.state}}
                                     {% endif %}
+                                </center>
                                    </td>
+
                                    <td>
                                     <a href="view_leave_more_details?id={{history.id}}">
                                         <i class="fa fa-eye"></i>
@@ -301,6 +311,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
     
         
         {% csrf_token %}
+        <input type="hidden" name="employee_name1" id="employee_name1" value="{{emp_name}}">
        
     <div class="modal-body">
         <input type="hidden" name="leave_type_nm" id="leave_type_nm">

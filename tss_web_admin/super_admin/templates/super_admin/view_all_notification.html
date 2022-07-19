@@ -38,35 +38,62 @@
                     <div class="card-box ">
                    
                     <div class="row">
+
+                 
                         {% for i in notifictaion %}
 
-                        <div class="col-md-3 mt-4">
-                            <div class="card " style="    background: #262435;
-                            color: white;
-                            border-radius: 18px;
-                         ">
-                                <div class="card-body">
-                                    <div >
-                                      
-                                            <i style="    
-                                           
-                                           
-                                            font-size: 43px;
-                                            border-radius: 50px;
-                                        " class="mdi mdi-comment-account-outline"></i>
-                                       
-                                    </div>
-                                  <p class="card-text">{{i.message}} {{i.dt}} </p>
-                                  <p style="    color: red;">
-                                    Your Leave From {{i.requested_from_dt}} to {{i.requested_to_dt}}
-                                  </p>
-                                  <a style="    background: #16a516;
-                                  padding: 4px 26px;
-                                  font-size: 12px;
-                                  border-radius: 12px;" href="#" class="btn btn-primary">{{i.status}}</a>
-                                </div>
-                              </div>
-                        </div>
+                        <div class="col-md-3 mt-4 card" style="    display: flex;
+                     
+                        justify-content: center;
+                        position: relative;
+                       
+                        height: auto;
+                        background-color: rgba(255, 255, 255, 0.2);
+                        backdrop-filter: blur(4.5px);
+                        -webkit-backdrop-filter: blur(4.5px);
+                        box-shadow: 20px 20px 40px -6px rgb(0 0 0 / 20%);
+                        border-radius: 15px;">
+                            <div class="row " style="       
+                            padding: 12px 3px;">
+                            
+                            <div class="col-md-3">
+                             <img style="width: 83%" src="{% static 'u1.png' %}">
+                            </div>
+                            <div class="col-md-9">
+                          <span style="color: #091124;
+                          font-size: 13px;
+                          font-weight: 600;
+                          margin-bottom: 0;
+                          margin-top: 0;
+                          overflow-wrap: break-word;
+                          word-wrap: break-word;">Administrator</span>
+                          <span style="    float: right;
+                          border: 1px solid #017e84;
+                          padding: 0px 8px;
+                          font-size: 10px;
+                          border-radius: 12px;margin: 12px 12px;">3 days</span>
+                          <br>
+                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">Unpaid</span>
+                          <br>
+                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">from  03/07/2024 to  05/07/2024</span>
+                          <div class="row mt-2">
+                             <div class="col-md-3">
+                                 
+                                 <a href="" style="color: #01666b;
+                                 text-decoration: none;font-weight: bold;"><i class="fa fa-thumbs-up" aria-hidden="true"></i>Approve</a>
+                             </div>
+                             <div class="col-md-3">
+                                 <a href="" style="color: #01666b;
+                                 text-decoration: none;font-weight: bold;"><i class="fa fa-times" aria-hidden="true"></i>Refuse</a>
+                             </div>
+                          </div>
+                            </div>
+                            </div>
+                         </div>
+ 
+ 
+ 
+ 
 
                         {% endfor %}
                     </div>

@@ -1,4 +1,7 @@
 
+    
+    
+    
     {% for i in entitlement_balances_response %}
 <tr>
     <td>{{forloop.counter}}</td>
@@ -14,8 +17,10 @@
 
 <script>
     var id = `{{emp_registration_id}}`
+    var name = `{{employee_name1}}`
     
     $("#employee_reg_number").val(id)
+    $("#employee_name1").val(name)
 
 </script>
 
