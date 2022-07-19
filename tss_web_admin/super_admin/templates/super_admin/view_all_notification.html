@@ -1,7 +1,7 @@
 {% extends "super_admin/menu.html" %}
 
 {% load static %}
-
+{% load notification %}
 {% block content %}
 
 <div class="content ">
@@ -26,10 +26,14 @@
                         </div>
 
                         <div class="col-md-5 col-12">
-                            <!-- <div class="pull-right p-t-10">
-                                <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newsrole"> <i class="mdi mdi-plus-circle-outline"></i> New
+                            <div class="pull-right p-t-10 m-2">
+                                <a style="text-decoration: none;color: red" href="view_all_notification"><i class="fa fa-id-card-o" aria-hidden="true"></i> 
                                 </a>
-                            </div> -->
+                            </div>
+                            <div class="pull-right p-t-10 m-2">
+                                <a href="view_notification_table"> <i class="fa fa-table" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
 
                     </div>
@@ -66,16 +70,24 @@
                           margin-bottom: 0;
                           margin-top: 0;
                           overflow-wrap: break-word;
-                          word-wrap: break-word;">Administrator</span>
+                          word-wrap: break-word;">{{i.leave_apply_user_name}}</span>
+                         {% if i.dt|get_notifications_date_ago == 0 %}
+                         
+
+                          {% else %}
                           <span style="    float: right;
                           border: 1px solid #017e84;
                           padding: 0px 8px;
                           font-size: 10px;
-                          border-radius: 12px;margin: 12px 12px;">3 days</span>
+                          border-radius: 12px;margin: 12px 12px;">
+                        {{  i.dt|get_notifications_date_ago}}  days
+                        {% endif %}
+                        </span>
                           <br>
-                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">Unpaid</span>
+                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">{{i.leave_type_name}}</span>
                           <br>
-                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">from  03/07/2024 to  05/07/2024</span>
+                          <span style="color: rgba(68, 75, 90, 0.76) !important;font-size: 12px;">from {{i.requested_from_dt}} to {{i.requested_to_dt}}</span>
+                          {% if i.notification_type == "leave_approve_request" %}
                           <div class="row mt-2">
                              <div class="col-md-3">
                                  
@@ -86,6 +98,11 @@
                                  <a href="" style="color: #01666b;
                                  text-decoration: none;font-weight: bold;"><i class="fa fa-times" aria-hidden="true"></i>Refuse</a>
                              </div>
+                          </div>
+                          {% endif %}
+                          <div class="mt-2">
+                            <a href="view_leave_more_details?id={{i.mapping_id}}" style="    float: right;
+                            margin: -12px 12px;">  <i style="color: black;" class="fa fa-eye"></i></a>
                           </div>
                             </div>
                             </div>

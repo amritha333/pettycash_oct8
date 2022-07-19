@@ -173,6 +173,7 @@ class odoo_notification(models.Model):
     leave_type_name = models.CharField(max_length=255,null=True)
     leave_approve_status = models.IntegerField(null=True)
     leave_apply_user_name = models.CharField(max_length=255,null=True)
+    description = models.TextField(null=True)
 
 
 

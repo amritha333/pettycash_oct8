@@ -70,6 +70,8 @@ urlpatterns = [
     path('all_events', views.all_events),
     path('all_events1', views.all_events1),
     path('login_page1',views.login_page1,name='login_page1'),
+    path('view_notification_table',views.view_notification_table,name='view_notification_table'),
+    
     
     
 

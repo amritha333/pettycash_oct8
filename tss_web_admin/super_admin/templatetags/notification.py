@@ -46,3 +46,16 @@ def get_branch_department(value):
     except:
         pass
     return branch
+
+
+
+@register.filter(name='get_notifications_date_ago')
+def get_notifications_date_ago(value):
+    from datetime import date
+
+    today = date.today()
+    days = today - value
+    print("Today's date:", today)
+    print("dttttt::::",str(days))
+
+    return days.days

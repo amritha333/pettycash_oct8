@@ -26,6 +26,21 @@
     <link href="{% static 'hrm/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 
     <link href="https://fonts.googleapis.com/css?family=Muli:400,600,700,800" rel="stylesheet">
+    <style>
+      .account-box input.input:focus ~ label.inputText {
+
+top: -12px;
+
+}
+
+
+
+.account-box .inpuText {
+
+top: -12px !important;
+
+}
+    </style>
 </head>
 <body class="account-pages">
    <!-- Begin page -->
@@ -50,9 +65,12 @@
                         {% csrf_token %}
                         <div class="form-group row m-b-20">
                            <div class="col-12">
+                              
                               <div class="feild  groupinput">
-                                 <input type="text" name="uname" class="input" autocomplete="off" required="" value="{{user_email}}">
+                                
+                                 <input type="text" name="uname" class="input form-control input-user-name" autocomplete="off" required="" value="{{user_email}}">
                                  <label class="inputText">Username</label>
+                                 
                               </div>
                            </div>
                         </div>
@@ -60,7 +78,7 @@
                            <div class="col-12">
                               <div class="feild groupinput">
                                  <a href="page-recoverpw.html" class="text-muted forgot">Forgot your password?</a>
-                                 <input type="password" name="passwrd" class="input" required="">
+                                 <input type="password" name="passwrd" class="input input-user-name" required="">
                                  <label class="inputText">Password</label>
                               </div>
                            </div>
@@ -130,5 +148,13 @@
 
    
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+   $(document).on('click','.input-user-name', function()
+   {
+      // alert('ha');
+      $(this).parent().find('.inputText').addClass('inpuText');
+   })
+</script>
 
 </html>

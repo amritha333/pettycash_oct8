@@ -2132,6 +2132,7 @@ def testr1(request):
 
 def user_leave_apply_action(request):
     if request.method == "POST":
+        employee_name1 = request.POST.get("employee_name1",False)
         leave_type_nm = request.POST.get("leave_type_nm",False)
         user_auth_id = request.user.id
         data_employee = User_Management.objects.get(auth_user=user_auth_id)
@@ -2245,7 +2246,10 @@ def user_leave_apply_action(request):
                 requested_to_dt = employee_leave_to_date,
                 read_status = 0,
                 status = leave_state,
-                auth_user_id = request.user
+                auth_user_id = request.user,
+                leave_type_name=leave_type_nm,
+                leave_apply_user_name = employee_name1,
+               description =employee_leave_reason
             )
             leave_notification.save()
  
@@ -2546,7 +2550,7 @@ def user_leave_gantt_chart(request):
             "jsonrpc": "2.0",
             "params": {
                 "employee_id": int(employee_data.odoo_id),
-                "exclud_parent" : "True",
+               
                 'leave_gantt':"True",
                 "date" : send_data
             }
@@ -3061,3 +3065,16 @@ def img(request):
         test1 = test.objects.all()
         
         return render(request,'super_admin/img.html',{'test1':test})
+
+
+
+
+def view_notification_table(request):
+    notifictaion = odoo_notification.objects.filter(auth_user_id=request.user).order_by('-id')
+    update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user).update(
+        read_status=1
+    )
+    context = {
+        "notifictaion":notifictaion
+    }
+    return render(request,'super_admin/view_notification_table.html',context)
