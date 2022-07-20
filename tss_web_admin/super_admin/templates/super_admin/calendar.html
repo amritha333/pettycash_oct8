@@ -175,6 +175,18 @@ $('body').on('click', 'button.fc-next-button', function() {
     alert(b)
     alert("next button")
 });
+
+$(document).ready(function(){
+  $("button").click(function(){
+    if(event.target.className == "fc-today-button fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled"){
+        alert("today button clickedddddd");
+    }
+    })
+
+    
+  
+  });
+
 </script>
 
 
