@@ -2205,7 +2205,11 @@ def user_leave_apply_action(request):
         print("response111newwwwwwwww111111::::::::::::::::::::")
         print(response12)
         l1 = response12['result']
-        responsible_for_approval = l1['responsible_for_approval'] 
+        responsible_for_approval = ""
+        try:
+            responsible_for_approval = l1['responsible_for_approval'] 
+        except:
+            pass
         if response12['message'] == "error":
 
             message = response12['result']
