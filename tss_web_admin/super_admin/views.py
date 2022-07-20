@@ -98,9 +98,9 @@ def login_action(request):
             payload = json.dumps({
                 "jsonrpc": "2.0",
                 "params": {
-                "login": "123",
-                "password": "123",
-                "db": "tss-july-6"
+                "login": "admin",
+                "password": "admin",
+                "db": "tss-latest"
                 }
             })
             headers = {
@@ -2202,8 +2202,10 @@ def user_leave_apply_action(request):
         print(response1.json())
         response12 = response1.json()['result']
         
-        print("response111::::::::::::::::::::")
+        print("response111newwwwwwwww111111::::::::::::::::::::")
         print(response12)
+        l1 = response12['result']
+        responsible_for_approval = l1['responsible_for_approval'] 
         if response12['message'] == "error":
 
             message = response12['result']
@@ -2252,6 +2254,30 @@ def user_leave_apply_action(request):
                description =employee_leave_reason
             )
             leave_notification.save()
+
+
+
+
+            try:
+                check_data = User_Management.objects.get(odoo_id=int(responsible_for_approval))
+                
+                approval_notification =  odoo_notification(
+                    notification_type="leave_approve_request",
+                    message = "leave_approve_request",
+                    mapping_id = int(leave_id),
+                    requested_from_dt = employee_leave_from_date,
+                    requested_to_dt = employee_leave_to_date,
+                    read_status = 0,
+                    status = leave_state,
+                    auth_user_id = check_data.auth_user,
+                    leave_type_name=leave_type_nm,
+                    leave_apply_user_name = employee_name1,
+                 description =employee_leave_reason
+                )
+                approval_notification.save()
+                print("responsible_for_approval:::",str(responsible_for_approval))
+            except:
+                pass
  
             messages.success(request,str(mes1))
             return redirect("leave_management")
@@ -2370,9 +2396,21 @@ def view_leave_more_details(request):
     except :
         pass
 
+
+
+    approve_button_status = ""
+    try:
+        approval_instance = odoo_notification.objects.get(mapping_id=id,auth_user_id=request.user,notification_type="leave_approve_request")
+        approve_button_status = "yes"
+    except:
+        approve_button_status ="no"
+        pass
+
+
     context = {
         'r1':r1,
-        'emp_name':emp_name
+        'emp_name':emp_name,
+        'approve_button_status':approve_button_status
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
 

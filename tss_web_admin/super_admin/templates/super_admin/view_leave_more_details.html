@@ -36,6 +36,8 @@
                 </div>
                
                 <div class="card-box ">
+                    
+                    {% if approve_button_status == "yes" %}
                     <div class="row">
                         <a data-toggle="modal" data-target="#exampleModalCenter" class="m-1" style="    color: #fff;
                         background-color: #017e84;
@@ -54,6 +56,9 @@ border-color: #93758b;
 padding: 10px 36px;
 font-size: 12px;" href="">Reassign</a>
                     </div>
+                    {% else %}
+
+                    {% endif %}
                     <div class="card-box ">
                  
 
