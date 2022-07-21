@@ -1263,7 +1263,7 @@ def user_add_action(request):
         username = request.POST.get("username",False)
         password_option = request.POST.get("password_option",False)
         if User.objects.filter(username=username).exists():
-            messages.warning(request,str("Unexpected error:An account with the given username alredy exists"))
+            messages.warning(request,str("An account with the given username alredy exists"))
             return redirect("user_management")
 
         if password_option == "Automatic":
