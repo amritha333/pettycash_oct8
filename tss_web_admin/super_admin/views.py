@@ -20,6 +20,97 @@ from django.shortcuts import render, HttpResponse
 from channels.layers import get_channel_layer
 
 from .decorators import *
+
+
+def inside_user_permission(permission_name,user_id):
+    today = date.today()
+    user_dat = User.objects.get(id=user_id.id)
+    user_role = user_dat.is_superuser
+    if user_role == True:
+        data = {
+                'view_all':True,
+                'read':True,
+                'write':True,
+                'edit':True,
+                'delete':True
+        }
+        return data
+
+    user_role_mapping_instance = user_role_mapping.objects.filter(auth_user_id=user_id,end_dt__gte=today,start_dt__lte=today) | user_role_mapping.objects.filter(auth_user_id=user_id,end_dt=None,start_dt__lte=today)
+    role_id = list(user_role_mapping_instance.values_list("role_id",flat=True))
+    check_instance = Role_permission_details.objects.filter(role_id__in=role_id,permission_name=permission_name)
+    if check_instance:
+        if check_instance.filter(manage_all="on"):
+            data = {
+                'view_all':True,
+                'read':True,
+                'write':True,
+                'edit':True,
+                'delete':True
+            }
+            return data
+        elif check_instance.filter(view_all="on"):
+
+            write = False
+            if check_instance.filter(write="on"):
+                write = True
+            edit = False
+            if check_instance.filter(edit="on"):
+                edit = True
+            
+            delete = False
+
+            if check_instance.filter(delete="on"):
+                delete = True
+
+
+
+            data = {
+                'view_all':True,
+                'read':True,
+                'write':write,
+                'edit':edit,
+                'delete':delete
+            }
+            return data
+            
+        elif check_instance.filter(read="on"):
+            write = False
+            if check_instance.filter(write="on"):
+                write = True
+            edit = False
+            if check_instance.filter(edit="on"):
+                edit = True
+            
+            delete = False
+
+            if check_instance.filter(delete="on"):
+                delete = True
+
+
+
+            data = {
+                'view_all':False,
+                'read':True,
+                'write':write,
+                'edit':edit,
+                'delete':delete
+            }
+            return data
+
+       
+    else:
+        print("---not exists---")
+
+
+
+
+
+    pass
+
+
+
+
 def index(request):
     user_email = ""
     try:
@@ -420,8 +511,25 @@ def user_view_advance_salary(request):
 
 
 def role_management(request):
-    data = Role_details.objects.all().order_by('-id')
-    return render(request,'super_admin/role_management.html',{'data':data})
+    
+    
+    status = inside_user_permission("Role",request.user)
+    
+    data = ""
+    if(status['view_all'] == True):
+
+    
+        data = Role_details.objects.all().order_by('-id')
+    elif (status['read'] == True):
+        data = Role_details.objects.filter(auth_user=request.user).order_by('-id')
+
+    
+    return render(request,'super_admin/role_management.html',{'data':data,
+        'write':status['write'],
+        'edit':status['edit'],
+        'delete':status['delete'],
+        'read':status['read']
+    })
 
 
 
@@ -986,30 +1094,49 @@ def employee_more_details(request):
 
 from datetime import date
 
+
+@test_w1('User')
+@login_required(login_url='/index')
 def user_management(request):
     message = request.GET.get("message",False)
     role_data = Role_details.objects.all()
     today = date.today()
 
-    all_user_data = User_Management.objects.all().order_by("-id")
-    print("user_data:::::",str(all_user_data.values_list()))
+    status = inside_user_permission("User",request.user)
+    
+    all_user_data = ""
+    if(status['view_all'] == True):
+
+    
+        all_user_data = User_Management.objects.all().order_by("-id")
+    elif (status['read'] == True):
+        all_user_data = User_Management.objects.filter(add_by=request.user).order_by("-id")
+        
+
+
+    
+
+
+
+
+    
 
     data_base_exists_employee_id = User_Management.objects.all()
 
     data_exists_employee = list(data_base_exists_employee_id.values_list("odoo_id",flat=True))
 
     
-    print("data_exists_employee::::",str(data_exists_employee))
+    
 
     params_data  = ",".join(data_exists_employee)
-    print("params_data::::",str(params_data))
+    
     select_employee_api = ""
     
     try:
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
         odoo_token = odoo_token_data.token
         employee_data_url =api_domain+"api/get_employees"
-        print("params_data:::",str(params_data))
+        
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
@@ -1025,11 +1152,11 @@ def user_management(request):
 
 
         select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
-        print("res:::")
+        
         
 
         response_result = select_employee_api1.json()['result']
-        print(select_employee_api1.json())
+        
         select_employee_api = response_result['result']
     except:
         pass
@@ -1041,7 +1168,11 @@ def user_management(request):
         'message':message,
         'all_user_data':all_user_data,
         'select_employee_api':select_employee_api,
-        'today':today
+        'today':today,
+        'write':status['write'],
+        'edit':status['edit'],
+        'delete':status['delete'],
+        'read':status['read']
         
     }
     return render(request,'super_admin/user_management.html',context)

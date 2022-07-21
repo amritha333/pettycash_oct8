@@ -32,16 +32,12 @@ def emp_url_perm_check(value,args):
            
             
             role_id = list(data_user_role.values_list("role_id",flat=True))
-            print("args:::::",str(args))
-            print("role::::")
-            print(role_id)
+            
             
            
             check_data = Role_permission_details.objects.filter(role_id__in=role_id,permission_name=args,read="on")
 
-            print("dat::::",str(check_data.values_list()))
-            print("--end----")
-
+            
         
 
             if check_data:

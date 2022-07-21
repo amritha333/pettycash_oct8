@@ -27,8 +27,13 @@
 
                         <div class="col-md-5 col-12">
                             <div class="pull-right p-t-10">
+                                {% if write == True %}
+
+
                                 <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newsrole"> <i class="mdi mdi-plus-circle-outline"></i> New
                                 </a>
+
+                                {% endif %}
                             </div>
                         </div>
 
@@ -56,8 +61,14 @@
                                         </td>
                                         <td>
                                             <!-- <a class="label-default" href="edit_role_details?id={{data.id}}"> <i class="fa fa-pencil"></i> </a> -->
+
+                                            {% if edit == True %}
                                             <a data-id="{{data.id}}" class="label-default role-edit-action" href="#"> <i class="fa fa-pencil"></i> </a>
+                                            {% endif %}
+
+                                            {% if read == True %}
                                             <a class="label-default" href="view_role_more_details?id={{data.id}}"> <i class="fa fa-eye"></i> </a>
+                                            {% endif %}
                                         </td>
 
                                     </tr>

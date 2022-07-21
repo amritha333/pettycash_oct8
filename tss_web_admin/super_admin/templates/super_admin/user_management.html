@@ -28,9 +28,11 @@
                         </div>
                         <div class="col-md-5 col-12">
                             <div class="pull-right p-t-10">
+                                {% if write == True %}
 
                                 <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newuser"> <i class="mdi mdi-plus-circle-outline"></i> New
                                 </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -115,8 +117,13 @@
                                   
                                     <td>{{user.dt}}<br>{{user.tm}}</td>
                                     <td>
+                                        {% if edit == True %}
                                         <a class="label-default edit_user_action" data-id="{{user.id}}" href="#"> <i class="fa fa-pencil"></i> </a>
+                                        {% endif %}
+
+                                        {% if read == True %}
                                         <a class="label-default" href="view_user_more_details?id={{user.id}}"> <i class="fa fa-eye"></i> </a>
+                                        {% endif %}
                                     </td>
 
                                 </tr>
