@@ -100,7 +100,7 @@ def inside_user_permission(permission_name,user_id):
 
        
     else:
-        print("---not exists---")
+        pass
 
 
 
@@ -140,7 +140,7 @@ def admin_dashboard(request):
     
     user_dat = User.objects.get(id=request.user.id)
     st = user_dat.is_superuser
-    print("status:::::",str(st))
+ 
 
     total_user_count = User_details.objects.all().count()
     total_active_user = User_details.objects.filter(status="True").count()
@@ -160,7 +160,7 @@ def admin_dashboard(request):
 
 def user_home(request):
     user_login_id = request.session['user_login_id']
-    print("user_login_id::::",str(user_login_id))
+    
     return render(request,'super_admin/user_home.html')
 import json
 
@@ -170,11 +170,10 @@ def login_action(request):
         from datetime import date
         uname = request.POST.get("uname",False)
         passwrd = request.POST.get("passwrd",False)
-        print("uname:::",str(uname))
-        print("passwrd:::",str(passwrd))
+       
         user = authenticate(username=uname, password=passwrd)
         remember = request.POST.get("remember",False)
-        print("rem::::",str(remember))
+       
         
         
         if user is not None:
@@ -200,12 +199,11 @@ def login_action(request):
             }
 
             response = requests.request("GET", token_url, headers=headers, data=payload)
-            print("odooooooo")
+            
 
             json_response = response.json()['result']
 
-            print("result::::::")
-            print(json_response['result'])
+        
 
             try:
                 alredy_exists_odoo_token = odoo_api_request_token.objects.get(status="True")
@@ -224,8 +222,7 @@ def login_action(request):
 
 
             
-            print("user_type::::",str(st))
-            print("login sucess")
+         
 
             login(request, user)
 
@@ -278,7 +275,7 @@ def login_action(request):
 
 
                 context = {}
-                print("login error")
+               
                 context['message'] = "error"
                 return render(request,'super_admin/index.html',context)
 
@@ -305,7 +302,7 @@ def admin_add_user_action(request):
 
 
     username = request.POST.get("username")
-    print("username:::",str(username))
+   
 
     try:
         username_exists = User_details.objects.get(username=username)
@@ -326,7 +323,7 @@ def admin_add_user_action(request):
     if serializer.is_valid(raise_exception=True):
         instance = serializer.save()
 
-        print("id::::::::::",str(instance.id))
+        
         S = 10  # number of characters in the string.  
         import string    
         import random
@@ -356,7 +353,7 @@ def admin_view_user(request):
 def admin_delete_user_action(request):
     if request.method == "POST":
         id = request.POST.get("id")
-        print("id::::::",str(id))
+        
         data_delte = User_details.objects.get(id=id).delete()
         return redirect("admin_view_user")
 
@@ -421,7 +418,7 @@ def admin_active_user_action(request):
 def user_apply_leave_management(request):
     user_login_id = request.session['user_login_id']
 
-    print("userlogin_id::::",str(user_login_id))
+   
 
 
 
@@ -458,8 +455,7 @@ def user_apply_leave_action(request):
         return_journey = request.POST.get("return_journey",False)
         family_entry = request.POST.get("family_entry",False)
         attachment_file_status = 0
-        print("onward_journey:::::",str(onward_journey))
-        print("return_journey::::::",str(return_journey))
+       
    
         
 
@@ -963,7 +959,7 @@ def employee_master(request):
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
-    print("odoo_token:::::",str(odoo_token))
+ 
 
 
     url = api_domain+"api/get_employees"
@@ -1181,7 +1177,7 @@ def user_management(request):
 def getemployee_branch_dpt(request):
     
     employee_id = request.GET.get("employee_id")
-    print("employee_id:::::::::",str(employee_id))
+
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     employee_data_url =api_domain+"api/get_employee"
@@ -1201,14 +1197,14 @@ def getemployee_branch_dpt(request):
     response12 =response1['result']
     response = response12['result'][0]
    
-    print("response1222222:::::",str(response))
+  
     name = ""
     employee_dpt = ""
     employee_branch = ""
     emp_registration_id = ""
     name = response['name']
     company_name = response['company_id']
-    print("company_name:::",str(company_name[1]))
+   
     try:
         employee_dpt  = response['department_id'][1]
     except:
@@ -1279,20 +1275,20 @@ def user_add_action(request):
         password_expiration_status = request.POST.get("password_expiration_status",False)
         effective_from_dt = request.POST.get("password_effective_from_dt",False)
         effective_to_dt = request.POST.get("password_effective_to_dt",False)
-        print("effective_to_dt::::",str(effective_to_dt))
+        
         if effective_to_dt == "":
             effective_to_dt = None
         employee_branch = request.POST.get("employee_branch",False)
         
          
         employee_id = request.POST.get("employee_id",False)
-        print("employee_id::::::::::",str(employee_id))
+       
 
         if employee_id == '0':
             
             pass
         else:
-            print("branch::",str(employee_branch))
+            
             if employee_branch == "false":
                 messages.warning(request,str("An Branch is required or has an invalid value, please correct and try again!!!"))
                 return redirect("user_management")
@@ -1314,26 +1310,26 @@ def user_add_action(request):
         
 
         role_length = len(role_id)
-        print("role_lenth::::",str(role_length))
+        
 
         emp_registration_id = request.POST.get("emp_registration_id",False)
 
-        print("password_expiration_option:::",str(password_expiration_status))
+       
 
         if password_expiration_status == "days":
             passsword_used_days = request.POST.get("passsword_used_days",False)
-            print("passsword_used_days::::::",str(passsword_used_days))
+            
 
             from datetime import timedelta, date
             EndDate = date.today() + timedelta(days=int(passsword_used_days))
-            print("password_end_date:::::",str(EndDate))
+            
             try:
                 user_alredy_exists_condition = User_Management.objects.get(employee_id=employee_id)
                 if user_alredy_exists_condition is not None:
-                    print("----user alredy exists----")
+                   pass
                 
                 url = redirect("user_management")
-                print("url", url.url)
+                
         
                 return HttpResponseRedirect(url.url + '?message=' + "already_exists")
             except User_Management.DoesNotExist:
@@ -1342,7 +1338,7 @@ def user_add_action(request):
                     user = User.objects.create_user(username, username, password)
                     user.save()
                     data1 = Token.objects.create(user=user)
-                    print(data1.key)
+                    
                     save_user_data = User_Management.objects.create(
                         auth_user = user,
                         username = username,
@@ -1381,17 +1377,17 @@ def user_add_action(request):
                         )
                         data_save_user_role.save()
                    
-                        print("----enddddddddd")
+                       
 
                 
 
 
                 else:
-                    print("------ssssssss----")
+                   
                     user = User.objects.create_user(username, username, password)
                     user.save()
                     data1 = Token.objects.create(user=user)
-                    print(data1.key)
+                    
                     save_user_data = User_Management.objects.create(
                         auth_user = user,
                         username = username,
@@ -1428,7 +1424,7 @@ def user_add_action(request):
                         )
                         data_save_user_role.save()
                    
-                        print("----enddddddddd")
+                       
                 
                 # url = redirect("user_management")
                 # print("url", url.url)
@@ -1442,20 +1438,21 @@ def user_add_action(request):
             try:
                 user_alredy_exists_condition = User_Management.objects.get(employee_id=employee_id)
                 if user_alredy_exists_condition is not None:
-                    print("----user alredy exists----")
+                    pass
+                   
                 
                 url = redirect("user_management")
-                print("url", url.url)
+                
         
                 return HttpResponseRedirect(url.url + '?message=' + "already_exists")
 
             except User_Management.DoesNotExist:
-                print("------ssssssss----")
+                
                 if employee_id == 0:
                     user = User.objects.create_user(username, username, password)
                     user.save()
                     data1 = Token.objects.create(user=user)
-                    print(data1.key)
+                    
                     save_user_data = User_Management.objects.create(
                         auth_user = user,
                         username = username,
@@ -1487,12 +1484,12 @@ def user_add_action(request):
                         )
                         data_save_user_role.save()
                    
-                        print("----enddddddddd")
+                       
                 else:
                     user = User.objects.create_user(username, username, password)
                     user.save()
                     data1 = Token.objects.create(user=user)
-                    print(data1.key)
+                    
                     save_user_data = User_Management.objects.create(
                         auth_user = user,
                         username = username,
@@ -1527,7 +1524,7 @@ def user_add_action(request):
                         )
                         data_save_user_role.save()
                    
-                        print("----enddddddddd")
+                        
                 messages.success(request,str("password:"+str(password)))
                 return redirect("user_management")
 
@@ -1546,7 +1543,7 @@ def user_add_action(request):
 def view_user_more_details(request):
 
     id = request.GET.get("id",False)
-    print("id:::::::",str(id))
+   
     data = User_Management.objects.get(id=id)
 
     user_role_details = user_role_mapping.objects.filter(user_id_id=id)
@@ -1562,7 +1559,7 @@ def view_user_more_details(request):
 
 def edit_user_more_details(request):
     id = request.GET.get("id",False)
-    print("id::::",str(id))
+    
 
     data = User_Management.objects.get(id=id)
 
@@ -1595,8 +1592,7 @@ def test_update_auth_user_table(request):
 
 
 def check_user_role_updated_or_not(role_id,value,updated_field_name):
-    print("role_id:::::::",str(role_id))
-    print("value:::::",str(value))
+    
     if updated_field_name == "description":
 
         try:
@@ -1643,7 +1639,7 @@ def edit_user_details_action(request):
         edit_password_expiration = request.POST.get("edit_password_expiration",False)
 
 
-        print("edit_password_expiration:::::::",str(edit_password_expiration))
+       
         edit_passsword_used_days = request.POST.get("edit_passsword_used_days",False)
         password_effective_from_dt = request.POST.get("password_effective_from_dt",False)
 
@@ -1684,7 +1680,7 @@ def edit_user_details_action(request):
             except User_Management.DoesNotExist:
                 from datetime import timedelta, date
                 EndDate = date.today() + timedelta(days=int(edit_passsword_used_days))
-                print("password_end_date:::::",str(EndDate))
+              
                 user_details = User_Management.objects.get(id=user_updated_id)
 
                 u = User.objects.get(id=user_details.auth_user.id)
@@ -1743,7 +1739,7 @@ def edit_user_details_action(request):
 
 
         role_data = user_role_mapping.objects.filter(user_id_id=user_updated_id)
-        print("role_data:::::::")
+       
         for i in role_data:
 
 
@@ -1768,7 +1764,7 @@ def edit_user_details_action(request):
 
             )
             if description_result == True or start_date_result == True or end_date_result == True:
-                print("----updated log---------------")
+               
 
                 log_start_dt = ""
                 if start_date_result == True:
@@ -1800,8 +1796,8 @@ def edit_user_details_action(request):
 
 
             else:
-                print("-------------no updated-----------------")
-            print("--------------------end-----------------------------------------")
+                pass
+            
 
         
 
@@ -1903,7 +1899,7 @@ def leave_management(request):
 
 
     user_auth_id = request.user.id
-    print("user_auth_id::::",str(user_auth_id))
+    
     odoo_id = 0
     emp_name = ""
     emp_email = ""
@@ -1918,7 +1914,7 @@ def leave_management(request):
     except:
         pass
 
-    print("odoo_id::::::",str(odoo_id))
+    
    
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -1939,14 +1935,11 @@ def leave_management(request):
         }
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers, data=leave_history_payload).json()
-        print("rs122223::::")
-        print("response1::::::::")
-        print(leave_history_response1)
+        
         
         leave_history_response12  = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-        print("r1::")
-        print(leave_history_response)
+        
         
 
     except:
@@ -2062,7 +2055,7 @@ def leave_management(request):
 def get_total_available_leave_count(request):
 
     leave_type = request.GET.get("leave_type",False)
-    print("leave_type:::::",str(leave_type))
+    
     selected_employee_id = request.GET.get("selected_employee_id",False)
     odoo_login_id = 0
     half_day_status = ""
@@ -2102,7 +2095,7 @@ def get_total_available_leave_count(request):
         half_day_status = leave_available_response['request_unit']
         requires_allocation = leave_available_response['requires_allocation']
         
-        print(leave_available_response12)
+        
     
     except:
         pass
@@ -2116,12 +2109,7 @@ def get_total_available_leave_count(request):
     total_available_leave = 0
     annual_status = False
 
-    print("r1:::")
-    print(leave_available_response)
 
-    
-    print("l1:::")
-    
 
 
 
@@ -2140,7 +2128,7 @@ def get_total_available_leave_count(request):
 
     
 
-    print("odoo_login_id:::::::",str(odoo_login_id))
+
 
     data= {
         'respose_status':respose_status,
@@ -2165,7 +2153,7 @@ def advance_salary_management(request):
 
 def role_edit_modal_function(request):
     id = request.GET.get("id",False)
-    print("id::::::::::",str(id))
+   
     data = Role_details.objects.get(id=id)
 
     data_company_permission = Role_permission_details.objects.get(role_id_id=id,permission_name="Company")
@@ -2200,7 +2188,7 @@ def role_edit_modal_function(request):
 
 def user_edit_modal_function(request):
     id = request.GET.get("id",False)
-    print("id::::::::::",str(id))
+   
     data = User_Management.objects.get(id=id)
 
     user_role_details = user_role_mapping.objects.filter(user_id_id=id)
@@ -2223,7 +2211,7 @@ def user_edit_modal_function(request):
 
 def user_role_log_modal(request):
     id = request.GET.get("id",False)
-    print("id:",str(id))
+  
 
     data_history = user_role_mapping_history.objects.filter(user_role_mapping_id_id=id).order_by("-id")
     context = {
@@ -2255,7 +2243,7 @@ def test_r1(request):
 def testr1(request):
     if request.method == "POST":
         name = request.POST.get("name",False)
-        print("name::::",str(name))
+       
         messages.success(request, 'Passwords are not same.!')
         return redirect('index')
     
@@ -2275,9 +2263,9 @@ def user_leave_apply_action(request):
         employee_email = request.POST.get("employee_email",False)
         employee_number = request.POST.get("employee_number",False)
         employee_leave_type = request.POST.get("employee_leave_type",False)
-        print("employee_leave_type1::::::::::",str(employee_leave_type))
+      
         if  employee_leave_type == 'no':
-            print("heeeeeee")
+           
             messages.warning(request,str("Please Select Leave Type !!!"))
             return redirect("leave_management")
         employee_leave_from_date = request.POST.get("employee_leave_from_date",False)
@@ -2291,7 +2279,7 @@ def user_leave_apply_action(request):
         absence_status = request.POST.get("absence_status",False)
         absence_category = request.POST.get("absence_category",False)
 
-        print("request_unit_half::::",str(request_unit_half))
+       
         if request_unit_half == "Half day":
             employee_leave_to_date = employee_leave_from_date
             pass
@@ -2301,8 +2289,7 @@ def user_leave_apply_action(request):
 
        
         request_date_from_period = request.POST.get("request_date_from_period",False)
-        print("employee_leave_type::::",str(employee_leave_type))
-        print("employeee_id:::::",str(data_employee.odoo_id))
+       
         leave_apply_url = api_domain+"api/post_leave"
         payload = json.dumps({
             "jsonrpc": "2.0",
@@ -2332,12 +2319,10 @@ def user_leave_apply_action(request):
             'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
-        print("resll::::")
-        print(response1.json())
+       
         response12 = response1.json()['result']
         
-        print("response111newwwwwwwww111111::::::::::::::::::::")
-        print(response12)
+       
         l1 = response12['result']
         responsible_for_approval = ""
         try:
@@ -2347,20 +2332,12 @@ def user_leave_apply_action(request):
         if response12['message'] == "error":
 
             message = response12['result']
-            print("message::::::::::")
             
-
-            print("messs:::::::")
-            print(message)
-
-            print("type::::",type(message))
 
 
             mes1 = response12['result']
             m1 = mes1[:mes1.index("\n")]
-            print("m1::::")
-            print(m1)
-
+           
             
 
  
@@ -2368,15 +2345,13 @@ def user_leave_apply_action(request):
             return redirect("leave_management")
         elif response12['message'] == "success":
             message = response12['result']
-            print("message::::::::::")
-            print(message)
+          
             mes1 = "Your Leave from "+str(employee_leave_from_date)+" to "+str(employee_leave_to_date)+" has been submitted"
 
             r1 = response12['result']
             leave_id = r1['leave_id']
             leave_state = r1['state']
-            print("leave_type:::::",str(leave_id))
-            print("leave_state:::",str(leave_state))
+           
 
             leave_notification = odoo_notification(
                 notification_type="leave_type",
@@ -2413,7 +2388,7 @@ def user_leave_apply_action(request):
                  description =employee_leave_reason
                 )
                 approval_notification.save()
-                print("responsible_for_approval:::",str(responsible_for_approval))
+                
             except:
                 pass
  
@@ -2502,7 +2477,7 @@ def test_r2(request):
 
 def view_leave_more_details(request):
     id = request.GET.get("id",False)
-    print("id111111111::::::",str(id))
+    
     leave_more_details_url = api_domain+"api/get_leave_details"
     payload = json.dumps({
             "jsonrpc": "2.0",
@@ -2519,14 +2494,11 @@ def view_leave_more_details(request):
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
     response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
-    print("resll::::")
-    print(response1.json())
+   
     response12 = response1.json()['result']
-    print("ressss:::::")
-    print(response12)
+   
     r1 = response12['result'][0]
-    print("new:")
-    print(r1)
+  
     emp_name = ""
     try:
         data_emp = User_Management.objects.get(auth_user=request.user)
@@ -2556,7 +2528,7 @@ def view_leave_more_details(request):
 
 def get_selected_employee_entitlement_balance(request):
     employee_id = request.GET.get("employee_id",False)
-    print("emp_id::",str(employee_id))
+   
 
     entitlement_balances_url = api_domain+"api/get_leave_entitlement"
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -2601,9 +2573,9 @@ def get_selected_employee_entitlement_balance(request):
    
     
     employee_name1 = response['name']
-    print("employee_name:::::",str(employee_name1))
+  
     emp_registration_id = response['registration_number']
-    print("emmm:::::",str(emp_registration_id))
+  
     return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':entitlement_balances_response,'emp_registration_id':emp_registration_id,'employee_name1':employee_name1})
 
 
@@ -2612,7 +2584,7 @@ def get_selected_employee_entitlement_balance(request):
 
 def get_child_based_leave_history(request):
     employee_id = request.GET.get("employee_id",False)
-    print("employee_id1111111::::",str(employee_id))
+   
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     leave_history_response = ""
@@ -2631,12 +2603,11 @@ def get_child_based_leave_history(request):
         }
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers, data=leave_history_payload).json()
-        print("rs122223::::")
+       
         
         leave_history_response12  = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-        print("r1::")
-        print(leave_history_response)
+        
         
 
     except:
@@ -2649,17 +2620,17 @@ def testchart(request):
     import calendar
     import datetime
     now = datetime.datetime.now()
-    print(now.month)
+   
     days = calendar.monthrange(now.year, now.month)[1]
-    print("total_days::::",str(days)) 
+ 
     month_num = str(now.month)
     datetime_object = datetime.datetime.strptime(month_num, "%m")
 
     month_name = datetime_object.strftime("%b")
-    print("Short name: ",month_name)
+
 
     full_month_name = datetime_object.strftime("%B")
-    print("Full name: ",full_month_name)
+  
 
     employee_data = User_Management.objects.get(auth_user=request.user)
 
@@ -2669,8 +2640,7 @@ def testchart(request):
     num_days = calendar.monthrange(year, month)[1]
 
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
-    print("assss::::::")
-    print(ays)
+
 
   
 
@@ -2690,17 +2660,17 @@ def user_leave_gantt_chart(request):
     import calendar
     import datetime
     now = datetime.datetime.now()
-    print(now.month)
+
     days = calendar.monthrange(now.year, now.month)[1]
-    print("total_days::::",str(days)) 
+  
     month_num = str(now.month)
     datetime_object = datetime.datetime.strptime(month_num, "%m")
 
     month_name = datetime_object.strftime("%b")
-    print("Short name: ",month_name)
+  
 
     full_month_name = datetime_object.strftime("%B")
-    print("Full name: ",full_month_name)
+
 
     employee_data = User_Management.objects.get(auth_user=request.user)
 
@@ -2710,8 +2680,7 @@ def user_leave_gantt_chart(request):
     num_days = calendar.monthrange(year, month)[1]
 
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
-    print("assss::::::")
-    print(ays)
+
     year = now.year
     month = now.month
 
@@ -2742,7 +2711,7 @@ def user_leave_gantt_chart(request):
         
         get_chile_response112  = get_chile_response1['result']
         get_chile_response = get_chile_response112['result']
-        print("r122222::")
+        
        
         
 
@@ -2750,7 +2719,7 @@ def user_leave_gantt_chart(request):
         pass
 
 
-    print("ddddddd::::",str(get_chile_response))
+
 
     
 
@@ -2774,7 +2743,7 @@ def user_leave_gantt_chart(request):
 
 
 def user_leave_gantt_chart_next_month_action(request):
-    print("next month::::::::::::")
+
     from datetime import date
     y = request.GET.get("year",False)
     m = request.GET.get("month",False)
@@ -2784,23 +2753,22 @@ def user_leave_gantt_chart_next_month_action(request):
         df = date(int(y)+1,int(1),1)
     new_month = df.month
     new_year = df.year
-    print("new_month::::::",str(new_month))
-    print("new_year:::::",str(new_year))
+
     
     import calendar
     import datetime
     
     days = calendar.monthrange(int(new_year), int(new_month))[1]
-    print("total_days::::",str(days)) 
+   
 
     month_num = str(m)
     datetime_object = datetime.datetime.strptime(str(new_month), "%m")
 
     month_name = datetime_object.strftime("%b")
-    print("Short name: ",month_name)
+
 
     full_month_name = datetime_object.strftime("%B")
-    print("Full name: ",full_month_name)
+   
     employee_data = User_Management.objects.get(auth_user=request.user)
     import datetime, calendar
     year = new_year
@@ -2808,8 +2776,7 @@ def user_leave_gantt_chart_next_month_action(request):
     num_days = calendar.monthrange(year, month)[1]
 
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
-    print("assss::::::")
-    print(ays)
+
     send_data = str(year)+"-"+str(month)
     get_chile_response = ""
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -2837,7 +2804,7 @@ def user_leave_gantt_chart_next_month_action(request):
         
         get_chile_response112  = get_chile_response1['result']
         get_chile_response = get_chile_response112['result']
-        print("r122222::")
+   
        
         
 
@@ -2847,7 +2814,7 @@ def user_leave_gantt_chart_next_month_action(request):
     count1 = 0
 
 
-    print("ddddddd::::",str(get_chile_response))
+   
     context = {
         'full_month_name':month_name,
         'days':days,
@@ -2865,7 +2832,7 @@ def user_leave_gantt_chart_next_month_action(request):
 
 
 def user_leave_gantt_chart_prev_month_action(request):
-    print("next month::::::::::::")
+
     from datetime import date
     y = request.GET.get("year",False)
     m = request.GET.get("month",False)
@@ -2883,23 +2850,22 @@ def user_leave_gantt_chart_prev_month_action(request):
 
     new_month = df.month
     new_year = df.year
-    print("new_month::::::",str(new_month))
-    print("new_year:::::",str(new_year))
+   
     
     import calendar
     import datetime
     
     days = calendar.monthrange(int(new_year), int(new_month))[1]
-    print("total_days::::",str(days)) 
+
 
     month_num = str(m)
     datetime_object = datetime.datetime.strptime(str(new_month), "%m")
 
     month_name = datetime_object.strftime("%b")
-    print("Short name: ",month_name)
+  
 
     full_month_name = datetime_object.strftime("%B")
-    print("Full name: ",full_month_name)
+    
     employee_data = User_Management.objects.get(auth_user=request.user)
     import datetime, calendar
     year = new_year
@@ -2907,8 +2873,7 @@ def user_leave_gantt_chart_prev_month_action(request):
     num_days = calendar.monthrange(year, month)[1]
 
     ays = [datetime.date(year, month, day) for day in range(1, num_days+1)]
-    print("assss::::::")
-    print(ays)
+   
     send_data = str(year)+"-"+str(month)
     get_chile_response = ""
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -2936,7 +2901,7 @@ def user_leave_gantt_chart_prev_month_action(request):
         
         get_chile_response112  = get_chile_response1['result']
         get_chile_response = get_chile_response112['result']
-        print("r122222::")
+       
        
         
 
@@ -2963,7 +2928,7 @@ def user_leave_gantt_chart_prev_month_action(request):
 
 def calendar(request):
     user_auth_id = request.user.id
-    print("user_auth_id::::", str(user_auth_id))
+   
     odoo_id = 0
     try:
 
@@ -2972,7 +2937,7 @@ def calendar(request):
 
     except:
         pass
-    print("odoo_id::::::", str(odoo_id))
+   
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -2999,7 +2964,7 @@ def calendar(request):
         child_response = child_response12['result']
     except:
         pass
-    print("calllllllllllll",child_response)
+
     context = {
 
 
@@ -3014,7 +2979,7 @@ def calendar(request):
     # return render(request, 'super_admin/calendar.html')
 def event_depended(request):
     event_id = request.GET.get('event_id')
-    print("jijijijijiii",event_id)
+   
     leave_more_details_url = api_domain + "api/get_leave_details"
     payload = json.dumps({
         "jsonrpc": "2.0",
@@ -3031,14 +2996,11 @@ def event_depended(request):
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
     response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
-    print("resll::::")
-    print(response1.json())
+  
     response12 = response1.json()['result']
-    print("ressss:::::")
-    print(response12)
+   
     r1 = response12['result'][0]
-    print("new:")
-    print(r1)
+    
     emp_name = ""
     try:
         data_emp = User_Management.objects.get(auth_user=request.user)
@@ -3057,7 +3019,7 @@ def event_depended(request):
 
 def all_events(request):
     user_auth_id = request.user.id
-    print("user_auth_id::::", str(user_auth_id))
+
     odoo_id = 0
     try:
 
@@ -3066,7 +3028,7 @@ def all_events(request):
 
     except:
         pass
-    print("odoo_id::::::", str(odoo_id))
+   
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -3091,36 +3053,29 @@ def all_events(request):
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
                                                    data=leave_history_payload).json()
-        print("rs122223::::")
-        print("response1::::::::")
-        print(leave_history_response1)
+      
 
         leave_history_response12 = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-        print("r1::")
-        print(leave_history_response)
+      
 
 
     except:
         pass
     out = []
-    print(out)
-    print("jiyadddddddddddddddddddddddddddd:::::::",leave_history_response)
+   
     for event in leave_history_response:
-        print("id::::::::::::",str(event['id']))
-        print("date_from::",str(event['date_from']))
-        print("date_to::::",str(event['date_to']))
-        print(type(event['date_to']))
+       
+        
         from datetime import datetime
-        print(datetime.fromisoformat(event['date_to']))
+        
         df = datetime.fromisoformat(event['date_to'])
-        print("date:::",str(df.date()))
+        
 
         from datetime import timedelta
 
         date_time_obj = df+timedelta(days=1)
-        print("lll")
-        print(date_time_obj)
+     
 
         out.append({
 
@@ -3129,21 +3084,17 @@ def all_events(request):
             'start': event['date_from'],
             'end': date_time_obj,
         })
-        print("----nnnnnnnnnnnnnnnnnn")
-    print("---------------")
-    print("---out-------")
-    print(out)
-    print("---leave_history_response-------")
-    print(leave_history_response)
+        
+  
     return JsonResponse(out, safe=False)
 
 
 def all_events1(request):
 
     type1 = request.GET.get("type")
-    print("type1111111111111111",type1)
+    
     user_auth_id = request.user.id
-    print("user_auth_id::::", str(user_auth_id))
+
     odoo_id = 0
     try:
 
@@ -3152,7 +3103,7 @@ def all_events1(request):
 
     except:
         pass
-    print("odoo_id::::::", str(odoo_id))
+    
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -3177,46 +3128,40 @@ def all_events1(request):
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
                                                    data=leave_history_payload).json()
-        print("rs122223::::")
+       
 
         leave_history_response12 = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-        print("r1::")
-        print(leave_history_response)
+      
 
 
     except:
         pass
     out = []
     for event in leave_history_response:
-        print("id::::::::::::", str(event['id']))
+   
         a=event['employee_id']
-        print(type(a))
-        print("a::::::::::::", str(a[0]))
-        print("date_from::", str(event['date_from']))
-        print("date_to::::", str(event['date_to']))
-        print(type(event['date_to']))
+    
+    
+    
         from datetime import datetime
-        print(datetime.fromisoformat(event['date_to']))
+       
         df = datetime.fromisoformat(event['date_to'])
-        print("date:::", str(df.date()))
+       
 
         from datetime import timedelta
 
         date_time_obj = df + timedelta(days=1)
-        print("lll")
-        print(date_time_obj)
-        print("id::::::::::::jiyad1111111", str(event['id']))
-        print("type::::::::::::")
+      
         if (str(a[0]) == type1):
-            print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+         
             out.append({
                 'title':event['holiday_status_id'],
                 'id':event['id'],
                 'start': event['date_from'],
                 'end': date_time_obj,
             })
-    print("---------------")
+   
     return JsonResponse(out, safe=False)
 
 
@@ -3225,18 +3170,17 @@ def all_events1(request):
 
 def img(request):
     if request.method == "POST":
-        print("heyyyy")
+        
         n1 = request.POST.getlist('n1[]')
-        print(len(n1))
+       
         for i in range(len(n1)):
-            print("hhhh")
+           
             save = test.objects.create(
                 img_path=n1[i]
             )
        
         files = request.FILES.getlist('files[]')
-        print("files:::")
-        print(files)
+      
     else:
         test1 = test.objects.all()
         

@@ -230,6 +230,8 @@ font-size: 12px;" href="">Reassign</a>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <form action="" method="POST" >
+            {% csrf_token %}
         <div class="modal-body">
             <img style="    width: 18%;" src="{% static 'confirm.gif' %}">
           <p style="    font-size: 13px;
@@ -239,6 +241,7 @@ font-size: 12px;" href="">Reassign</a>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Confirm</button>
         </div>
+        </form>
       </div>
     </div>
   </div>

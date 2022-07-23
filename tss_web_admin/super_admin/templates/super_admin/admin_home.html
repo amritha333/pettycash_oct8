@@ -626,6 +626,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
             + roomName
             + '/'
         );
+       
 
         notificationSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
