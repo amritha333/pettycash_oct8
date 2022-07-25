@@ -168,6 +168,7 @@
 
  $('body').on('click', 'button.fc-prev-button', function() {
     var b = $('#calendar').fullCalendar('getDate');
+    
     alert(b)
     alert("prev button")
     
@@ -183,6 +184,8 @@ $('body').on('click', 'button.fc-next-button', function() {
 $(document).ready(function(){
   $("button").click(function(){
     if(event.target.className == "fc-today-button fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled"){
+
+       
         alert("today button clickedddddd");
     }
     })
@@ -266,6 +269,9 @@ type = id
 <script>
 
     function getServiceFeed1(){
+
+        var h1Text = document.querySelector("h2").innerText;
+        alert(h1Text)
         
     var all = document.getElementById("all").value
    

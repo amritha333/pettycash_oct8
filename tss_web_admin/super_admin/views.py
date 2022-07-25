@@ -2385,7 +2385,8 @@ def user_leave_apply_action(request):
                     auth_user_id = check_data.auth_user,
                     leave_type_name=leave_type_nm,
                     leave_apply_user_name = employee_name1,
-                 description =employee_leave_reason
+                    description =employee_leave_reason,
+                    current_leave_status = "confirm"
                 )
                 approval_notification.save()
                 
@@ -2510,17 +2511,51 @@ def view_leave_more_details(request):
 
     approve_button_status = ""
     try:
-        approval_instance = odoo_notification.objects.get(mapping_id=id,auth_user_id=request.user,notification_type="leave_approve_request")
+        approval_instance = odoo_notification.objects.get(mapping_id=id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending")
         approve_button_status = "yes"
     except:
         approve_button_status ="no"
         pass
+    
 
+
+
+    select_employee_api = ""
+    try:
+        odoo_token_data = odoo_api_request_token.objects.get(status="True")
+        odoo_token = odoo_token_data.token
+        employee_data_url =api_domain+"api/get_employees"
+        
+        payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+            "employee_ids": []
+            }
+        })
+        headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+
+
+
+        select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
+        
+        
+
+        response_result = select_employee_api1.json()['result']
+        
+        select_employee_api = response_result['result']
+    except:
+        pass
 
     context = {
         'r1':r1,
         'emp_name':emp_name,
-        'approve_button_status':approve_button_status
+        'approve_button_status':approve_button_status,
+        'id':id,
+        'select_employee_api':select_employee_api
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
 
@@ -3198,3 +3233,181 @@ def view_notification_table(request):
         "notifictaion":notifictaion
     }
     return render(request,'super_admin/view_notification_table.html',context)
+
+
+
+
+def leave_approve_action(request):
+    if request.method == "POST":
+        leave_mapping_id = request.POST.get("leave_mapping_id",False)
+        leave_status = request.POST.get("leave_status",False)
+        login_user_data = User_Management.objects.get(auth_user=request.user)
+        odoo_employee_id = login_user_data.odoo_id
+        odoo_token_data = odoo_api_request_token.objects.get(status="True")
+        odoo_token = odoo_token_data.token
+        approval_api_url = api_domain+"api/approve_leave_req"
+        approval_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "leave_id" : leave_mapping_id,
+                "employee_id" : int(odoo_employee_id),
+                "state":leave_status
+            }
+        })
+        approval_header = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+        approval_response = requests.request("GET", approval_api_url, headers=approval_header,
+                                                   data=approval_payload).json()
+        print("approval_response:::")
+        print(approval_response)
+        response = approval_response['result']
+        if response['message'] == "success":
+            print("pppopoooo")
+
+            response_result = response['result']
+            leave_id = response_result['leave_id']
+            leave__result_status = response_result['status']
+
+            
+            responsible_for_approval = response_result['responsible_for_approval']
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="approve")
+            data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
+            print("responsible_for_approval::::",str(responsible_for_approval))
+            if leave__result_status == "validate":
+                pass
+            else:
+            
+                next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval)
+                leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+                next_approval_notification = odoo_notification(
+                    notification_type="leave_approve_request",
+                    message="leave request",
+                    mapping_id = leave_id,
+                    requested_from_dt = leave_data.requested_from_dt,
+                    requested_to_dt = leave_data.requested_to_dt,
+                    read_status = 0,
+                    status = "Pending",
+                    auth_user_id_id = next_approve_user_data.auth_user.id,
+                    leave_type_name = leave_data.leave_type_name,
+                    leave_apply_user_name = leave_data.leave_apply_user_name,
+                    description = "null",
+                    current_leave_status = leave__result_status
+                )
+                next_approval_notification.save()
+            messages.success(request,str("approved success"))
+            return redirect(request.META['HTTP_REFERER']) 
+
+
+
+
+
+def reject_leave_request_action(request):
+    if request.method == "POST":
+        leave_mapping_id = request.POST.get("leave_mapping_id",False)
+        leave_status = request.POST.get("leave_status",False)
+        note = request.POST.get("note",False)
+        login_user_data = User_Management.objects.get(auth_user=request.user)
+        odoo_employee_id = login_user_data.odoo_id
+        odoo_token_data = odoo_api_request_token.objects.get(status="True")
+        odoo_token = odoo_token_data.token
+        reject_api_url = api_domain+"api/refuse_leave_req"
+        reject_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "leave_id" : leave_mapping_id,
+                "employee_id" : int(odoo_employee_id),
+                 "refuse_reason" : note
+            }
+        })
+        reject_header = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+        reject_response = requests.request("GET", reject_api_url, headers=reject_header,
+                                                   data=reject_payload).json()
+        print("reject_response:::")
+        print(reject_response)
+        response = reject_response['result']
+        if response['message'] == "success":
+            print("rejecttttttttttttt::")
+
+            response_result = response['result']
+            leave_id = response_result['leave_id']
+            leave__result_status = response_result['status']
+
+            
+            # responsible_for_approval = response_result['responsible_for_approval']
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reject")
+            data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
+            
+        messages.success(request,str("Reject success"))
+        return redirect(request.META['HTTP_REFERER']) 
+        pass
+
+
+
+def leave_reassign_action(request):
+    if request.method == "POST":
+        leave_mapping_id = request.POST.get("leave_mapping_id",False)
+        leave_status = request.POST.get("leave_status",False)
+        selected_employee_id = request.POST.get("selected_employee_id",False)
+        login_user_data = User_Management.objects.get(auth_user=request.user)
+        odoo_employee_id = login_user_data.odoo_id
+        odoo_token_data = odoo_api_request_token.objects.get(status="True")
+        odoo_token = odoo_token_data.token
+        reassign_api_url = api_domain+"api/ressign_leave_req"
+        reassign_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "leave_id" : leave_mapping_id,
+                
+                "employee_id" : int(odoo_employee_id),
+                 "next_responsibe_employee_id" : int(selected_employee_id)
+            }
+        })
+        reassign_header = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+        reassign_response = requests.request("GET", reassign_api_url, headers=reassign_header,
+                                                   data=reassign_payload).json()
+        print("reassign_response:::")
+        print(reassign_response)
+        response = reassign_response['result']
+        if response['message'] == "success":
+            print("reassignnnnnnnnnn::")
+
+            response_result = response['result']
+            leave_id = response_result['leave_id']
+            leave__result_status = response_result['status']
+
+            
+            # responsible_for_approval = response_result['responsible_for_approval']
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reassign")
+            data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
+            next_approve_user_data = User_Management.objects.get(odoo_id=int(selected_employee_id))
+            leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+            next_approval_notification = odoo_notification(
+                notification_type="leave_approve_request",
+                message="leave request",
+                mapping_id = leave_id,
+                requested_from_dt = leave_data.requested_from_dt,
+                requested_to_dt = leave_data.requested_to_dt,
+                read_status = 0,
+                status = "Pending",
+                auth_user_id_id = next_approve_user_data.auth_user.id,
+                leave_type_name = leave_data.leave_type_name,
+                leave_apply_user_name = leave_data.leave_apply_user_name,
+                description = "null",
+                current_leave_status = leave__result_status
+            )
+            next_approval_notification.save()
+        messages.success(request,str("Reassign success"))
+        return redirect(request.META['HTTP_REFERER']) 
+        pass
+       

@@ -230,8 +230,10 @@ font-size: 12px;" href="">Reassign</a>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form action="" method="POST" >
+        <form action="leave_approve_action" method="POST" >
             {% csrf_token %}
+            <input type="hidden" name="leave_mapping_id" value="{{id}}">
+            <input type="hidden" name="leave_status" value="{{r1.state}}">
         <div class="modal-body">
             <img style="    width: 18%;" src="{% static 'confirm.gif' %}">
           <p style="    font-size: 13px;
@@ -239,7 +241,7 @@ font-size: 12px;" href="">Reassign</a>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Confirm</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
         </div>
         </form>
       </div>
@@ -256,19 +258,25 @@ font-size: 12px;" href="">Reassign</a>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <form action="reject_leave_request_action" method="POST">
+            {% csrf_token %}
         <div class="modal-body">
             <img style="    width: 18%;" src="{% static 'Reject.gif' %}">
           <p style="    font-size: 13px;
           font-weight: bold;">Are you sure you want to reject this leave request?</p>
 
-
-<input type="text" class="form-control" placeholder="Note">
+<input type="hidden" name="leave_mapping_id" value="{{id}}">
+<input type="hidden" name="leave_status" value="{{r1.state}}">
+<input type="text" class="form-control" name="note" placeholder="Note">
 <br>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Reject</button>
+          <button type="submit" class="btn btn-primary">Reject</button>
         </div>
+
+    </form>
+
       </div>
     </div>
   </div>
@@ -284,26 +292,28 @@ font-size: 12px;" href="">Reassign</a>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <form action="leave_reassign_action" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="leave_mapping_id" value="{{id}}">
+<input type="hidden" name="leave_status" value="{{r1.state}}">
         <div class="modal-body">
             <img style="    width: 18%;" src="{% static 'Reassign.gif' %}">
           <p style="    font-size: 13px;
           font-weight: bold;">Are you sure you want to Reassign this leave request?</p>
 
 
-<select class="form-control select2">
-    <option label="Choose one"></option>
-    <option value="Firefox">Firefox</option>
-    <option value="Chrome">Chrome</option>
-    <option value="Safari">Safari</option>
-    <option value="Opera">Opera</option>
-    <option value="Internet Explorer">Internet Explorer</option>
+<select class="form-control select2" name="selected_employee_id">
+    {% for employee in select_employee_api %}
+                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
+                                    {% endfor %}
  </select>
 <br>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Reject</button>
+          <button type="submit" class="btn btn-primary">Reassign</button>
         </div>
+        </form>
       </div>
     </div>
   </div>
@@ -364,4 +374,38 @@ font-size: 12px;" href="">Reassign</a>
         });
     });
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+   <script>
+    {% for message in messages %}
+ 
+       
+    message1 = "{{message}}"
+      
+       
+        if(message1 == "error"){
+
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: "{{ message }}",
+ 
+})
+
+
+
+        }
+        else{
+
+            Swal.fire(
+				  '',
+				  '{{ message }}',
+				  '{{message.tags}}'
+				)
+      
+        }
+    {% endfor %}
+   </script>
+{% endif %}
 {% endblock %}

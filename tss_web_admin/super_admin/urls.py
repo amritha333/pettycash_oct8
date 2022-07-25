@@ -71,7 +71,11 @@ urlpatterns = [
     path('all_events1', views.all_events1),
     path('login_page1',views.login_page1,name='login_page1'),
     path('view_notification_table',views.view_notification_table,name='view_notification_table'),
+    path('leave_approve_action',views.leave_approve_action,name='leave_approve_action'),
+    path('reject_leave_request_action',views.reject_leave_request_action,name='reject_leave_request_action'),
+    path('leave_reassign_action',views.leave_reassign_action,name='leave_reassign_action'),
     
+
     
     
 
