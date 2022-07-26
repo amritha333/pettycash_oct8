@@ -187,3 +187,14 @@ class test(models.Model):
 class user_fcm_token(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     fcm_token=models.TextField(null=True) 
+
+
+
+
+class Leave_Status_details(models.Model):
+    leave_mapping_id = models.IntegerField(null=True)
+    user_name = models.CharField(max_length=255,null=True)
+    status = models.CharField(max_length=255,null=True)
+    dt = models.DateField(null=True)
+    auth_user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="leave_status_user_login", null=True)
+    note = models.CharField(max_length=255,null=True)

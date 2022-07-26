@@ -265,7 +265,19 @@
                         {% for i in request.user|get_notifications %}
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="notify-icon bg-success"><i class="mdi mdi-comment-account-outline"></i></div>
-                            <p class="notify-details"><small class="text-muted" style="    color: #000000 !important;">{{i.message}} {{i.dt}} is <small>{{i.status}}</small></small>
+                            <p class="notify-details"><small class="text-muted" style="    color: #000000 !important;">{{i.message}} {{i.dt}} is <small>
+
+
+                                {% if i.status == "validate" %}
+                                <span style="    color: green;">Approved</span>
+
+                                {% elif i.status == "validate1" %}
+                                <span style="    color: red;">Second Approve</span>
+                                {% else %}
+                                <span style="    color: red;">{{i.status}}</span>
+
+                                {% endif %}
+                            </small></small>
                             
                             <small style="color: red;">Date : {{i.requested_from_dt}} to {{i.requested_to_dt}}</small>
                             </p>

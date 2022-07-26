@@ -197,13 +197,16 @@ font-size: 12px;" href="">Reassign</a>
                                       </tr>
                                     </thead>
                                     <tbody>
+                                        {% for i in data_leave_status %}
                                       <tr>
-                                        <th scope="row">1</th>
-                                        <td>Amar</td>
-                                        <td>Pending</td>
-                                        <td>29-03-2022</td>
-                                        <td>test</td>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{i.user_name}}</td>
+                                        <td>{{i.status}}</td>
+                                        <td>{{i.dt}}</td>
+                                        <td>{{i.note}}</td>
                                       </tr>
+
+                                      {% endfor %}
                                   
                                     </tbody>
                                   </table>

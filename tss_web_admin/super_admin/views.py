@@ -2364,6 +2364,8 @@ def user_leave_apply_action(request):
             messages.warning(request,str(m1))
             return redirect("leave_management")
         elif response12['message'] == "success":
+            from datetime import date
+            today = date.today()
             message = response12['result']
           
             mes1 = "Your Leave from "+str(employee_leave_from_date)+" to "+str(employee_leave_to_date)+" has been submitted"
@@ -2390,7 +2392,16 @@ def user_leave_apply_action(request):
 
             check_data=""
             second_user_id = 0
+            submit_status = Leave_Status_details(
+                leave_mapping_id =int(leave_id),
+                user_name  = employee_name1,
+                status = "Submit",
+                dt = today,
+                auth_user = request.user
 
+
+            )
+            submit_status.save()
 
 
             try:
@@ -2414,10 +2425,22 @@ def user_leave_apply_action(request):
                     current_leave_status = "confirm"
                 )
                 approval_notification.save()
+                submit_status1 = Leave_Status_details(
+                            leave_mapping_id =int(leave_id),
+                            user_name  = check_data.employee_name,
+                            status = "Pending",
+                        dt = today,
+                        auth_user = check_data.auth_user
+
+
+                )
+                submit_status1.save()
                 
                 
             except:
                 pass
+
+            
 
             print("ttttttaaat:::",str(second_user_id))
             channel_layer = get_channel_layer()
@@ -2592,12 +2615,15 @@ def view_leave_more_details(request):
     except:
         pass
 
+    data_leave_status = Leave_Status_details.objects.filter(leave_mapping_id=id)
+
     context = {
         'r1':r1,
         'emp_name':emp_name,
         'approve_button_status':approve_button_status,
         'id':id,
-        'select_employee_api':select_employee_api
+        'select_employee_api':select_employee_api,
+        'data_leave_status':data_leave_status
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
 
@@ -3318,6 +3344,7 @@ def leave_approve_action(request):
             data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="approve")
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
             print("responsible_for_approval::::",str(responsible_for_approval))
+            updated_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Approved")
             if leave__result_status == "validate":
                 pass
             else:
@@ -3339,6 +3366,19 @@ def leave_approve_action(request):
                     current_leave_status = leave__result_status
                 )
                 next_approval_notification.save()
+                from datetime import date
+
+                today = date.today()
+                add_leave_status = Leave_Status_details.objects.create(
+                    leave_mapping_id = int(leave_id),
+                    user_name = next_approve_user_data.employee_name,
+                    auth_user = next_approve_user_data.auth_user,
+                    dt = today,
+                    status = "Pending"
+
+                )
+
+
             messages.success(request,str("approved success"))
             return redirect(request.META['HTTP_REFERER']) 
 
@@ -3380,6 +3420,8 @@ def reject_leave_request_action(request):
             response_result = response['result']
             leave_id = response_result['leave_id']
             leave__result_status = response_result['status']
+
+            update_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Rjected",note=note)
 
             
             # responsible_for_approval = response_result['responsible_for_approval']
@@ -3449,6 +3491,21 @@ def leave_reassign_action(request):
                 current_leave_status = leave__result_status
             )
             next_approval_notification.save()
+            
+
+            leave_status_update = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Reassigning",note=next_approve_user_data.employee_name)
+            from datetime import date
+
+            today = date.today()
+            add_leave_status = Leave_Status_details.objects.create(
+                leave_mapping_id = int(leave_id),
+                user_name = next_approve_user_data.employee_name,
+                auth_user = next_approve_user_data.auth_user,
+                dt = today,
+                status = "Pending"
+
+            )
+        
         messages.success(request,str("Reassign success"))
         return redirect(request.META['HTTP_REFERER']) 
         pass
