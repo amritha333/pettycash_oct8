@@ -2252,6 +2252,26 @@ def testr1(request):
 
 
 
+def send_push_notification(send_user_id,leave_request_username):
+    user__id = send_user_id
+    message = "one leave request from " +leave_request_username
+    user1 = user_fcm_token.objects.get(user = user__id)
+    token = user1.fcm_token
+    url="https://fcm.googleapis.com/fcm/send"
+    body={
+        "notification":{
+        "title":"Leave Approve Request",
+                "body":message,
+                "icon" : "https://erp.veuz.in/static/hrm/images/logo.png"
+        },
+        "to":token
+    }
+    headers={"Content-Type":"application/json","Authorization":"key=AAAAa8sZLQ0:APA91bEY2tEwoX_BP7Uee5TUd8--sFyDfngbU8gJbl5IMrkndYchLQfOgs5GzxDKBD8pkPf49IJ4G5upbV5koLZAUQ6FMtLGYag1khkmky2x3tfd5HKpSrKMTIOjJ58dBSDibhMZ3ptR"}
+    data=requests.post(url,data=json.dumps(body),headers=headers)
+    print(data.text)
+    pass
+
+
 def user_leave_apply_action(request):
     if request.method == "POST":
         employee_name1 = request.POST.get("employee_name1",False)
@@ -2368,11 +2388,16 @@ def user_leave_apply_action(request):
             )
             leave_notification.save()
 
+            check_data=""
+            second_user_id = 0
 
 
 
             try:
                 check_data = User_Management.objects.get(odoo_id=int(responsible_for_approval))
+                send_push_notification(check_data.auth_user,employee_name1)
+                print("check_data::::",str(check_data.auth_user.id))
+                second_user_id = check_data.auth_user.id
                 
                 approval_notification =  odoo_notification(
                     notification_type="leave_approve_request",
@@ -2390,9 +2415,26 @@ def user_leave_apply_action(request):
                 )
                 approval_notification.save()
                 
+                
             except:
                 pass
- 
+
+            print("ttttttaaat:::",str(second_user_id))
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "notification_broadcast2",
+                {       
+                    'type': 'send_notification',
+                    'message':{
+                        "message":str("Leave Approve Request"),
+                        "dt":str(employee_leave_from_date),
+                        "status":str(leave_state),
+                        "requested_date_from":str(employee_leave_from_date),
+                        "requested_date_to":str(employee_leave_to_date),
+                        "send_user_id":second_user_id
+                    }
+                }
+            )
             messages.success(request,str(mes1))
             return redirect("leave_management")
 
@@ -3411,3 +3453,55 @@ def leave_reassign_action(request):
         return redirect(request.META['HTTP_REFERER']) 
         pass
        
+
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def user_fcmtoken_save(request):
+
+    token=request.POST.get("token")
+    print('tokennnnnnnnnnnnnnnnn:',token)
+    try:
+
+        user_fcm=user_fcm_token.objects.get(user=request.user)
+        print('userrrrrrrrr',user_fcm)
+        user_fcm.fcm_token=token
+        user_fcm.save()
+        return HttpResponse("True")
+    except user_fcm_token.DoesNotExist:
+        data_save = user_fcm_token(
+            user=request.user,
+            fcm_token = token
+        )
+        data_save.save()
+        return HttpResponse("True")
+
+
+
+def showFirebaseJS(request):
+    data='importScripts("https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js");' \
+         'importScripts("https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js"); ' \
+         'var firebaseConfig = {' \
+         '        apiKey: "AIzaSyAoGTaeBjBPPiJFtTLt9LZ4rtbEKYWyH9Y",' \
+         '        authDomain: "tss-leave.firebaseapp.com",' \
+         '        databaseURL: "FIREBASE_DATABASE_URL",' \
+         '        projectId: "tss-leave",' \
+         '        storageBucket: "tss-leave.appspot.com",' \
+         '        messagingSenderId: "462968925453",' \
+         '        appId: "1:462968925453:web:1d4792e45170fb1b5a9444",' \
+         '        measurementId: "G-C21S9MZJSR"' \
+         ' };' \
+         'firebase.initializeApp(firebaseConfig);' \
+         'const messaging=firebase.messaging();' \
+         'messaging.setBackgroundMessageHandler(function (payload) {' \
+         '    console.log(payload);' \
+         '    const notification=JSON.parse(payload);' \
+         '    const notificationOption={' \
+         '        body:notification.body,' \
+         '        icon:notification.icon' \
+         '    };' \
+         '    return self.registration.showNotification(payload.notification.title,notificationOption);' \
+         '});'
+
+    return HttpResponse(data,content_type="text/javascript")
+

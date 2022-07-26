@@ -74,7 +74,10 @@ urlpatterns = [
     path('leave_approve_action',views.leave_approve_action,name='leave_approve_action'),
     path('reject_leave_request_action',views.reject_leave_request_action,name='reject_leave_request_action'),
     path('leave_reassign_action',views.leave_reassign_action,name='leave_reassign_action'),
-    
+    path('user_fcmtoken_save',views.user_fcmtoken_save,name='user_fcmtoken_save'),
+    path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
+
+
 
     
     

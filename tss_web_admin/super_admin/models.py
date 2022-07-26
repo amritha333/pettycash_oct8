@@ -117,6 +117,7 @@ class User_Management(models.Model):
     add_by = models.ForeignKey(User,on_delete=models.CASCADE,related_name="user_management_add_by_user_id", null=True)
     odoo_id = models.CharField(max_length=555,null=True)
     company_name = models.CharField(max_length=255,null=True)
+    fcm_token=models.TextField(null=True) 
 
 
 
@@ -181,3 +182,8 @@ class odoo_notification(models.Model):
 
 class test(models.Model):
     img_path = models.TextField()
+
+
+class user_fcm_token(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    fcm_token=models.TextField(null=True) 

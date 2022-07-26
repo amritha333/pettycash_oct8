@@ -642,6 +642,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
 
         notificationSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+        
             //document.querySelector('#chat-log').value += (data.message + '\n');
             // console.log(data);
             var message = data['message'];
@@ -676,5 +677,86 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
        
     </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js"></script>
+<script>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAoGTaeBjBPPiJFtTLt9LZ4rtbEKYWyH9Y",
+    authDomain: "tss-leave.firebaseapp.com",
+    projectId: "tss-leave",
+    storageBucket: "tss-leave.appspot.com",
+    messagingSenderId: "462968925453",
+    appId: "1:462968925453:web:1d4792e45170fb1b5a9444",
+    measurementId: "G-C21S9MZJSR"
+};
+    firebase.initializeApp(firebaseConfig);
+    const messaging=firebase.messaging();
+
+    function IntitalizeFireBaseMessaging() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                console.log("Notification Permission");
+                return messaging.getToken();
+            })
+            .then(function (token) {
+                console.log("Token : "+token);
+                sendToServer(token);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            });
+    }
+
+    messaging.onMessage(function (payload) {
+        console.log(payload);
+        const notificationOption={
+            body:payload.notification.body,
+            icon:payload.notification.icon
+        };
+
+        if(Notification.permission==="granted"){
+            var notification=new Notification(payload.notification.title,notificationOption);
+
+            notification.onclick=function (ev) {
+                ev.preventDefault();
+                window.open(payload.notification.click_action,'_blank');
+                notification.close();
+            }
+        }
+
+    });
+    messaging.onTokenRefresh(function () {
+        messaging.getToken()
+            .then(function (newtoken) {
+                console.log("New Token : "+ newtoken);
+                sendToServer(newtoken);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            })
+    });
+
+    function sendToServer(token){
+         $.ajax({
+                url:'{% url "user_fcmtoken_save" %}',
+                type:'POST',
+                data:{token:token},
+            })
+            .done(function(response){
+           
+                if(response=="True"){
+                    console.log("Token Save");
+                }
+                else{
+                    console.log("Error in Token Save");
+                }
+            });
+    }
+    IntitalizeFireBaseMessaging();
+</script>
 </body>
 </html>
