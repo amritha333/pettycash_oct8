@@ -1255,6 +1255,10 @@ def user_management1(message):
 
 def user_add_action(request):
     if request.method == "POST":
+        import time
+
+        print("Print now")
+        time.sleep(12)
         
         username = request.POST.get("username",False)
         password_option = request.POST.get("password_option",False)
@@ -1718,7 +1722,8 @@ def edit_user_details_action(request):
                 effective_to_dt = password_effective_to_dt,
                 employee_branch = employee_branch,
                 employee_department = employee_department,
-                employee_name = employee_name
+                employee_name = employee_name,
+                password_expiration_total_days=None
 
                 
             )
@@ -3562,3 +3567,8 @@ def showFirebaseJS(request):
 
     return HttpResponse(data,content_type="text/javascript")
 
+
+
+
+def loader(request):
+    return render(request,'super_admin/loader.html')

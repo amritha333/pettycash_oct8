@@ -14,8 +14,14 @@
                         class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
         </div>
     </div>
-    <form action="edit_user_details_action" method="POST">
-        
+    <form class="submit_action1"  action="edit_user_details_action" method="POST">
+        <div class="confirm-box" id="kl23" style="display: none">
+            <h1 style="    font-size: 14px;
+            color: white;    background: #423d58;">Please wait...</h1>
+            <div id="progress-bar">
+                <div id="inner-pb"></div>
+            </div>
+          </div>
         {% csrf_token %}
         <input type="hidden" name="user_updated_id" value="{{data.id}}">
     <div class="modal-body">
@@ -70,7 +76,7 @@
                             <div class="col-md-6 mt-4">
                                 <div class="form-group">
                                     <div class="form-group bmd-form-group required_item">
-                                        <input type="text" name="employee_branch" style="    background: #2b2c422b;
+                                        <input readonly type="text" name="employee_branch" style="    background: #2b2c422b;
                                         color: black;
                                     " value="{{data.employee_branch}}" class="input form-control getVal" >
                                         <label class="inputText openselect2">Branch</label>
@@ -80,7 +86,7 @@
                             <div class="col-md-6 mt-4">
                                 <div class="form-group">
                                     <div class="form-group bmd-form-group required_item">
-                                        <input style="    background: #2b2c422b;
+                                        <input readonly style="    background: #2b2c422b;
                                         color: black;" type="text" name="employee_department" value="{{data.employee_department}}" class="input form-control getVal" >
                                         
                                         <label class="inputText openselect2">Department</label>
@@ -90,7 +96,7 @@
                             <div class="col-md-6 mt-4">
                                 <div class="form-group">
                                     <div class="form-group bmd-form-group required_item">
-                                        <input style="    background: #2b2c422b;
+                                        <input readonly style="    background: #2b2c422b;
                                         color: black;" type="text" name="employee_name" value="{{data.employee_name}}" class="input form-control getVal" >
                                         <label class="inputText openselect2">Employee Name</label>
                                     </div>
@@ -99,7 +105,7 @@
                             <div class="col-md-6 mt-4">
                                 <div class="form-group">
                                     <div class="form-group bmd-form-group required_item">
-                                        <input style="    background: #2b2c422b;
+                                        <input  style="    background: #2b2c422b;
                                         color: black;" name="emp_registration_id" value="{{data.employee_id}}" readonly id="emp_registration_id" type="text" class="input form-control">
                                         <label class="inputText openselect2">Employee Registration No</label>
                                     </div>
@@ -145,6 +151,7 @@
                                     </div>
                                 </div>
                             </div>
+                           
                             <div class="col-md-6 mt-4" id="total_days_div" style="display: block">
                                 <select name="edit_passsword_used_days" class="form-control mt-2">
                                     <option>{{data.password_expiration_total_days}}</option>
@@ -319,4 +326,11 @@
         
     });
 });
+</script>
+
+<script>
+     $(".submit_action1").submit(function(){
+        // alert("hhh")
+        $("#kl23").show();
+    })
 </script>

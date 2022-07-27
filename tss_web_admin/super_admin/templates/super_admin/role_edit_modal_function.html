@@ -3,7 +3,14 @@
 <!-- <div id="newsrole" class="modal fade" role="dialog" data-backdrop="static">
 <div class="modal-dialog modal_large"> -->
 <!-- Modal content-->
-<form action="edit_role_details_action" method="POST">
+<form class="submit_action1"  action="edit_role_details_action" method="POST">
+    <div class="confirm-box" id="kl22" style="display: none">
+        <h1 style="    font-size: 14px;
+        color: white;    background: #423d58;">Please wait...</h1>
+        <div id="progress-bar">
+            <div id="inner-pb"></div>
+        </div>
+      </div>
     {% csrf_token %}
     <input type="hidden" name="id" value="{{data.id}}">
 <div class="modal-content">
@@ -52,12 +59,13 @@
                                             <!--                                                        <label class="">Gender</label>-->
 
                                             <div class="radio radio-info float_left_radio">
-                                                <input name="role_status" type="radio" value="True" id="customRadio1" {% if data.status == "True" %} checked {% else %} {% endif %}  name="role_status">
-                                                <label for="customRadio1">Active</label>
+                                                <input name="role_status" type="radio" value="True" id="customRadio11" {% if data.status == "True" %} checked {% else %} {% endif %}  name="role_status">
+                                                <label for="customRadio11">Active</label>
                                             </div>
                                             <div class="radio radio-info">
-                                                <input name="role_status" type="radio" value="False" name="role_status" id="customRadio2">
-                                                <label for="customRadio2">Inactive </label>
+                                                <input name="role_status" type="radio" value="False" id="customRadio21" {% if data.status == "False" %} checked {% else %} {% endif %}  name="role_status">
+                          
+                                                <label for="customRadio21">Inactive </label>
                                             </div>
 
                                         </div>
@@ -356,3 +364,10 @@
 </form>
 </div>
 </div>
+
+<script>
+    $(".submit_action1").submit(function(){
+        // alert("hhh")
+        $("#kl22").show();
+    })
+</script>

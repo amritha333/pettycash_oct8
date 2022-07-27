@@ -96,7 +96,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             {% for i1 in child_response %}
                             {% if emp_id ==  i1.registration_number %}
                  
-                            <a class="m-4" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background: #262435;
+                            <a class="m-4 child_mark"  id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background: #262435;
                             color: white;
                             padding: 12px 40px;
                             font-size: 12px;">{{i1.name}}</a>
@@ -106,7 +106,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
     
                        
                        
-                            <a class="m-4" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
+                            <a class="m-4 child_mark" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
                             color: white;
                             padding: 12px 40px;
                             font-size: 12px;">{{i1.name}}</a>
@@ -621,7 +621,49 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
 
 </form>
 
+<style>
+    .lds-dual-ring.hidden { 
+display: none;
+}
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 5% auto;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,.8);
+    z-index: 999;
+    opacity: 1;
+    transition: all 0.5s;
+}
+</style>
+     <div id="loader" class="lds-dual-ring hidden overlay"></div>
 
 
 <script src="{% static 'adminnew/js/custome.js' %}"></script>
@@ -1381,47 +1423,49 @@ $("#emp_name_action").change(function(){
     function child_function(id,count1){
      
         count = `{{child_count}}`
+        $(".child_mark").css("background-color","#72819c");
+        var b2 = "child_emp"+count1
+        document.getElementById(b2).style.backgroundColor = "#262435";
      
         
-        for(let i=1;i<=count;i++)
-{
-    var b1 = "child_emp"+i
-    var b2 = "child_emp"+count1
-    if(b1==b2){
-        document.getElementById(b2).style.backgroundColor = "#262435";
-    }
-    else{
-        document.getElementById(b1).style.backgroundColor = "#72819c";
+//         for(let i=1;i<=count;i++)
+// {
+//     var b1 = "child_emp"+i
+//     var b2 = "child_emp"+count1
+//     if(b1==b2){
+//         document.getElementById(b2).style.backgroundColor = "#262435";
+//     }
+//     else{
+//         document.getElementById(b1).style.backgroundColor = "#72819c";
 
-    }
+//     }
   
-  console.log(i);
+//   console.log(i);
   
-}
+// }
 
 
-$.ajax({
-            url: 'get_child_based_leave_history',
-            // datatype: 'json',
-            data: {
-                'employee_id': id       
-            },
-            type: 'GET',
-            success: function (data) {  
 
-              
-                $("#leave_history_child").html(data);
 
-                // leave_history_child
-            
 
-            //    $("#entitlement_data1").html(data);
 
-          
-                
-            }
-            
-        });
+        $.ajax({
+                type: "GET",
+                url: "get_child_based_leave_history",
+                data: {
+                    'employee_id': id           
+                },
+                beforeSend: function() {
+                    $('#loader').removeClass('hidden')
+                },
+                success: function(data){
+                    $("#leave_history_child").html(data);
+                },
+                complete: function(){
+                    $('#loader').addClass('hidden')
+                },
+            });
+
 
 
         

@@ -102,7 +102,9 @@ urlpatterns = [
     path('test_r1',views.test_r1,name='test_r1'),
     path('test_r2',views.test_r2,name='test_r2'),
     path('testchart',views.testchart,name='testchart'),
-    path('img',views.img,name='img')
+    path('img',views.img,name='img'),
+    path('loader',views.loader,name='loader'),
+    
     
     
 
