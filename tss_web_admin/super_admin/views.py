@@ -1891,6 +1891,20 @@ async def odoo_leave_entitlement_balances_response_api(request,odoo_id,token):
             return response12
     pass
 
+
+
+
+
+async def odoo_new_leave_api(request,odoo_id,token):
+    token_url =  api_domain+"api/get_leave"
+    payload = json.dumps({ "jsonrpc": "2.0","params": { "employee_id" : int(odoo_id)}})
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            return response12
+    pass
 def leave_management(request):
     user_auth_id = request.user.id
     odoo_id = 0
@@ -1909,11 +1923,18 @@ def leave_management(request):
     print("hhhhh")
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     print("heyyyyyyyyyyyy")
-    leave_history_response =  asyncio.run(odoo_leave_history_api(request,odoo_id,odoo_token_data.token))
-    leave_type_response = asyncio.run(odoo_leave_leave_type_api(request,odoo_token_data.token))
-    replacer_response = asyncio.run(odoo_leave_replacer_api(request,odoo_token_data.token))
-    child_response =asyncio.run(odoo_leave_child_response_api(request,odoo_id,odoo_token_data.token))
-    entitlement_balances_response = asyncio.run(odoo_leave_entitlement_balances_response_api(request,odoo_id,odoo_token_data.token))
+    new_api_integration =  asyncio.run(odoo_new_leave_api(request,odoo_id,odoo_token_data.token))
+    print("new_data::::")
+    print(new_api_integration)
+    leave_history_response = new_api_integration['leave_history']
+    leave_type_response = new_api_integration['leave_types']
+    entitlement_balances_response = new_api_integration['entitled_details']
+    replacer_response = new_api_integration['possible_replacers']
+    child_response = new_api_integration['childs_ids_with_current_empl']
+    
+
+
+   
     context = {
         'leave_type_response':leave_type_response,
         'leave_history_response':leave_history_response,
