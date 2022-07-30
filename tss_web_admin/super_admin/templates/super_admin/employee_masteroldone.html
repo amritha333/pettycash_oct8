@@ -70,7 +70,7 @@
                                             <th>Contact No.</th>
                                             <th>Job Title</th>
                                             <th>Branch</th>
-                                          
+                                            <th>User Create Status</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -121,7 +121,16 @@
                                                
                                                
                                             </td>
-                                         
+                                            <td>
+                                                {% if employee.id|get_user_exists_status:"status"  %}
+<span style="    background: green;
+color: white;
+padding: 8px 11px;">Alredy Exist</span>
+
+                                                {% else %}
+                                              
+                                                {% endif %}
+                                            </td>
                                             <td>
                                                 <!-- <a class="label-default" href="employee-view.html"> <i class="fa fa-pencil"></i>
                                                 </a> -->

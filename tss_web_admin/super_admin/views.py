@@ -163,6 +163,23 @@ def user_home(request):
     
     return render(request,'super_admin/user_home.html')
 import json
+import aiohttp
+import asyncio
+
+
+
+async def odoo_test_login_api(request):
+    token_url = api_domain+"api/get_api_key"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {"login": "admin","password": "admin","db": "tss-latest"}})
+    headers = {'Content-Type': 'application/json','Cookie': 'session_id=9d67dcc82ed899ef3c1b3bbe0b6377464c46a52d'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']
+            return response12
+
+    pass
+
 
 def login_action(request):
 
@@ -170,70 +187,33 @@ def login_action(request):
         from datetime import date
         uname = request.POST.get("uname",False)
         passwrd = request.POST.get("passwrd",False)
-       
         user = authenticate(username=uname, password=passwrd)
         remember = request.POST.get("remember",False)
-       
-        
-        
         if user is not None:
             if remember == "yes":
                 request.session['user_email'] = uname
             else:
                 request.session['user_email'] = ""
-
             st = user.is_superuser
-
-            token_url = api_domain+"api/get_api_key"
-            payload = json.dumps({
-                "jsonrpc": "2.0",
-                "params": {
-                "login": "admin",
-                "password": "admin",
-                "db": "tss-latest"
-                }
-            })
-            headers = {
-                'Content-Type': 'application/json',
-                'Cookie': 'session_id=9d67dcc82ed899ef3c1b3bbe0b6377464c46a52d'
-            }
-
-            response = requests.request("GET", token_url, headers=headers, data=payload)
-            
-
-            json_response = response.json()['result']
-
-        
-
             try:
                 alredy_exists_odoo_token = odoo_api_request_token.objects.get(status="True")
-                if alredy_exists_odoo_token is not None:
-                    update_token =  odoo_api_request_token.objects.filter(status="True").update(
-                        token = json_response['result']
-                    
-                    )
-
+                # if alredy_exists_odoo_token is not None:
+                #     update_token =  odoo_api_request_token.objects.filter(status="True").update(
+                #         token = json_response['result']
+                #     )
             except odoo_api_request_token.DoesNotExist:
+                get_response = asyncio.run(odoo_test_login_api(request))
+                json_response = get_response
                 save_token = odoo_api_request_token(
                     token = json_response['result'],
                     status = "True" 
                 )
                 save_token.save()
-
-
-            
-         
-
             login(request, user)
-
             if st == True:
-
-
                 return redirect("admin_dashboard")
             elif st == False:
                 today = date.today()
-
-                
                 try:
                     login_effective = User_Management.objects.filter(auth_user=user,effective_to_dt__gte=today,effective_from_dt__lte=today) | User_Management.objects.filter(auth_user=user,effective_from_dt__lte=today,effective_to_dt=None)
                     if login_effective:
@@ -261,21 +241,12 @@ def login_action(request):
                 print("employeeee___")
                 pass
         else:
-
             try:
                 user_login = User_details.objects.get(username=uname,password=passwrd,status="True")
-
                 request.session['user_login_id'] = user_login.id
                 return redirect("user_home")
-
             except User_details.DoesNotExist:
-
-
-
-
-
                 context = {}
-               
                 context['message'] = "error"
                 return render(request,'super_admin/index.html',context)
 
@@ -949,46 +920,33 @@ def view_company_details(request):
         'company_data' :response
     }
     return render(request,'super_admin/view_company_details.html',context)
-        
+
+
+
+
+async def odoo_employee_details_api(request,token):
+    token_url = api_domain+"api/get_employees"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {"login": "admin","password": "admin@veuz@123","db": "tss_migration_may14"}})
+    headers =  {
+        'api_key': token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']
+            return response12
 
 @test_w1('Employee')
 @login_required(login_url='/index')
 def employee_master(request):
-
-
-
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
- 
-
-
-    url = api_domain+"api/get_employees"
-
-    payload = json.dumps({
-        "jsonrpc": "2.0",
-        "params": {}
-    })
-    headers = {
-        'api_key': odoo_token,
-        'Content-Type': 'application/json',
-        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    
-    response1 = response.json()['result']
-
-
-   
-    
-    
-
+    response1 = asyncio.run(odoo_employee_details_api(request,odoo_token))
     context = {
         'data':response1['result']
     }
-
-
-
     return  render(request,'super_admin/employee_master.html',context)
 
 
@@ -1035,54 +993,24 @@ def employee_more_details(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
-    address_response = requests.request("GET", address_response, headers=address_headers, data=address_payload)
+    address_res = ""
+    address_response1 = ""
+    try:
+        address_response = requests.request("GET", address_response, headers=address_headers, data=address_payload)
    
-    address_res = address_response.json()['result']['result']
+        address_res = address_response.json()['result']['result']
+        address_response1 = address_res[0]
+    except:
+        pass
     
 
 
-    
-    # response =False
-    # try:
-    #     response = requests.get(api_domain+"api/get_employee?empl_id="+employee_id).json()[0]
-    # except:
-    #     pass
-    
-
-
-    # dept = False
-    # try:
-    #     dept = response['department_id'][1]
-    # except:
-    #     pass
-    # print("depatment:::",str(dept))
-
-
-    # print("r1:::::::",str(response))
-    # address_id = response['address_home_id'][0]
-    # print("address_id:::::",str(address_id))
-
-    # address_response = requests.get(api_domain+"api/get_employee_addreess?partner_id="+str(address_id)).json()[0]
-    # print("address_response::::")
-    # print(address_response)
-
-
-    # state = False
-    # try:
-    #     state = address_response['state_id'][1]
-    # except:
-    #     pass
-    # country_id = False
-    # try:
-    #     country_id = address_response['country_id'][1]
-    # except:
-    #     pass
 
     
     context = {
         'response':data_response,
         'dept':"test",
-        'address_response':address_res[0],
+        'address_response':address_response1,
         'state':"test",
         'country_id':"test"
     }
@@ -1900,17 +1828,76 @@ def user_add_new_role_action(request):
 
 
 
+
+
+
+
+
+
+async def odoo_leave_history_api(request,odoo_id,token):
+    token_url = api_domain+"api/get_leave_history"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {"employee_id": int(odoo_id)}})
+    print("hhhhhhhhhhhhhhhhhhhh")
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            print("hhhhhhhhhhhhhhhhhhqqqqqqqqqhh")
+            return response12
+    pass
+
+async def odoo_leave_leave_type_api(request,token):
+    token_url = api_domain+"api/get_leave_types"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {}})
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            return response12
+    pass
+
+async def odoo_leave_replacer_api(request,token):
+    token_url = api_domain+"api/get_employees"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {}})
+    headers ={'api_key':token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            return response12
+    pass
+
+async def odoo_leave_child_response_api(request,odoo_id,token):
+    token_url =  api_domain+"api/get_childs"
+    payload = json.dumps({ "jsonrpc": "2.0","params": { "employee_id" : int(odoo_id)}})
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            return response12
+    pass
+
+async def odoo_leave_entitlement_balances_response_api(request,odoo_id,token):
+    token_url =  api_domain+"api/get_leave_entitlement"
+    payload = json.dumps({ "jsonrpc": "2.0","params": { "employee_id" : int(odoo_id)}})
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(token_url, headers=headers, data=payload) as res:
+            response1 = await res.json()
+            response12 =response1['result']['result']
+            return response12
+    pass
+
 def leave_management(request):
-
-
     user_auth_id = request.user.id
-    
     odoo_id = 0
     emp_name = ""
     emp_email = ""
     emp_id = ""
     try:
-
         odoo_data = User_Management.objects.get(auth_user=user_auth_id)
         odoo_id = odoo_data.odoo_id
         emp_name = odoo_data.employee_name
@@ -1918,127 +1905,15 @@ def leave_management(request):
         emp_id = odoo_data.employee_id
     except:
         pass
-
-    
-   
-    odoo_token_data = odoo_api_request_token.objects.get(status="True")
-    odoo_token = odoo_token_data.token
-
     leave_history_response = ""
-    try:
-        leave_history_response_url = api_domain+"api/get_leave_history"
-        leave_history_payload = json.dumps({
-            "jsonrpc": "2.0",
-            "params": {
-                "employee_id": int(odoo_id)
-            }
-        })
-        leave_history_headers = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-        }
-
-        leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers, data=leave_history_payload).json()
-        
-        
-        leave_history_response12  = leave_history_response1['result']
-        leave_history_response = leave_history_response12['result']
-        
-        
-
-    except:
-        pass
-
-    leave_type_response = ""
-    try:
-        leave_type_response_url = api_domain+"api/get_leave_types"
-        leave_type_payload = json.dumps({
-             "jsonrpc": "2.0", 
-             "params": {
-            }
-        })
-        leave_type_headers = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-
-        }
-        leave_type_response1 = requests.request("GET", leave_type_response_url, headers=leave_type_headers, data=leave_type_payload).json()
-        leave_type_response12 = leave_type_response1['result']
-        leave_type_response = leave_type_response12['result']
-    except:
-        pass
-    
-    replacer_response = ""
-    try:
-        replacer_api_url = api_domain+"api/get_employees"
-        replacer_payload = json.dumps({
-            "jsonrpc": "2.0",
-            "params": {
-               
-            }
-        })
-        replacer_header = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-        }
-        replacer_response1 = requests.request("GET", replacer_api_url, headers=replacer_header, data=replacer_payload).json()
-        replacer_response12 = replacer_response1['result']
-        replacer_response = replacer_response12['result']
-    except:
-        pass
-    # replacer_response = requests.get(api_domain+"api/get_all_employees").json()
-
-
-
-
-    
-    child_response = ""
-    try:
-        child_response_url = api_domain+"api/get_childs"
-        child_payload = json.dumps({
-            "jsonrpc": "2.0",
-            "params": {
-                "employee_id" : int(odoo_id)
-               
-            }
-        })
-        child_header = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-        }
-        child_response1 = requests.request("GET", child_response_url, headers=child_header, data=child_payload).json()
-        child_response12 = child_response1['result']
-        child_response = child_response12['result']
-    except:
-        pass
-
-
-
-
-    entitlement_balances_url = api_domain+"api/get_leave_entitlement"
-    entitlement_balances_payload = json.dumps({
-        "jsonrpc": "2.0",
-        "params": {
-            "employee_id" : int(odoo_id)
-               
-        }
-    })
-    entitlement_balances_header = {
-        'api_key': odoo_token,
-        'Content-Type': 'application/json',
-        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-    }
-    entitlement_balances_response1 = requests.request("GET", entitlement_balances_url, headers=entitlement_balances_header, data=entitlement_balances_payload).json()
-    entitlement_balances_response12 = entitlement_balances_response1['result']
-    entitlement_balances_response = entitlement_balances_response12['result']
-    
-    
-
-
+    print("hhhhh")
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    print("heyyyyyyyyyyyy")
+    leave_history_response =  asyncio.run(odoo_leave_history_api(request,odoo_id,odoo_token_data.token))
+    leave_type_response = asyncio.run(odoo_leave_leave_type_api(request,odoo_token_data.token))
+    replacer_response = asyncio.run(odoo_leave_replacer_api(request,odoo_token_data.token))
+    child_response =asyncio.run(odoo_leave_child_response_api(request,odoo_id,odoo_token_data.token))
+    entitlement_balances_response = asyncio.run(odoo_leave_entitlement_balances_response_api(request,odoo_id,odoo_token_data.token))
     context = {
         'leave_type_response':leave_type_response,
         'leave_history_response':leave_history_response,
@@ -2048,12 +1923,26 @@ def leave_management(request):
         'replacer_response':replacer_response,
         'child_response':child_response,
         'entitlement_balances_response':entitlement_balances_response,
-        'child_count':len(child_response)
+        'child_count':len("child_response")
         
     }
 
     return render(request,'super_admin/leave_management.html',context)
+   
+    
+   
 
+
+
+    
+   
+
+
+   
+    
+
+
+   
 
 
 
@@ -2258,10 +2147,13 @@ def testr1(request):
 
 
 def send_push_notification(send_user_id,leave_request_username):
+    print("send_user_id::",str(send_user_id))
+
     user__id = send_user_id
     message = "one leave request from " +leave_request_username
     user1 = user_fcm_token.objects.get(user = user__id)
     token = user1.fcm_token
+    print("token::::",str(token))
     url="https://fcm.googleapis.com/fcm/send"
     body={
         "notification":{
@@ -2271,8 +2163,9 @@ def send_push_notification(send_user_id,leave_request_username):
         },
         "to":token
     }
-    headers={"Content-Type":"application/json","Authorization":"key=AAAAa8sZLQ0:APA91bEY2tEwoX_BP7Uee5TUd8--sFyDfngbU8gJbl5IMrkndYchLQfOgs5GzxDKBD8pkPf49IJ4G5upbV5koLZAUQ6FMtLGYag1khkmky2x3tfd5HKpSrKMTIOjJ58dBSDibhMZ3ptR"}
+    headers={"Content-Type":"application/json","Authorization":"key=AAAAlgMZ980:APA91bFD9Uvem1jR8y_DMeHtpGVHPfsE-mspG6SlivhobgxSHouKlcshoAm-kmwujx1mX-dDwuJY-H9zZsY3llo1CcgUq3DNDj9SHs2gbxpkPOPa07RDtyHYRvTaiwnhlAwPkb9PDzEg"}
     data=requests.post(url,data=json.dumps(body),headers=headers)
+    print("notification send message:::")
     print(data.text)
     pass
 
@@ -2346,6 +2239,7 @@ def user_leave_apply_action(request):
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
        
         response12 = response1.json()['result']
+        print("result::::",str(response12))
         
        
         l1 = response12['result']
@@ -2407,11 +2301,20 @@ def user_leave_apply_action(request):
 
             )
             submit_status.save()
+            
 
 
             try:
                 check_data = User_Management.objects.get(odoo_id=int(responsible_for_approval))
-                send_push_notification(check_data.auth_user,employee_name1)
+                user__id = check_data.auth_user
+                message = "one leave request from " +employee_name1
+                try:
+
+                    send_push_notification(user__id,employee_name1)
+                except:
+                    pass
+
+
                 print("check_data::::",str(check_data.auth_user.id))
                 second_user_id = check_data.auth_user.id
                 
@@ -3354,34 +3257,37 @@ def leave_approve_action(request):
                 pass
             else:
             
-                next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval)
-                leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
-                next_approval_notification = odoo_notification(
-                    notification_type="leave_approve_request",
-                    message="leave request",
-                    mapping_id = leave_id,
-                    requested_from_dt = leave_data.requested_from_dt,
-                    requested_to_dt = leave_data.requested_to_dt,
-                    read_status = 0,
-                    status = "Pending",
-                    auth_user_id_id = next_approve_user_data.auth_user.id,
-                    leave_type_name = leave_data.leave_type_name,
-                    leave_apply_user_name = leave_data.leave_apply_user_name,
-                    description = "null",
-                    current_leave_status = leave__result_status
-                )
-                next_approval_notification.save()
-                from datetime import date
+                try:
+                    next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval)
+                    leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+                    next_approval_notification = odoo_notification(
+                        notification_type="leave_approve_request",
+                        message="leave request",
+                        mapping_id = leave_id,
+                        requested_from_dt = leave_data.requested_from_dt,
+                        requested_to_dt = leave_data.requested_to_dt,
+                        read_status = 0,
+                        status = "Pending",
+                        auth_user_id_id = next_approve_user_data.auth_user.id,
+                        leave_type_name = leave_data.leave_type_name,
+                        leave_apply_user_name = leave_data.leave_apply_user_name,
+                        description = "null",
+                        current_leave_status = leave__result_status
+                    )
+                    next_approval_notification.save()
+                    from datetime import date
 
-                today = date.today()
-                add_leave_status = Leave_Status_details.objects.create(
-                    leave_mapping_id = int(leave_id),
-                    user_name = next_approve_user_data.employee_name,
-                    auth_user = next_approve_user_data.auth_user,
-                    dt = today,
-                    status = "Pending"
+                    today = date.today()
+                    add_leave_status = Leave_Status_details.objects.create(
+                        leave_mapping_id = int(leave_id),
+                        user_name = next_approve_user_data.employee_name,
+                        auth_user = next_approve_user_data.auth_user,
+                        dt = today,
+                        status = "Pending"
 
-                )
+                    )
+                except:
+                    pass
 
 
             messages.success(request,str("approved success"))
@@ -3544,14 +3450,14 @@ def showFirebaseJS(request):
     data='importScripts("https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js");' \
          'importScripts("https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js"); ' \
          'var firebaseConfig = {' \
-         '        apiKey: "AIzaSyAoGTaeBjBPPiJFtTLt9LZ4rtbEKYWyH9Y",' \
-         '        authDomain: "tss-leave.firebaseapp.com",' \
+         '        apiKey: "AIzaSyBUzBd7jlI4_xOOWk1Z21KGGeDmUogUL7s",' \
+         '        authDomain: "tss-leave-15620.firebaseapp.com",' \
          '        databaseURL: "FIREBASE_DATABASE_URL",' \
-         '        projectId: "tss-leave",' \
-         '        storageBucket: "tss-leave.appspot.com",' \
-         '        messagingSenderId: "462968925453",' \
-         '        appId: "1:462968925453:web:1d4792e45170fb1b5a9444",' \
-         '        measurementId: "G-C21S9MZJSR"' \
+         '       projectId: "tss-leave-15620",' \
+         '         storageBucket: "tss-leave-15620.appspot.com",' \
+         '        messagingSenderId: "644297127885",' \
+         '        appId: "1:644297127885:web:02256dc071fd129fb33684",' \
+         '         measurementId: "G-8NFZMH0NY4"' \
          ' };' \
          'firebase.initializeApp(firebaseConfig);' \
          'const messaging=firebase.messaging();' \
@@ -3572,3 +3478,34 @@ def showFirebaseJS(request):
 
 def loader(request):
     return render(request,'super_admin/loader.html')
+
+
+
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tss_database',
+#         'USER': 'tss',
+#         'PASSWORD': '2021@tss',
+#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
+
+
+
+
+
+
+
+

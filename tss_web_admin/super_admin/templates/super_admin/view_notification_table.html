@@ -82,7 +82,41 @@
                                             {{  i.dt|get_notifications_date_ago}}  days
                                         </td>
                                         <td>
-                                            {{i.status}}
+                                           {% if i.status == "validate1" %}
+                                           <span style="    background: #fed47e;
+                                           color: black;
+                                           font-size: 12px;
+                                           padding: 4px 9px;
+                                           border: 0;
+                                           font-size: 12px;
+                                           user-select: none;
+                                           /* background-color: rgba(211, 211, 211, 0.5); */
+                                           font-weight: 500;
+                                           display: inline-block;
+                                           max-width: 100%;
+                                           white-space: nowrap;
+                                           overflow: hidden;
+                                           text-overflow: ellipsis;
+                                           vertical-align: top;
+                                           transition: none;
+                                           border-radius: 12px;">Second Approve</span>
+                                           {% elif i.status == 	"validate" %} 
+                                           <span style="    padding: 3px 12px;
+                                           background: #348751;
+                                           color: white;
+                                           font-size: 10px;
+                                           border-radius: 12px;">Approved</span>
+                                           {% else %}
+<span style="    padding: 3px 12px;
+background: #348751;
+color: white;
+font-size: 10px;
+border-radius: 12px;">
+     {{i.status}}
+</span>
+                                      
+
+                                           {% endif  %}
                                          
                                           
                                          

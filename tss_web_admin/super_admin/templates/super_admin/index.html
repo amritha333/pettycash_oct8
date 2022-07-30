@@ -43,6 +43,246 @@ top: -12px !important;
     </style>
 </head>
 <body class="account-pages">
+   <style>
+      .confirm-box {
+         width: 280px;
+    position: absolute;
+    top: 43%;
+    left: 46%;
+    z-index: 10;
+    color: rgba(0,0,0,0.7);
+    font-family: Helvetica;
+    font-size: 15px;
+    font-weight: bold;
+    background: #ddd0;
+    border-radius: 0.4em;
+    
+    &:after {
+        content:"";
+      display:table;
+      clear:both;
+    }
+  
+  }
+  
+  .confirm-box h1 {
+      text-align:center; 
+    padding:10px 30px;
+    line-height:1.2em;
+    border-radius:0.4em 0.4em 0 0;
+    text-shadow:0 1px 0 rgba(255,255,255,0.1);
+     border-bottom:1px solid rgba(0,0,0,0.3);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.3),
+      inset 0 30px 30px rgba(255,255,255,0.2);
+    margin-bottom:15px;
+    background:#0088CC;
+  }
+  
+  
+  .confirm-box a {
+      display:block;
+    position:relative;
+    
+    padding:7px 40px;
+    width:130px;
+    margin:0 auto;
+    margin-bottom:15px;
+    
+    text-decoration:none;
+    text-align:center;
+    font-size:13px;
+  
+    border:1px solid rgba(0,0,0,0.7);
+    border-radius:0.2em;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 20px 20px rgba(255,255,255,0.2),
+      1px 2px 1px rgba(0,0,0,0.2),
+      0 0 2px 8px rgba(50,50,50,0.1);
+    transition:all 0.3s ease-out;
+    background:#d02211;
+    z-index:100;
+    
+    font-weight:bold;
+    color:rgba(0,0,0,0.6);
+    text-shadow:0 1px 0 rgba(255,255,255,0.2);
+    -webkit-font-smoothing: subpixel-antialiased;
+  
+    
+    &:hover {
+         box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.5),
+        inset 0 -20px 20px rgba(200,200,200,0.1),
+        1px 2px 1px rgba(0,0,0,0.2),
+        0 0 2px 8px rgba(100,100,100,0.1);
+    }
+    
+    &:active {
+        top:1px; 
+    }
+  
+  }
+  
+  #progress-bar {
+      width:90%;
+    margin:0 auto;
+    margin-bottom:15px;
+     height:28px;
+    border:1px solid rgba(0,0,0,0.8);
+    background:#232323;
+    border-radius:1em;
+    box-shadow:inset 0 0 5px rgba(0,0,0,0.5);
+  }
+  
+  #inner-pb {
+     position:relative;
+    border:1px solid rgba(0,0,0,0.8);
+    width:0;
+    
+    
+    height:22px;
+    margin-left:5px;
+    margin-top:2px;
+    background: repeating-linear-gradient(-45deg, #625e74, #5d5970 20px, #5f5b72 20px, #57536b 40px);
+    border-radius:0.8em;
+    animation: roll 5s linear infinite;
+    box-shadow: 
+      inset 0 10px 10px rgba(255,255,255,0.2), 
+      inset 0 1px 0 rgba(255,255,255,0.3), 
+      inset 0 -5px 3px rgba(0,0,0,0.2),
+      0 3px 2px rgba(0,0,0,0.3);
+  }
+  
+  @-moz-keyframes roll {
+     0% { width:0; }
+    100% { width:95%; }
+  }
+  
+  @-webkit-keyframes roll {
+     0% { width:0; }
+    100% { width:95%; }
+  }
+
+  .loader1{
+   border-radius: 50%;
+    border-top: 20px solid #d44772;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #74bf44;
+    animation-name: rotatepos;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.inside1{
+	display: flex;
+	place-items: center;
+	justify-content: center;
+	width: 110px;
+	height: 110px;
+	border-radius: 50%;
+	border-left: 20px solid dodgerblue;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	border-right: 20px solid dodgerblue;
+	animation-name: buruh;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+.loader1, .loader2, .loader3{
+	height: 150px;
+	width: 150px;
+}
+.inside1 span{
+	animation-name: rotatepos;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	font-family: monospace;
+   color: #2c2969;
+}
+@keyframes rotatepos{
+	0%{}
+	50%{transform: rotate(360deg)}
+}
+@keyframes buruh{
+	0%{}
+	50%{transform: rotate(-720deg);}
+}
+@keyframes stuff2{
+	0%{}
+	50%{transform: rotate(720deg);}
+}
+.loader2{
+	display: flex;
+	place-items: center;
+	justify-content: center;
+}
+.loader2 div{
+	height: 50px;
+	width: 50px;
+	border-radius: 25px;
+	background-color: dodgerblue;
+	margin: 5px;
+	animation-name: stretch;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+.bar2{
+	animation-delay: 0.25s;
+}
+.bar3{
+	animation-delay: 0.50s;
+}
+@keyframes stretch{
+	0%{}
+	50%{height: 150px}
+}
+.loader3 div{
+	height: 50px;
+	width: 50px;
+	background-color: dodgerblue;
+	margin: 5px;
+	animation-name: scaleit;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+.loader3{
+	display: flex;
+	place-items: center;
+	width: 170px;
+}
+.ball1{
+}
+.ball2{
+	animation-delay: 0.25s;
+}
+.ball3{
+	animation-delay: 0.50s;
+}
+@keyframes scaleit{
+	0%{}
+	50%{transform: rotate(180deg)}
+}
+.footer{
+	position: absolute;
+	bottom: 40px;
+	right: 40px;
+	font-family: monospace;
+	font-size: 1.2em;
+	text-decoration: underline;
+	text-decoration-color: dodgerblue;
+	font-weight: bold;
+	color: dodgerblue;
+}
+  </style>
+   <div class="confirm-box" id="kl2" style="display: none">
+      <div class="loader1">
+         <div class="inside1">
+            <span>LOADING</span>
+         </div>
+      </div>
+    </div>
    <!-- Begin page -->
    <div class="accountbg" style="background: url('{% static 'hrm/images/lockscreen-bg.jpg' %}');background-size: cover;background-position: center;"></div>
    <div class="wrapper-page account-page-full">
@@ -61,7 +301,7 @@ top: -12px !important;
                   </h2>
                   <div class="account-form pb-5">
 					 
-                     <form class="" action="login_action"  method="post">
+                     <form class="submit_action" action="login_action"  method="post">
                         {% csrf_token %}
                         <div class="form-group row m-b-20">
                            <div class="col-12">
@@ -157,4 +397,20 @@ top: -12px !important;
    })
 </script>
 
+<script>
+   console.log(Notification.permission);
+   if (Notification.permission === "granted") {
+      alert("we have permission");
+   } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+         console.log(permission);
+      });
+   }
+</script>
+<script>
+   $(".submit_action").submit(function(){
+       // alert("hhh")
+       $("#kl2").show();
+   })
+</script>
 </html>
