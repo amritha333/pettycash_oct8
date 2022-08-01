@@ -1135,12 +1135,21 @@ def getemployee_branch_dpt(request):
    
     try:
         employee_dpt  = response['department_id'][1]
+        if employee_dpt == "false":
+            employee_dpt = ""
+        
+
     except:
         employee_dpt = False
     try:
         employee_branch = response['branch_id'][1]
+        if  employee_branch == "false":
+            employee_branch = ""
+
     except:
         employee_branch = False
+        
+        
     emp_registration_id = response['registration_number']
     
    
@@ -1185,8 +1194,7 @@ def user_add_action(request):
     if request.method == "POST":
         import time
 
-        print("Print now")
-        time.sleep(12)
+        
         
         username = request.POST.get("username",False)
         password_option = request.POST.get("password_option",False)
@@ -1224,6 +1232,10 @@ def user_add_action(request):
             if employee_branch == "false":
                 messages.warning(request,str("An Branch is required or has an invalid value, please correct and try again!!!"))
                 return redirect("user_management")
+            elif employee_branch == "":
+                messages.warning(request,str("An Branch is required or has an invalid value, please correct and try again!!!"))
+                return redirect("user_management")
+
                 
             
 
@@ -1902,6 +1914,7 @@ async def odoo_new_leave_api(request,odoo_id,token):
     async with aiohttp.ClientSession() as session:
         async with session.get(token_url, headers=headers, data=payload) as res:
             response1 = await res.json()
+            print("response1::::",str(response1))
             response12 =response1['result']['result']
             return response12
     pass
@@ -2111,13 +2124,14 @@ def user_edit_modal_function(request):
 
     role_data = Role_details.objects.all()
 
-
+    today = date.today()
 
 
     context = {
         'data':data,
         'user_role_details':user_role_details,
-        'role_data':role_data
+        'role_data':role_data,
+        'today':today
     }
 
     return render(request,'super_admin/user_edit_modal_function.html',context)
@@ -2260,7 +2274,9 @@ def user_leave_apply_action(request):
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
        
         response12 = response1.json()['result']
-        print("result::::",str(response12))
+        print("response::::")
+        print(response12)
+        
         
        
         l1 = response12['result']
@@ -2306,7 +2322,8 @@ def user_leave_apply_action(request):
                 auth_user_id = request.user,
                 leave_type_name=leave_type_nm,
                 leave_apply_user_name = employee_name1,
-               description =employee_leave_reason
+               description =employee_leave_reason,
+               category = "notification"
             )
             leave_notification.save()
 
@@ -2351,7 +2368,8 @@ def user_leave_apply_action(request):
                     leave_type_name=leave_type_nm,
                     leave_apply_user_name = employee_name1,
                     description =employee_leave_reason,
-                    current_leave_status = "confirm"
+                    current_leave_status = "confirm",
+                    category = "activities"
                 )
                 approval_notification.save()
                 submit_status1 = Leave_Status_details(
@@ -2383,7 +2401,8 @@ def user_leave_apply_action(request):
                         "status":str(leave_state),
                         "requested_date_from":str(employee_leave_from_date),
                         "requested_date_to":str(employee_leave_to_date),
-                        "send_user_id":second_user_id
+                        "send_user_id":second_user_id,
+                        "category":"activities"
                     }
                 }
             )
@@ -2394,13 +2413,27 @@ def user_leave_apply_action(request):
         
 
 def view_all_notification(request):
+    type = request.GET.get("type",False)
+    print("type:::",str(type))
+    if type == "notification":
+         update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user,category="notification").update(
+            read_status=1
+        )
 
-    notifictaion = odoo_notification.objects.filter(auth_user_id=request.user).order_by('-id')
-    update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user).update(
-        read_status=1
-    )
+    if type == "activities":
+        notifictaion = odoo_notification.objects.filter(auth_user_id=request.user,category="activities",read_status=0).order_by('-id')
+    else:
+        notifictaion = odoo_notification.objects.filter(auth_user_id=request.user,category="notification").order_by('-id')
+
+
+
+    
+    # update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user).update(
+    #     read_status=1
+    # )
     context = {
-        "notifictaion":notifictaion
+        "notifictaion":notifictaion,
+        'type':type
     }
     return render(request,'super_admin/view_all_notification.html',context)
 
@@ -2412,11 +2445,11 @@ def leave_status_update_api(request):
     if request.method == "POST":
         leave_id = request.POST.get("leave_id",False)
         state = request.POST.get("state",False)
-        updated_data = odoo_notification.objects.filter( mapping_id = int(leave_id)).update(status=state,read_status=0)
+        updated_data = odoo_notification.objects.filter( mapping_id = int(leave_id),notification_type="leave_type").update(status=state,read_status=0)
         data = {
             'message':"success"
         }
-        data_send = odoo_notification.objects.get(mapping_id= int(leave_id))
+        data_send = odoo_notification.objects.get(mapping_id= int(leave_id),notification_type="leave_type")
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "notification_broadcast2",
@@ -2432,6 +2465,7 @@ def leave_status_update_api(request):
                 }
             }
         )
+        print("notifiiiiiiiiii")
      
         return JsonResponse(data,safe=False)
 
@@ -2491,8 +2525,11 @@ def view_leave_more_details(request):
     response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
    
     response12 = response1.json()['result']
+    print("response:::",str(response12))
    
     r1 = response12['result'][0]
+
+    df = r1['leave_logs']
   
     emp_name = ""
     try:
@@ -2552,7 +2589,8 @@ def view_leave_more_details(request):
         'approve_button_status':approve_button_status,
         'id':id,
         'select_employee_api':select_employee_api,
-        'data_leave_status':data_leave_status
+        'data_leave_status':data_leave_status,
+        'history_action':df
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
 
@@ -3222,12 +3260,23 @@ def img(request):
 
 
 def view_notification_table(request):
-    notifictaion = odoo_notification.objects.filter(auth_user_id=request.user).order_by('-id')
-    update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user).update(
-        read_status=1
-    )
+
+    type = request.GET.get("type",False)
+    print("type:::",str(type))
+    if type == "notification":
+         update_noti = odoo_notification.objects.filter(read_status=0,auth_user_id=request.user,category="notification").update(
+            read_status=1
+        )
+
+    if type == "activities":
+        notifictaion = odoo_notification.objects.filter(auth_user_id=request.user,category="activities",read_status=0).order_by('-id')
+    else:
+        notifictaion = odoo_notification.objects.filter(auth_user_id=request.user,category="notification").order_by('-id')
+
+
     context = {
-        "notifictaion":notifictaion
+        "notifictaion":notifictaion,
+        'type':type
     }
     return render(request,'super_admin/view_notification_table.html',context)
 
@@ -3258,21 +3307,31 @@ def leave_approve_action(request):
         }
         approval_response = requests.request("GET", approval_api_url, headers=approval_header,
                                                    data=approval_payload).json()
-        print("approval_response:::")
-        print(approval_response)
         response = approval_response['result']
         if response['message'] == "success":
-            print("pppopoooo")
-
             response_result = response['result']
             leave_id = response_result['leave_id']
             leave__result_status = response_result['status']
-
-            
             responsible_for_approval = response_result['responsible_for_approval']
-            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="approve")
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="approve",read_status=1)
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
-            print("responsible_for_approval::::",str(responsible_for_approval))
+            send_request = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "notification_broadcast2",
+                {       
+                    'type': 'send_notification',
+                    'message':{
+                        "message":str("Leave Approve Request"),
+                        "dt":str(send_request.dt),
+                        "status":str(leave__result_status),
+                        "requested_date_from":str(send_request.requested_from_dt),
+                        "requested_date_to":str(send_request.requested_to_dt),
+                        "send_user_id":send_request.auth_user_id.id,
+                        "category":"notification"
+                    }
+                }
+            )
             updated_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Approved")
             if leave__result_status == "validate":
                 pass
@@ -3293,7 +3352,8 @@ def leave_approve_action(request):
                         leave_type_name = leave_data.leave_type_name,
                         leave_apply_user_name = leave_data.leave_apply_user_name,
                         description = "null",
-                        current_leave_status = leave__result_status
+                        current_leave_status = leave__result_status,
+                        category = "activities"
                     )
                     next_approval_notification.save()
                     from datetime import date
@@ -3306,6 +3366,22 @@ def leave_approve_action(request):
                         dt = today,
                         status = "Pending"
 
+                    )
+                    channel_layer = get_channel_layer()
+                    async_to_sync(channel_layer.group_send)(
+                        "notification_broadcast2",
+                        {       
+                            'type': 'send_notification',
+                            'message':{
+                            "message":str("Leave Approve Request"),
+                            "dt":str(send_request.dt),
+                            "status":str(leave__result_status),
+                            "requested_date_from":str(send_request.requested_from_dt),
+                            "requested_date_to":str(send_request.requested_to_dt),
+                            "send_user_id":next_approve_user_data.auth_user.id,
+                            "category":"activities"
+                        }
+                    }
                     )
                 except:
                     pass
@@ -3320,6 +3396,7 @@ def leave_approve_action(request):
 
 def reject_leave_request_action(request):
     if request.method == "POST":
+        print("heyyyyyyyyyyyyyyyyyyyyy1")
         leave_mapping_id = request.POST.get("leave_mapping_id",False)
         leave_status = request.POST.get("leave_status",False)
         note = request.POST.get("note",False)
@@ -3343,21 +3420,22 @@ def reject_leave_request_action(request):
         }
         reject_response = requests.request("GET", reject_api_url, headers=reject_header,
                                                    data=reject_payload).json()
-        print("reject_response:::")
+        print("reject_response23:::")
         print(reject_response)
         response = reject_response['result']
         if response['message'] == "success":
             print("rejecttttttttttttt::")
+            print("heyyyyyyyyyyyyyyyyyyyyy12")
 
             response_result = response['result']
             leave_id = response_result['leave_id']
             leave__result_status = response_result['status']
 
-            update_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Rjected",note=note)
+            update_leave_status = Leave_Status_details.objects.filter(auth_user=request.user,leave_mapping_id=leave_id).update(status="Rjected",note=note)
 
             
             # responsible_for_approval = response_result['responsible_for_approval']
-            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reject")
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reject",read_status=1)
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
             
         messages.success(request,str("Reject success"))
@@ -3404,7 +3482,7 @@ def leave_reassign_action(request):
 
             
             # responsible_for_approval = response_result['responsible_for_approval']
-            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reassign")
+            data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="reassign",read_status=1)
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
             next_approve_user_data = User_Management.objects.get(odoo_id=int(selected_employee_id))
             leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
@@ -3420,7 +3498,8 @@ def leave_reassign_action(request):
                 leave_type_name = leave_data.leave_type_name,
                 leave_apply_user_name = leave_data.leave_apply_user_name,
                 description = "null",
-                current_leave_status = leave__result_status
+                current_leave_status = leave__result_status,
+                category = "activities"
             )
             next_approval_notification.save()
             

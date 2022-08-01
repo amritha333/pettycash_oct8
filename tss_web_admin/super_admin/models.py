@@ -160,6 +160,11 @@ notification_type_data = (
 
 )
 
+notification_category_data = (
+    ("notification","notification"),
+    ("activities","activities")
+)
+
 class odoo_notification(models.Model):
     notification_type = models.CharField(max_length=255,null=True,choices=notification_type_data)
     message = models.TextField(null=True)
@@ -176,6 +181,7 @@ class odoo_notification(models.Model):
     leave_apply_user_name = models.CharField(max_length=255,null=True)
     description = models.TextField(null=True)
     current_leave_status = models.CharField(max_length=255,null=True)
+    category = models.CharField(max_length=255,null=True,choices=notification_category_data)
 
 
 

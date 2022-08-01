@@ -6,12 +6,25 @@ from super_admin.models import *
 
 @register.filter(name='get_notifications')
 def get_notifications(value):
-    return odoo_notification.objects.filter(read_status=0,auth_user_id=value).order_by('-id')
+    return odoo_notification.objects.filter(read_status=0,auth_user_id=value,category="notification").order_by('-id')
 
 
 @register.filter(name='get_notifications_count')
 def get_notifications_count(value):
-    return odoo_notification.objects.filter(read_status=0,auth_user_id=value).count()
+    return odoo_notification.objects.filter(read_status=0,auth_user_id=value,category="notification").count()
+
+
+@register.filter(name="get_activities_notifications_count")
+def get_activities_notifications_count(value):
+    return odoo_notification.objects.filter(read_status=0,auth_user_id=value,category="activities").count()
+
+
+@register.filter(name='get_activities_notifications')
+def get_activities_notifications(value):
+    return odoo_notification.objects.filter(read_status=0,auth_user_id=value,category="activities").order_by('-id')
+
+
+
 
 @register.filter(name='get_branch_department')
 def get_branch_department(value):

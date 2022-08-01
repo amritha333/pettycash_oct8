@@ -27,11 +27,11 @@
 
                         <div class="col-md-5 col-12">
                             <div class="pull-right p-t-10 m-2">
-                                <a style="text-decoration: none;color: red" href="view_notification_table"> <i class="fa fa-table" aria-hidden="true"></i>
+                                <a style="text-decoration: none;color: red" href="view_notification_table?type={{type}}"> <i class="fa fa-table" aria-hidden="true"></i>
                                 </a>
                             </div>
                             <div class="pull-right p-t-10 m-2">
-                                <a href="view_all_notification"> <i class="fa fa-id-card-o" aria-hidden="true"></i>
+                                <a href="view_all_notification?type={{type}}"> <i class="fa fa-id-card-o" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -123,12 +123,14 @@ border-radius: 12px;">
                                         </td>
                                         <td> {% if i.notification_type == "leave_approve_request" %}
                                            
-                                                    
-                                                    <a class="m-4" href="" style="color: #01666b;
+                                            {% if i.status == "Pending" %}
+                                                    <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" class="m-4 approve_confirmation" href="#" style="color: #01666b;
                                                     text-decoration: none;font-weight: bold;"><i class="fa fa-thumbs-up" aria-hidden="true"></i>Approve</a>
                                               
-                                                    <a href="" style="color: #01666b;
+                                                    <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" href="" style="color: #01666b;
                                                     text-decoration: none;font-weight: bold;"><i class="fa fa-times" aria-hidden="true"></i>Refuse</a>
+
+                                                {% endif %}
                                              {% else %}
 
                                              {% endif %}
@@ -154,6 +156,68 @@ border-radius: 12px;">
     </div>
     <!-- container -->
 </div>
+
+            
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="    background-color: #65b1ef!important;border: none!important">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Approve Confirmation </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="leave_approve_action" method="POST" >
+            {% csrf_token %}
+            <input type="hidden"  name="leave_mapping_id"  id="leave_mapping_id">
+            <input type="hidden" name="leave_status" id="leave_status" >
+        <div class="modal-body">
+            <img style="    width: 18%;" src="{% static 'confirm.gif' %}">
+          <p style="    font-size: 13px;
+          font-weight: bold;">Are you sure you want to approve this leave request?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="        background-color: #e9b02c!important;border: none!important">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Reject Confirmation </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="reject_leave_request_action" method="POST">
+            {% csrf_token %}
+        <div class="modal-body">
+            <img style="    width: 18%;" src="{% static 'Reject.gif' %}">
+          <p style="    font-size: 13px;
+          font-weight: bold;">Are you sure you want to reject this leave request?</p>
+
+<input type="hidden" id="rj_leave_mapping_id" name="leave_mapping_id" value="{{id}}">
+<input type="hidden" id="rj_leave_status" name="leave_status" value="{{r1.state}}">
+<input type="text" class="form-control" name="note" placeholder="Note">
+<br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Reject</button>
+        </div>
+
+    </form>
+
+      </div>
+    </div>
+  </div>
             
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script src="{% static 'adminnew/js/jquery.core.js' %}"></script>
@@ -211,4 +275,27 @@ border-radius: 12px;">
         });
     });
 </script>
+
+<script>
+    $(".approve_confirmation").click(function(){
+
+        var id = $(this).attr("data-id")
+        var status = $(this).attr("data-status")
+        $("#leave_mapping_id").val(id)
+        $("#leave_status").val(status)
+        $("#exampleModalCenter").modal("show")
+       
+    })
+
+
+    $(".refuse_confirmation").click(function(){
+       
+        var id = $(this).attr("data-id")
+        var status = $(this).attr("data-status")
+        $("#rj_leave_mapping_id").val(id)
+        $("#rj_leave_status").val(status)
+        $("#exampleModalCenter1").modal("show")
+      
+    })
+  </script>
 {% endblock %}

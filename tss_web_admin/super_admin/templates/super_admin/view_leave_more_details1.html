@@ -197,20 +197,11 @@ font-size: 12px;" href="">Reassign</a>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in history_action %}
+                                        {% for i in data_leave_status %}
                                       <tr>
                                         <th scope="row">{{forloop.counter}}</th>
-                                        <td>{{i.employee_id.1}}</td>
-                                        <td>
-
-                                            {% if i.state == "Validated" %}
-
-                                            Approved
-                                            {% else %}
-                                            {{i.state}}
-
-                                            {% endif %}
-                                        </td>
+                                        <td>{{i.user_name}}</td>
+                                        <td>{{i.status}}</td>
                                         <td>{{i.dt}}</td>
                                         <td>{{i.note}}</td>
                                       </tr>

@@ -17,7 +17,7 @@ def get_leave_available(value,args):
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     
-    api_domain = "http://165.227.128.244:8069/"
+    api_domain = "http://10.10.10.107:8069/"
     
     leave_history_response_url = api_domain+"api/get_leave_of_a_day"
     print("rs122223444444::::")
@@ -75,7 +75,7 @@ def get_leave_available1(value,args):
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     
-    api_domain = "http://165.227.128.244:8069/"
+    api_domain = "http://10.10.10.107:8069/"
     
     leave_history_response_url = api_domain+"api/get_leave_of_a_day"
     print("rs122223444444::::")
@@ -132,7 +132,7 @@ def get_user_leave_data(value,args):
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     user_data = User_Management.objects.get(auth_user=value)
-    api_domain = "http://165.227.128.244:8069/"
+    api_domain = "http://10.10.10.107:8069/"
     
     leave_history_response_url = api_domain+"api/get_leave_log_by_month"
     print("rs122223444444::::")
@@ -359,7 +359,7 @@ def get_user_leave_data1(value,args):
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     
-    api_domain = "http://165.227.128.244:8069/"
+    api_domain = "http://10.10.10.107:8069/"
     
     leave_history_response_url = api_domain+"api/get_leave_log_by_month"
     print("rs122223444444::::")

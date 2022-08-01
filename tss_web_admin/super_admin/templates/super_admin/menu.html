@@ -241,7 +241,6 @@
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form> -->
         </li>
-
         <li class="dropdown notification-list">
             <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                 <i class="fi-bell noti-icon"></i>
@@ -263,68 +262,128 @@
                     <div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 414px;">
                         <!-- item-->
                         {% for i in request.user|get_notifications %}
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-success"><i class="mdi mdi-comment-account-outline"></i></div>
-                            <p class="notify-details"><small class="text-muted" style="    color: #000000 !important;">{{i.message}} {{i.dt}} is <small>
+                        <div>
+                            <a href="view_all_notification?type=notification" class="dropdown-item notify-item">
+                                <div class="notify-icon bg-success"><i class="mdi mdi-comment-account-outline"></i></div>
+                                <p class="notify-details"><small class="text-muted" style="    color: #000000 !important;">{{i.message}} {{i.dt}} is <small>
 
 
-                                {% if i.status == "validate" %}
-                                <span style="    color: green;">Approved</span>
+                                    {% if i.status == "validate" %}
+                                    <span style="    color: green;">Approved</span>
 
-                                {% elif i.status == "validate1" %}
-                                <span style="    color: red;">Second Approve</span>
-                                {% else %}
-                                <span style="    color: red;">{{i.status}}</span>
+                                    {% elif i.status == "validate1" %}
+                                    <span style="    color: red;">Second Approve</span>
+                                    {% else %}
+                                    <span style="    color: red;">{{i.status}}</span>
 
-                                {% endif %}
-                            </small></small>
-                            
-                            <small style="color: red;">Date : {{i.requested_from_dt}} to {{i.requested_to_dt}}</small>
-                            </p>
+                                    {% endif %}
+                                </small></small>
                                 
-                          
-                        </a>
+                                <small style="color: red;">Date : {{i.requested_from_dt}} to {{i.requested_to_dt}}</small>
+                                </p>
+                                    
+                              
+                            </a>
+                        </div>
                         {% endfor %}
                         <div id="n123">
 
                         </div>
 
-                        <!-- item-->
-                        <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-info"><i class="mdi mdi-account-plus"></i></div>
-                            <p class="notify-details">New user registered.<small class="text-muted">5 hours ago</small></p>
-                        </a> -->
+
 
                         <!-- item-->
-                        <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-danger"><i class="mdi mdi-heart"></i></div>
-                            <p class="notify-details">Carlos Crouch liked <b>Admin</b><small class="text-muted">3 days ago</small></p>
-                        </a> -->
+                      
 
                         <!-- item-->
-                        <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-warning"><i class="mdi mdi-comment-account-outline"></i></div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin<small class="text-muted">4 days ago</small></p>
-                        </a> -->
+                     
+                        <!-- item-->
+                   
 
                         <!-- item-->
-                        <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-purple"><i class="mdi mdi-account-plus"></i></div>
-                            <p class="notify-details">New user registered.<small class="text-muted">7 days ago</small></p>
-                        </a> -->
-
-                        <!-- item-->
-                        <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-custom"><i class="mdi mdi-heart"></i></div>
-                            <p class="notify-details">Carlos Crouch liked <b>Admin</b><small class="text-muted">13 days ago</small></p>
-                        </a> -->
+                      
+                      
                     </div>
                     <div class="slimScrollBar" style="background: rgb(158, 165, 171); width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 149.435px;"></div>
                     <div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
                 </div>
 
                 <!-- All-->
-                <a href="view_all_notification" class="dropdown-item text-center text-primary notify-item notify-all">
+                <a href="view_all_notification?type=notification" class="dropdown-item text-center text-primary notify-item notify-all">
+                    View all <i class="fi-arrow-right"></i>
+                </a>
+
+            </div>
+        </li>
+        <li class="dropdown notification-list">
+            <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                <i class="fi-inbox noti-icon"></i>
+                <span class="badge badge-danger badge-pill noti-icon-badge">
+                    
+                    <span class="badge" id="notification-badge1">  {{request.user|get_activities_notifications_count}}</span>
+                  
+                
+                </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg">
+
+                <!-- item-->
+                <div class="dropdown-item noti-title">
+                    <h5 class="m-0"><span class="float-right"><a href="#" class="text-dark"><small>.</small></a> </span>Activities</h5>
+                </div>
+
+                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 414px;">
+                    <div class="slimscroll" style="max-height: 230px; overflow: hidden; width: auto; height: 414px;">
+                        <!-- item-->
+                        {% for i in request.user|get_activities_notifications %}
+                        <div>
+                            <a href="view_all_notification?type=activities" class="dropdown-item notify-item">
+                                <div class="notify-icon bg-success"><i class="mdi mdi-comment-account-outline"></i></div>
+                                <p class="notify-details"><small class="text-muted" style="    color: #000000 !important;">{{i.message}} {{i.dt}} is <small>
+
+
+                                    {% if i.status == "validate" %}
+                                    <span style="    color: green;">Approved</span>
+
+                                    {% elif i.status == "validate1" %}
+                                    <span style="    color: red;">Second Approve</span>
+                                    {% else %}
+                                    <span style="    color: red;">{{i.status}}</span>
+
+                                    {% endif %}
+                                </small></small>
+                                
+                                <small style="color: red;">Date : {{i.requested_from_dt}} to {{i.requested_to_dt}}</small>
+                                </p>
+                                    
+                              
+                            </a>
+                        </div>
+                        {% endfor %}
+                        <div id="n1234">
+
+                        </div>
+
+
+
+                        <!-- item-->
+                      
+
+                        <!-- item-->
+                     
+                        <!-- item-->
+                   
+
+                        <!-- item-->
+                      
+                      
+                    </div>
+                    <div class="slimScrollBar" style="background: rgb(158, 165, 171); width: 8px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 149.435px;"></div>
+                    <div class="slimScrollRail" style="width: 8px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+                </div>
+
+                <!-- All-->
+                <a href="view_all_notification?type=activities" class="dropdown-item text-center text-primary notify-item notify-all">
                     View all <i class="fi-arrow-right"></i>
                 </a>
 
@@ -615,39 +674,70 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
      );
 
      notificationSocket.onmessage = function(e) {
-         const data = JSON.parse(e.data);
-         //document.querySelector('#chat-log').value += (data.message + '\n');
-         // console.log(data);
-         var message = data['message'];
-         var dt = data['dt'];
-         var status = data['status'];
-         var requested_date_from= data['requested_date_from'];
-         var requested_date_to = data['requested_date_to'];
-         var send_user_id = data['send_user_id']
-
-
-         if (user_id == send_user_id){
-             document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
-         document.getElementById("n123").innerHTML = "<a href=\"javascript:void(0);\" class=\"dropdown-item notify-item\"><div class=\"notify-icon bg-success\"><i class=\"mdi mdi-comment-account-outline\"></i></div><p class=\"notify-details\"><small class=\"text-muted\" style=\"    color: #000000 !important;\">"+message+ " "+dt+" is <small>"+status+"</small></small><small style=\"color: red;\">Date : "+requested_date_from+" to "+requested_date_to+"</small> </p> </a>"+ document.getElementById("n123").innerHTML
+            const data = JSON.parse(e.data);
         
-         var audio = new Audio("http://10.10.10.119:8000/static/test.mp3");
-         audio.play()
+            //document.querySelector('#chat-log').value += (data.message + '\n');
+            // console.log(data);
+            var message = data['message'];
+            var dt = data['dt'];
 
-     
-     }
+            
+            var status = data['status'];
+            if(status=="validate1"){
+                status = "Second Approve"
 
+            }
+            if(status=="validate"){
+                status = "Approve"
+            }
+            var requested_date_from= data['requested_date_from'];
+            var requested_date_to = data['requested_date_to'];
+            var send_user_id = data['send_user_id']
+            var activities = data['category']
+
+
+          
+           
+
+
+            if (user_id == send_user_id){
+
+                if(activities=="activities"){
+                    document.getElementById("notification-badge1").innerHTML = parseInt(document.getElementById("notification-badge1").innerHTML) + 1;
+            document.getElementById("n1234").innerHTML = "<a href=\"view_all_notification?type=activities\" class=\"dropdown-item notify-item\"><div class=\"notify-icon bg-success\"><i class=\"mdi mdi-comment-account-outline\"></i></div><p class=\"notify-details\"><small class=\"text-muted\" style=\"    color: #000000 !important;\">"+message+ " "+dt+" is <small>"+status+"</small></small><small style=\"color: red;\">Date : "+requested_date_from+" to "+requested_date_to+"</small> </p> </a>"+ document.getElementById("n1234").innerHTML
+                }
+                else{
+
+
+                document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
+            document.getElementById("n123").innerHTML = "<a href=\"view_all_notification?type=notification\" class=\"dropdown-item notify-item\"><div class=\"notify-icon bg-success\"><i class=\"mdi mdi-comment-account-outline\"></i></div><p class=\"notify-details\"><small class=\"text-muted\" style=\"    color: #000000 !important;\">"+message+ " "+dt+" is <small>"+status+"</small></small><small style=\"color: red;\">Date : "+requested_date_from+" to "+requested_date_to+"</small> </p> </a>"+ document.getElementById("n123").innerHTML
+                }
+            var audio = new Audio("http://127.0.0.1:8000/static/test.mp3");
+            audio.play()
+
+            if(window.location.href=="http://127.0.0.1:8000/view_all_notification?type=notification"){
+                location.reload();
+            }
+            if(window.location.href=="http://127.0.0.1:8000/view_all_notification?type=activities"){
+                location.reload();
+            }
 
         
-        
-     }; 
+        }
 
-     notificationSocket.onclose = function(e) {
-         console.error('Chat socket closed unexpectedly');
-     };
+
+           
+           
+        }; 
+
+        notificationSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
 
    
 
     
+       
  </script>
 </body>
 </html>
