@@ -4,6 +4,7 @@ from django.urls import path,include
 from . import views
 
 from django.contrib.auth import views as auth_views
+from rest_framework.authtoken.views import obtain_auth_token
 urlpatterns = [
 
     path('',views.index,name='index'),
@@ -76,6 +77,12 @@ urlpatterns = [
     path('leave_reassign_action',views.leave_reassign_action,name='leave_reassign_action'),
     path('user_fcmtoken_save',views.user_fcmtoken_save,name='user_fcmtoken_save'),
     path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
+    # ---------odoo api and authentication function 
+    path('odoo_login_api',obtain_auth_token,name='odoo_login_api'),
+    path('leave_create_api',views.leave_create_api.as_view(),name='leave_create_api'),
+    path('odoo_leave_status_update_api',views.odoo_leave_status_update_api.as_view(),name='odoo_leave_status_update_api'),
+
+ 
 
 
 

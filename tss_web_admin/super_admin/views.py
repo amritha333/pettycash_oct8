@@ -2466,6 +2466,8 @@ def leave_status_update_api(request):
             }
         )
         print("notifiiiiiiiiii")
+
+
      
         return JsonResponse(data,safe=False)
 
@@ -3608,4 +3610,132 @@ def loader(request):
 
 
 
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+class leave_create_api(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request, format=None):
+        data = request.data
+        leave_request_user_id = data['leave_request_user_id']
+        leave_mapping_id = data['leave_mapping_id']
+        leave_from_dt = data['leave_from_dt']
+        leave_to_dt = data['leave_to_dt']
+        leave_type = data['leave_type']
+        leave_request_user_name = data['leave_request_user_name']
+        leave_reason = data['leave_reason']
+        responsible_for_approval_user_id = data['responsible_for_approval_user_id']
+        leave_state = data['leave_state']
+        
+        try:
+            apply_user_exist_instance = User_Management.objects.get(odoo_id=int(leave_request_user_id))
+            apply_user_exist_instance_auth = apply_user_exist_instance.auth_user
+            leave_notification = odoo_notification(
+                notification_type="leave_type",
+                message = "The leave you applied on ",
+                mapping_id = int(leave_mapping_id),
+                requested_from_dt = leave_from_dt,
+                requested_to_dt = leave_to_dt,
+                read_status = 0,
+                status = leave_state,
+                auth_user_id = apply_user_exist_instance_auth,
+                leave_type_name=leave_type,
+                leave_apply_user_name = leave_request_user_name,
+               description =leave_reason,
+               category = "notification"
+            )
+            leave_notification.save()
+        except User_Management.DoesNotExist:
+            pass
+        
+        try:
+            next_approval = User_Management.objects.get(odoo_id=int(responsible_for_approval_user_id))
+            user__id = next_approval.auth_user
+            message = "one leave request from " +leave_request_user_name
+            try:
 
+                send_push_notification(user__id,leave_request_user_name)
+            except:
+                pass
+            second_user_id = next_approval.auth_user.id
+            approval_notification =  odoo_notification(
+                    notification_type="leave_approve_request",
+                    message = "leave_approve_request",
+                    mapping_id = int(leave_mapping_id),
+                    requested_from_dt = leave_from_dt,
+                    requested_to_dt = leave_to_dt,
+                    read_status = 0,
+                    status = leave_state,
+                    auth_user_id = next_approval.auth_user,
+                    leave_type_name=leave_type,
+                    leave_apply_user_name = leave_request_user_name,
+                    description =leave_reason,
+                    current_leave_status = "confirm",
+                    category = "activities"
+            )
+            approval_notification.save()
+        except:
+            pass
+        content = {
+           "message":"success"
+        }
+        return Response(content)
+
+
+
+class odoo_leave_status_update_api(APIView):
+
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request, format=None):
+        data = request.data
+        print("data::",str(data))
+        leave_id = data['leave_id']
+        state = data['state']
+        responsible_for_approval_user_id = data['responsible_for_approval_user_id']
+        current_leave_state = data['current_leave_state']
+        updated_data = odoo_notification.objects.filter( mapping_id = int(leave_id),notification_type="leave_type").update(status=state,read_status=0)
+        data = {
+            'message':"success"
+        }
+        data_send = odoo_notification.objects.get(mapping_id= int(leave_id),notification_type="leave_type")
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "notification_broadcast2",
+            {
+                'type': 'send_notification',
+                'message':{
+                    "message":str(data_send.message),
+                    "dt":str(data_send.dt),
+                    "status":str(state),
+                    "requested_date_from":str(data_send.requested_from_dt),
+                    "requested_date_to":str(data_send.requested_to_dt),
+                    "send_user_id":data_send.auth_user_id.id
+                }
+            }
+        )
+
+        try:
+            next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval_user_id)
+            leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+            next_approval_notification = odoo_notification(
+                notification_type="leave_approve_request",
+                message="leave request",
+                mapping_id = leave_id,
+                requested_from_dt = leave_data.requested_from_dt,
+                requested_to_dt = leave_data.requested_to_dt,
+                read_status = 0,
+                status = "Pending",
+                auth_user_id_id = next_approve_user_data.auth_user.id,
+                leave_type_name = leave_data.leave_type_name,
+                leave_apply_user_name = leave_data.leave_apply_user_name,
+                description = "null",
+                current_leave_status = current_leave_state,
+                category = "activities"
+            )
+            next_approval_notification.save()
+            
+        except User_Management.DoesNotExist:
+            pass
+        return Response(data)
