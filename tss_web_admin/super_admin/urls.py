@@ -81,6 +81,7 @@ urlpatterns = [
     path('odoo_login_api',obtain_auth_token,name='odoo_login_api'),
     path('leave_create_api',views.leave_create_api.as_view(),name='leave_create_api'),
     path('odoo_leave_status_update_api',views.odoo_leave_status_update_api.as_view(),name='odoo_leave_status_update_api'),
+    path('depended', views.depended,name='depended'),
 
  
 

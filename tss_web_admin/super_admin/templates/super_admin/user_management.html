@@ -321,7 +321,7 @@
                         <div class="row">
                             <div class="col-md-12 pad5 ">
                                 <div class="form-group bmd-form-group required_item">
-                                    <input required autocomplete="off" name="username" type="email" class="input form-control">
+                                    <input required autocomplete="off" name="username" type="email" id="username_read_only_status" class="input form-control">
                                     <label class="inputText">Username</label>
                                 </div>
                             </div>
@@ -837,6 +837,21 @@ $(".appnd_user_btn").click(function() {
 
                 console.log("hhhhhhhhhhhhhh")
                 console.log(data['employee_branch'])
+                username = data['username']
+     
+
+                if(username == false){
+                    $("#username_read_only_status").val('')
+                    $('#username_read_only_status').attr('readonly', false);
+
+                }
+                else{
+                    
+                    $("#username_read_only_status").val(username)
+                    $('#username_read_only_status').attr('readonly', true);
+
+                    
+                }
                
                 if (data['employee_branch'] == false)
                 {

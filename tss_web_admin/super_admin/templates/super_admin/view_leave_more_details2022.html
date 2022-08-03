@@ -1,0 +1,423 @@
+{% extends "super_admin/menu.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="content ">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="box_header">
+                    <div class="row">
+                        <div class="col-md-7 col-12">
+                            <div class="mainiconbox"><i class="fa fa-black-tie"></i>
+                            </div>
+                            <h4 class="m-t-0 header-title">
+                                <div class="breadcrumbs ng-scope">
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a>Leave History</a></li>
+                                        <li><a>More Details</a></li>
+                                    </ul>
+                                    <div>Leave Details</div>
+                                </div>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-5 col-12">
+                            <!-- <div class="pull-right p-t-10">
+                                <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newsrole"> <i class="mdi mdi-plus-circle-outline"></i> New
+                                </a>
+                            </div> -->
+                        </div>
+
+                    </div>
+                </div>
+               
+                <div class="card-box ">
+                    
+                    {% if approve_button_status == "yes" %}
+                    <div class="row">
+                        <a data-toggle="modal" data-target="#exampleModalCenter" class="m-1" style="    color: #fff;
+                        background-color: #017e84;
+                        border-color: #017e84;
+                        padding: 10px 36px;
+                        font-size: 12px;" href="">Approve</a>
+
+<a data-toggle="modal" data-target="#exampleModalCenter1" class="m-1" style="    color: #fff;
+background-color: #714b67;
+border-color: #714b67;
+padding: 10px 36px;
+font-size: 12px;" href="">Reject</a>
+<a data-toggle="modal" data-target="#exampleModalCenter2" class="m-1" style="      color: #fff;
+background-color: #70606c;
+border-color: #93758b;
+padding: 10px 36px;
+font-size: 12px;" href="">Reassign</a>
+                    </div>
+                    {% else %}
+
+                    {% endif %}
+                    <div class="card-box ">
+                 
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <h1 style="    font-weight: bold;
+                                font-size: 30px;">
+                                    {{r1.holiday_status_id.1}}
+                                </h1>
+
+
+                            </div>
+
+                            <div class="col-md-6 mt-4">
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Employee</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style="      border-style: groove;
+                                        text-align: left;
+                                        border-radius: 12px;
+                                        padding: 3px 12px;
+                                    ">{{r1.employee_id.1}}</p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Date</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">{{r1.request_date_from}} To {{r1.request_date_to}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Description</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">{% if r1.name == False %} 
+                                    
+                                {% else %}
+                                {{r1.name}}
+
+                                {% endif %}
+                                </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Emergency Contact No During Leave</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">{{r1.alternative_conact_number}} </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Replacer</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">
+                                    {% if r1.replacer_id == False %}
+                                    {% else %}
+                                    {{r1.replacer_id}}
+                                    {% endif %}
+                                    
+                                
+                                </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Absence Status</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">
+                                    {% if r1.absence_status == False %}
+                                    {% else %}
+                                    {{r1.absence_status}}
+                                    {% endif %}
+                                    
+                                
+                                </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Absence Category</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p style=" padding: 3px 12px;  
+                                    ">
+                                    {% if r1.absence_category == False %}
+                                    {% else %}
+                                    {{r1.absence_category}}
+                                    {% endif %}
+                                    
+                                
+                                </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <p style="    font-weight: bold;font-size: 14px;">Leave Type</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p style="    
+                                       
+                                        padding: 3px 12px;
+                                    ">  {{r1.holiday_status_id.1}}   <span style="    float: right;">{{r1.number_of_days}} Days</span> </p>
+                                   
+
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <table class="table" border="1">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Note</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in history_action %}
+                                      <tr>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{i.employee_id.1}}</td>
+                                        <td>
+
+                                            {% if i.state == "Validated" %}
+
+                                            Approved
+                                            {% else %}
+                                            {{i.state}}
+
+                                            {% endif %}
+                                        </td>
+                                        <td>{{i.activity_date}}</td>
+                                        <td>{{i.note}}</td>
+                                      </tr>
+
+                                      {% endfor %}
+                                  
+                                    </tbody>
+                                  </table>
+                                  
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- container -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="    background-color: #65b1ef!important;border: none!important">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Approve Confirmation </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="leave_approve_action" method="POST" >
+            {% csrf_token %}
+            <input type="hidden" name="leave_mapping_id" value="{{id}}">
+            <input type="hidden" name="leave_status" value="{{r1.state}}">
+        <div class="modal-body">
+            <img style="    width: 18%;" src="{% static 'confirm.gif' %}">
+          <p style="    font-size: 13px;
+          font-weight: bold;">Are you sure you want to approve this leave request?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="        background-color: #e9b02c!important;border: none!important">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Reject Confirmation </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="reject_leave_request_action" method="POST">
+            {% csrf_token %}
+        <div class="modal-body">
+            <img style="    width: 18%;" src="{% static 'Reject.gif' %}">
+          <p style="    font-size: 13px;
+          font-weight: bold;">Are you sure you want to reject this leave request?</p>
+
+<input type="hidden" name="leave_mapping_id" value="{{id}}">
+<input type="hidden" name="leave_status" value="{{r1.state}}">
+<input type="text" class="form-control" name="note" placeholder="Note">
+<br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Reject</button>
+        </div>
+
+    </form>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="exampleModalCenter2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="            background-color: #76b4ff!important;
+        border: none!important;">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Request Reassign Confirmation </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="leave_reassign_action" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="leave_mapping_id" value="{{id}}">
+<input type="hidden" name="leave_status" value="{{r1.state}}">
+        <div class="modal-body">
+            <img style="    width: 18%;" src="{% static 'Reassign.gif' %}">
+          <p style="    font-size: 13px;
+          font-weight: bold;">Are you sure you want to Reassign this leave request?</p>
+
+
+<select class="form-control select2" name="selected_employee_id">
+    {% for employee in select_employee_api %}
+                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
+                                    {% endfor %}
+ </select>
+<br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Reassign</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="{% static 'adminnew/js/jquery.core.js' %}"></script>
+<script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+<script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
+
+
+<script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminnew/js/dataTables.bootstrap4.min.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        // Default Datatable
+        $('#datatable').DataTable();
+        $('#datatable2').DataTable();
+        $('#datatable3').DataTable();
+        $('#responsive-datatable').DataTable();
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imageUpload").change(function() {
+            readURL(this);
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function() {
+        $('#startDate').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+        $('#endDate').datetimepicker({
+            format: 'DD-MM-YYYY',
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#startDate").on("dp.change", function(e) {
+            $('#endDate').data("DateTimePicker").minDate(e.date);
+        });
+        $("#endDate").on("dp.change", function(e) {
+            $('#startDate').data("DateTimePicker").maxDate(e.date);
+        });
+        $('#dateofBirth').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+   <script>
+    {% for message in messages %}
+ 
+       
+    message1 = "{{message}}"
+      
+       
+        if(message1 == "error"){
+
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: "{{ message }}",
+ 
+})
+
+
+
+        }
+        else{
+
+            Swal.fire(
+				  '',
+				  '{{ message }}',
+				  '{{message.tags}}'
+				)
+      
+        }
+    {% endfor %}
+   </script>
+{% endif %}
+{% endblock %}

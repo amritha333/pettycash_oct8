@@ -1112,7 +1112,7 @@ def getemployee_branch_dpt(request):
     payload = json.dumps({
         "jsonrpc": "2.0",
         "params": {
-            "employee_id": employee_id
+            "employee_id": int(employee_id)
         }
     })
     headers = {
@@ -1132,6 +1132,7 @@ def getemployee_branch_dpt(request):
     emp_registration_id = ""
     name = response['name']
     company_name = response['company_id']
+    username = response['user_name']
    
     try:
         employee_dpt  = response['department_id'][1]
@@ -1169,7 +1170,8 @@ def getemployee_branch_dpt(request):
         "employee_dpt":employee_dpt,
         "employee_name":name,
         "emp_registration_id":emp_registration_id,
-        'company_name':str(company_name[1])
+        'company_name':str(company_name[1]),
+        'username':username
     }
     return JsonResponse(data,safe=False)
 
@@ -2554,15 +2556,22 @@ def view_leave_more_details(request):
 
 
     select_employee_api = ""
+
+
     try:
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
         odoo_token = odoo_token_data.token
         employee_data_url =api_domain+"api/get_employees"
+
+        user_data = User_Management.objects.all()
+        list_data = list(user_data.values_list('odoo_id',flat=True))
+        print("list_data:::",str(list_data))
         
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
-            "employee_ids": []
+                 "reassign" : "True",
+            "employee_ids": list_data
             }
         })
         headers = {
@@ -3000,7 +3009,7 @@ def user_leave_gantt_chart_prev_month_action(request):
 
 def calendar(request):
     user_auth_id = request.user.id
-   
+    print("user_auth_id::::", str(user_auth_id))
     odoo_id = 0
     try:
 
@@ -3009,41 +3018,12 @@ def calendar(request):
 
     except:
         pass
-   
+    print("odoo_id::::::", str(odoo_id))
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
 
-
-
-    child_response = ""
-    try:
-        child_response_url = api_domain + "api/get_childs"
-        child_payload = json.dumps({
-            "jsonrpc": "2.0",
-            "params": {
-                "employee_id": int(odoo_id)
-
-            }
-        })
-        child_header = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-        }
-        child_response1 = requests.request("GET", child_response_url, headers=child_header, data=child_payload).json()
-        child_response12 = child_response1['result']
-        child_response = child_response12['result']
-    except:
-        pass
-
     context = {
-
-
-
-
-        'child_response': child_response,
-        'count':len(child_response)
 
     }
 
@@ -3051,7 +3031,7 @@ def calendar(request):
     # return render(request, 'super_admin/calendar.html')
 def event_depended(request):
     event_id = request.GET.get('event_id')
-   
+    print("jijijijijiii",event_id)
     leave_more_details_url = api_domain + "api/get_leave_details"
     payload = json.dumps({
         "jsonrpc": "2.0",
@@ -3068,11 +3048,14 @@ def event_depended(request):
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
     response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
-  
+    print("resll::::")
+    print(response1.json())
     response12 = response1.json()['result']
-   
+    print("ressss:::::")
+    print(response12)
     r1 = response12['result'][0]
-    
+    print("new:")
+    print(r1)
     emp_name = ""
     try:
         data_emp = User_Management.objects.get(auth_user=request.user)
@@ -3088,10 +3071,9 @@ def event_depended(request):
 
 
 
-
 def all_events(request):
     user_auth_id = request.user.id
-
+    print("user_auth_id::::", str(user_auth_id))
     odoo_id = 0
     try:
 
@@ -3100,7 +3082,7 @@ def all_events(request):
 
     except:
         pass
-   
+    print("odoo_id::::::", str(odoo_id))
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -3111,10 +3093,10 @@ def all_events(request):
             "jsonrpc": "2.0",
             "params": {
 
-            "employee_id" : 2834,
+            "employee_id" : odoo_id,
             "all": "True",
             "start_date" : "2022-07-01",
-            "end_date" : "2022-07-31"
+            "end_date" : "2022-07-31",
             }
         })
         leave_history_headers = {
@@ -3125,49 +3107,85 @@ def all_events(request):
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
                                                    data=leave_history_payload).json()
-      
+        print("rs122223::::")
+        print("response1::::::::")
+        print(leave_history_response1)
 
         leave_history_response12 = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-      
+        print("r1::")
+        print(leave_history_response)
 
 
     except:
         pass
     out = []
-   
+    print(out)
+    print("jiyadddddddddddddddddddddddddddd:::::::",leave_history_response)
+    # me=leave_history_response['id']
+    print("meeeeeeeeEEEEEEEEEEE::::::::::::::")
     for event in leave_history_response:
-       
-        
+        print("id::::::::::::",str(event['id']))
+        print("date_from::",str(event['date_from']))
+        print("date_to::::",str(event['date_to']))
+        print(type(event['date_to']))
         from datetime import datetime
-        
+        print(datetime.fromisoformat(event['date_to']))
         df = datetime.fromisoformat(event['date_to'])
-        
+        print("date:::",str(df.date()))
 
         from datetime import timedelta
 
         date_time_obj = df+timedelta(days=1)
-     
+        print("lll")
+        print(date_time_obj)
+    
 
+        title_data = str(event['employee_id'][1])+" on "+str(event['holiday_status_id'][1])+" : "+str(event['number_of_days'])+" days"
+        color_data = ""
+        classname1 = ""
+        if event['state'] == "validate":
+            classname1 = "bg-success"
+        elif event['state'] == "validate1":
+            classname1 = "bg-info"
+        elif event['state'] == "refuse":
+            classname1 = "bg-danger"
+        elif event['state'] == "confirm":
+            classname1 = "bg-warning"
+        elif event['state'] == "draft":
+            classname1 = "bg-dark"
         out.append({
 
-            'title':event['holiday_status_id'],
+
+
+            'title':title_data,
             'id':event['id'],
             'start': event['date_from'],
             'end': date_time_obj,
+            'color':color_data,
+            'className':classname1
         })
-        
-  
+        print("----nnnnnnnnnnnnnnnnnn")
+    print("---------------")
+    print("---out-------")
+    print(out)
+    print("---leave_history_response-------")
+    print(leave_history_response)
     return JsonResponse(out, safe=False)
-
-
 def all_events1(request):
-
     type1 = request.GET.get("type")
-    
+    leave_type = request.GET.get("leave_type")
+    print("leave_type::::::",str(leave_type))
+    li = type1.split(',')
+    list2 = list(map(int, li))
+    print("type1111111111111111",list2)
+    print(type(li))
     user_auth_id = request.user.id
-
+    print("user_auth_id::::", str(user_auth_id))
     odoo_id = 0
+    leave_type_list = leave_type.split(",")
+    list3 = list(map(int, leave_type_list))
+    print("leave_type_list:::",str(leave_type_list))
     try:
 
         odoo_data = User_Management.objects.get(auth_user=user_auth_id)
@@ -3175,7 +3193,7 @@ def all_events1(request):
 
     except:
         pass
-    
+    print("odoo_id::::::", str(odoo_id))
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -3186,10 +3204,11 @@ def all_events1(request):
             "jsonrpc": "2.0",
             "params": {
 
-            "employee_id" : 2834,
+            "employee_ids" : list2,
             "all": "True",
             "start_date" : "2022-07-01",
-            "end_date" : "2022-07-31"
+            "end_date" : "2022-07-31",
+            'type_ids':list3
             }
         })
         leave_history_headers = {
@@ -3200,43 +3219,151 @@ def all_events1(request):
 
         leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers,
                                                    data=leave_history_payload).json()
-       
+        print("rs122223::::")
 
         leave_history_response12 = leave_history_response1['result']
         leave_history_response = leave_history_response12['result']
-      
+        print("r1::")
+        print(leave_history_response)
 
 
     except:
         pass
     out = []
     for event in leave_history_response:
-   
-        a=event['employee_id']
-    
-    
-    
+        print("id::::::::::::", str(event['id']))
+        print("date_from::", str(event['date_from']))
+        print("date_to::::", str(event['date_to']))
+        print(type(event['date_to']))
         from datetime import datetime
-       
+        print(datetime.fromisoformat(event['date_to']))
         df = datetime.fromisoformat(event['date_to'])
-       
+        print("date:::", str(df.date()))
 
         from datetime import timedelta
 
         date_time_obj = df + timedelta(days=1)
-      
-        if (str(a[0]) == type1):
-         
-            out.append({
-                'title':event['holiday_status_id'],
-                'id':event['id'],
-                'start': event['date_from'],
-                'end': date_time_obj,
-            })
-   
+        print("lll")
+        print(date_time_obj)
+        print("id::::::::::::jiyad1111111", str(event['id']))
+        print("type::::::::::::")
+        # if (str(event['employee_id'][0]) == type1):
+        print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+        title_data = str(event['employee_id'][1]) + " on " + str(event['holiday_status_id'][1]) + " : " + str(event['number_of_days']) + " days"
+        color_data = ""
+        classname1 = ""
+        if event['state'] == "validate":
+            classname1 = "bg-success"
+        elif event['state'] == "validate1":
+            classname1 = "bg-info"
+        elif event['state'] == "refuse":
+            classname1 = "bg-danger"
+        elif event['state'] == "confirm":
+            classname1 = "bg-warning"
+        elif event['state'] == "draft":
+            classname1 = "bg-dark"
+        out.append({
+
+            'title': title_data,
+            'id': event['id'],
+            'start': event['date_from'],
+            'end': date_time_obj,
+            'color': color_data,
+            'className': classname1
+        })
+    print("---------------")
     return JsonResponse(out, safe=False)
 
 
+
+def depended(request):
+    dt=request.GET.get('date_emp')
+    print("dt:::::::::::::::::::::",dt)
+    print(type(dt))
+    from datetime import datetime
+    dd=datetime.fromisoformat(dt[:-1])
+    date = dd.date()
+    date_month=str(date.year)+'-'+str(date.month)
+    print("dd:::::::::::::::::::::", date_month)
+    print(type(date))
+    # datetime.datetime(2020, 1, 6, 0, 0, tzinfo=datetime.timezone.utc)
+    user_auth_id = request.user.id
+    print("user_auth_id::::", str(user_auth_id))
+    odoo_id = 0
+    try:
+
+        odoo_data = User_Management.objects.get(auth_user=user_auth_id)
+        odoo_id = odoo_data.odoo_id
+
+    except:
+        pass
+    print("odoo_id::::::", str(odoo_id))
+
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+
+    child_response = ""
+    try:
+        child_response_url = api_domain + "api/get_childs"
+        child_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+
+                "employee_id" : odoo_id,
+                "date" : date_month,
+                "leave_gantt" : "True",
+                "leave_type_include" : "True"
+            }
+        })
+        child_header = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
+        child_response1 = requests.request("GET", child_response_url, headers=child_header, data=child_payload).json()
+        child_response12 = child_response1['result']
+        child_response = child_response12['result']
+    except:
+        pass
+    # list1 = [1, 2, 3, 4, 4, 4]
+    # print(list(set(list1)))
+    print("child_response::::::::",child_response)
+   
+    
+    leave_type = []
+    for i in child_response:
+        print("leave_type:sssssssssss:::qq111:::",i['leave_types'])
+
+        for j in i['leave_types']:
+            print("j111ssssssss:::::",str(j))
+            
+            leave_type.append({
+
+                'id': j[0],
+                'name': j[1]
+            })
+            seen = set()
+            new_l = []
+            for d in leave_type:
+                t = tuple(d.items())
+                if t not in seen:
+                    seen.add(t)
+                    new_l.append(d)
+
+            print ("::::::::::::::::::::::::jiya",new_l)
+
+    
+    print("leave_type1112qqq222:::",str(leave_type))
+   
+    context = {
+
+        'child_response': child_response,
+        'leave_list_data':new_l
+        # 'new_list': child_response['leave_type'],
+        # 'li':li
+    }
+
+    return render(request, 'super_admin/depended.html', context)
 
 
 
@@ -3287,12 +3414,19 @@ def view_notification_table(request):
 
 def leave_approve_action(request):
     if request.method == "POST":
+        print("hhhh")
         leave_mapping_id = request.POST.get("leave_mapping_id",False)
         leave_status = request.POST.get("leave_status",False)
         login_user_data = User_Management.objects.get(auth_user=request.user)
         odoo_employee_id = login_user_data.odoo_id
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
         odoo_token = odoo_token_data.token
+
+        print("leave_mapping_id:::",str(leave_mapping_id))
+        print("leave_status:::::",str(leave_status))
+        print("login_user_data::",str(login_user_data))
+        print("odoo_employee_id:::",str(odoo_employee_id))
+        print("odoo_token:::",str(odoo_token))
         approval_api_url = api_domain+"api/approve_leave_req"
         approval_payload = json.dumps({
             "jsonrpc": "2.0",
@@ -3689,12 +3823,13 @@ class odoo_leave_status_update_api(APIView):
     permission_classes = (IsAuthenticated,)
     
     def post(self, request, format=None):
+        print("0000")
         data = request.data
         print("data::",str(data))
         leave_id = data['leave_id']
         state = data['state']
         responsible_for_approval_user_id = data['responsible_for_approval_user_id']
-        current_leave_state = data['current_leave_state']
+        current_leave_state = data['state']
         updated_data = odoo_notification.objects.filter( mapping_id = int(leave_id),notification_type="leave_type").update(status=state,read_status=0)
         data = {
             'message':"success"

@@ -4,6 +4,18 @@
 
 {% block content %}
 
+    <link href="{% static 'tss_new/css/icons.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Plugins css -->
+
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,600,700,800" rel="stylesheet">
+
+    <link href="{% static 'tss_new/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'tss_new/css/style.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'tss_new/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+<!-- Plugins css -->
+    <link href="{% static 'tss_new/plugins/app.min.css' %}" rel="stylesheet" />
+
+
 <div class="content ">
     <div class="container-fluid">
         <div class="row">
@@ -11,7 +23,7 @@
                 <div class="box_header">
                     <div class="row">
                         <div class="col-md-7 col-12">
-                            <div class="mainiconbox"><i class="fa fa-black-tie"></i>
+                            <div class="mainiconbox"><i class="fa fa-calendar"></i>
                             </div>
                             <h4 class="m-t-0 header-title">
                                 <div class="breadcrumbs ng-scope">
@@ -24,203 +36,308 @@
                                 </div>
                             </h4>
                         </div>
-
-                        <div class="col-md-5 col-12">
-                            <!-- <div class="pull-right p-t-10">
-                                <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newsrole"> <i class="mdi mdi-plus-circle-outline"></i> New
-                                </a>
-                            </div> -->
-                        </div>
-
                     </div>
                 </div>
-               
-                <div class="card-box ">
-                    
-                    {% if approve_button_status == "yes" %}
+
+                <div class="card-box">
                     <div class="row">
-                        <a data-toggle="modal" data-target="#exampleModalCenter" class="m-1" style="    color: #fff;
-                        background-color: #017e84;
-                        border-color: #017e84;
-                        padding: 10px 36px;
-                        font-size: 12px;" href="">Approve</a>
-
-<a data-toggle="modal" data-target="#exampleModalCenter1" class="m-1" style="    color: #fff;
-background-color: #714b67;
-border-color: #714b67;
-padding: 10px 36px;
-font-size: 12px;" href="">Reject</a>
-<a data-toggle="modal" data-target="#exampleModalCenter2" class="m-1" style="      color: #fff;
-background-color: #70606c;
-border-color: #93758b;
-padding: 10px 36px;
-font-size: 12px;" href="">Reassign</a>
-                    </div>
-                    {% else %}
-
-                    {% endif %}
-                    <div class="card-box ">
-                 
-
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <h1 style="    font-weight: bold;
-                                font-size: 30px;">
-                                    {{r1.holiday_status_id.1}}
-                                </h1>
-
-
-                            </div>
-
-                            <div class="col-md-6 mt-4">
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Employee</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style="      border-style: groove;
-                                        text-align: left;
-                                        border-radius: 12px;
-                                        padding: 3px 12px;
-                                    ">{{r1.employee_id.1}}</p>
+                        <div class="col-12">
+                            <div class="row mt-2 mb-3">
+                                <div class="col">
+                                    <h3 class="leave-head">{{r1.holiday_status_id.1}}</h3>
+                                </div>
+                                {% if approve_button_status == "yes" %}
+                                <div class="col d-flex justify-content-end">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-pri" data-toggle="modal"
+                                            data-target="#staticBackdrop">Approve</button>
+                                        <button type="button" class="btn btn-pri bordr-lft" data-toggle="modal"
+                                            data-target="#staticBackdrop1">Reject</button>
+                                        <button type="button" class="btn btn-pri bordr-lft" data-toggle="modal"
+                                            data-target="#staticBackdrop2">Reassign</button>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Date</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">{{r1.request_date_from}} To {{r1.request_date_to}}</p>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Description</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">{% if r1.name == False %} 
-                                    
                                 {% else %}
-                                {{r1.name}}
 
                                 {% endif %}
-                                </p>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Emergency Contact No During Leave</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">{{r1.alternative_conact_number}} </p>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Replacer</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">
-                                    {% if r1.replacer_id == False %}
-                                    {% else %}
-                                    {{r1.replacer_id}}
-                                    {% endif %}
-                                    
-                                
-                                </p>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Absence Status</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">
-                                    {% if r1.absence_status == False %}
-                                    {% else %}
-                                    {{r1.absence_status}}
-                                    {% endif %}
-                                    
-                                
-                                </p>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Absence Category</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style=" padding: 3px 12px;  
-                                    ">
-                                    {% if r1.absence_category == False %}
-                                    {% else %}
-                                    {{r1.absence_category}}
-                                    {% endif %}
-                                    
-                                
-                                </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mt-4">
-                                <div class="row mt-2">
-                                    <div class="col-md-3">
-                                        <p style="    font-weight: bold;font-size: 14px;">Leave Type</p>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <p style="    
-                                       
-                                        padding: 3px 12px;
-                                    ">  {{r1.holiday_status_id.1}}   <span style="    float: right;">{{r1.number_of_days}} Days</span> </p>
-                                   
 
+                                <!-- staticBackdrop Modal -->
+                                <div class="modal modlbtns" id="staticBackdrop" data-backdrop="static"
+                                    data-keyboard="false" tabindex="-1" role="dialog"
+                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Leave
+                                                    Approve Confirmation
+                                                </h5>
+                                                <button type="button" class="btn-close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <!-- end modalheader -->
+                                            <form action="leave_approve_action" method="POST" >
+                                                {% csrf_token %}
+                                                <input type="hidden"  name="leave_mapping_id"  value="{{id}}">
+                                                <input type="hidden" name="leave_status" value="{{r1.state}}" >
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to approve this leave request ?</p>
+                                            </div>
+                                            <!-- end modalbody -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-prim">Confirm</button>
+                                            </div>
+                                            </form>
+                                            <!-- end modalfooter -->
+                                        </div>
                                     </div>
-                                  
+                                </div><!-- end modal -->
+
+
+                                <!-- staticBackdrop Modal -->
+                                <div class="modal modlbtns" id="staticBackdrop1" data-backdrop="static"
+                                    data-keyboard="false" tabindex="-1" role="dialog"
+                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Leave
+                                                    Reject Confirmation
+                                                </h5>
+                                                <button type="button" class="btn-close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <!-- end modalheader -->
+                                            <form action="reject_leave_request_action" method="POST">
+                                                {% csrf_token %}
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to reject this leave request ?</p>
+
+                                                <input type="hidden" name="leave_mapping_id" value="{{id}}">
+                                                <input type="hidden" name="leave_status" value="{{r1.state}}">
+                                                <textarea class="form-control" placeholder="Note"
+                                                    id="floatingTextarea2" style="height: 60px"></textarea>
+                                            </div>
+                                            <!-- end modalbody -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-prim">Reject</button>
+                                            </div>
+                                            </form>
+                                            <!-- end modalfooter -->
+                                        </div>
+                                    </div>
+                                </div><!-- end modal -->
+
+
+
+                                <!-- staticBackdrop Modal -->
+                                <div class="modal modlbtns" id="staticBackdrop2" data-backdrop="static"
+                                    data-keyboard="false" tabindex="-1" role="dialog"
+                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Leave
+                                                    Request Reassign Confirmation
+                                                </h5>
+                                                <button type="button" class="btn-close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <!-- end modalheader -->
+                                            <form action="leave_reassign_action" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="leave_mapping_id" value="{{id}}">
+                                    <input type="hidden" name="leave_status" value="{{r1.state}}">
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to reassign this leave request ?
+                                                </p>
+                                                <select name="" >
+                                                    {% for employee in select_employee_api %}
+                                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <!-- end modalbody -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-prim">Reassign</button>
+                                            </div>
+                                            <!-- end modalfooter -->
+                                        </div>
+                                    </div>
+                                </div><!-- end modal -->
+                            </div>
+
+                        
+
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-11 mt-4 mb-3">
+                                            <div class="form-group  required_item">
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value="{{r1.employee_id.1}}">
+                                                <label class="inputText">Employee</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="user_daterangpickrbox expirationbox bmd-form-group">
+                                                <div class="">
+                                                    <h3 class="big_title2">Effective Date</h3>
+                                                </div>
+                                                <div class="input-daterange p-t-15" id="date-range">
+                                                    <div class="row">
+                                                        <div class="col-md-6 pad5">
+                                                            <div class="input-group bmd-date-group">
+                                                                <input type="text"
+                                                                    class="form-control input"
+                                                                    id="datetimepickereffcet-start"
+                                                                    placeholder="" disabled="" value="{{r1.request_date_from}}">
+                                                                <label
+                                                                    class="bmd-label-floating inputText labl_insd">From</label>
+                                                                <div class="input-group-append"> <span
+                                                                        class="input-group-text "><i
+                                                                            class="fa fa-calendar"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 pad5 ">
+                                                            <div class="input-group ">
+                                                                <input type="text"
+                                                                    class="form-control input"
+                                                                    id="datetimepickereffcet-end"
+                                                                    placeholder="" disabled="" value="{{r1.request_date_to}}">
+                                                                <label
+                                                                    class="bmd-label-floating inputText labl_insd">To</label>
+                                                                <div class="input-group-append"> <span
+                                                                        class="input-group-text "><i
+                                                                            class="fa fa-calendar"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="form-group bmd-form-group required_item">
+                                                {% if r1.name == False %} 
+                                                <input type="text" class="input form-control mt-2"
+                                                disabled="" placeholder="">
+                                                {% else %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value="{{r1.name}}">
+                                                {% endif %}
+                                                <label class="inputText">Description</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="form-group bmd-form-group required_item">
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value="{{r1.alternative_conact_number}}">
+                                                <label class="inputText">Emergency Contact No During
+                                                    Leave</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-11 mb-3 mt-4">
+                                            <div class="form-group bmd-form-group required_item">
+                                                {% if r1.replacer_id == False %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" >
+                                                {% else %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value="{{r1.replacer_id}}">
+                                                {% endif %}
+                                                <label class="inputText">Replacer</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="form-group bmd-form-group required_item">
+                                                {% if r1.absence_status == False %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="">
+                                                {% else %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value="{{r1.absence_status}}">
+                                                {% endif %}
+                                                <label class="inputText">Absence Status</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="form-group bmd-form-group required_item">
+                                                {% if r1.absence_category == False %}
+                                                <input type="text" class="input form-control mt-2"
+                                                disabled="" placeholder="">
+                                                {% else %}
+                                                <input type="text" class="input form-control mt-2"
+                                                    disabled="" placeholder="" value=" {{r1.absence_category}}">
+                                                {% endif %}
+                                                <label class="inputText">Absence Category</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11 mb-3">
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="form-group bmd-form-group required_item">
+                                                        <input type="text" class="input form-control mt-2"
+                                                            disabled="" value="{{r1.holiday_status_id.1}}""">
+                                                        <label class="inputText">Leave Type</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group bmd-form-group required_item">
+                                                        <input type="text" class="input form-control mt-2"
+                                                            disabled="" value="{{r1.number_of_days}}">
+                                                        <label class="inputText">Days</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-4">
-                                <table class="table" border="1">
-                                    <thead class="thead-dark">
-                                      <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Action</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Note</th>
-                                      </tr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered caption-top table-nowrap mb-0">
+
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Action</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col"> Note</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in history_action %}
-                                      <tr>
-                                        <th scope="row">{{forloop.counter}}</th>
-                                        <td>{{i.employee_id.1}}</td>
-                                        <td>
+                                        {% for i in data_leave_status %}
+                                        <tr>
+                                            <td class="fw-medium">{{forloop.counter}}</td>
+                                            <td>{{i.user_name}}</td>
+                                            <td>{{i.status}}</td>
+                                            <td>{{i.dt}}</td>
+                                            <td>{{i.note}}</td>
+                                        </tr>
+                                        {% endfor %}
 
-                                            {% if i.state == "Validated" %}
-
-                                            Approved
-                                            {% else %}
-                                            {{i.state}}
-
-                                            {% endif %}
-                                        </td>
-                                        <td>{{i.activity_date}}</td>
-                                        <td>{{i.note}}</td>
-                                      </tr>
-
-                                      {% endfor %}
-                                  
                                     </tbody>
-                                  </table>
-                                  
-                               
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -232,107 +349,14 @@ font-size: 12px;" href="">Reassign</a>
     <!-- container -->
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header" style="    background-color: #65b1ef!important;border: none!important">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Approve Confirmation </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="leave_approve_action" method="POST" >
-            {% csrf_token %}
-            <input type="hidden" name="leave_mapping_id" value="{{id}}">
-            <input type="hidden" name="leave_status" value="{{r1.state}}">
-        <div class="modal-body">
-            <img style="    width: 18%;" src="{% static 'confirm.gif' %}">
-          <p style="    font-size: 13px;
-          font-weight: bold;">Are you sure you want to approve this leave request?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Confirm</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
 
-  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header" style="        background-color: #e9b02c!important;border: none!important">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Reject Confirmation </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="reject_leave_request_action" method="POST">
-            {% csrf_token %}
-        <div class="modal-body">
-            <img style="    width: 18%;" src="{% static 'Reject.gif' %}">
-          <p style="    font-size: 13px;
-          font-weight: bold;">Are you sure you want to reject this leave request?</p>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
 
-<input type="hidden" name="leave_mapping_id" value="{{id}}">
-<input type="hidden" name="leave_status" value="{{r1.state}}">
-<input type="text" class="form-control" name="note" placeholder="Note">
-<br>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Reject</button>
-        </div>
-
-    </form>
-
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modal fade" id="exampleModalCenter2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header" style="            background-color: #76b4ff!important;
-        border: none!important;">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Leave Request Reassign Confirmation </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="leave_reassign_action" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="leave_mapping_id" value="{{id}}">
-<input type="hidden" name="leave_status" value="{{r1.state}}">
-        <div class="modal-body">
-            <img style="    width: 18%;" src="{% static 'Reassign.gif' %}">
-          <p style="    font-size: 13px;
-          font-weight: bold;">Are you sure you want to Reassign this leave request?</p>
-
-
-<select class="form-control select2" name="selected_employee_id">
-    {% for employee in select_employee_api %}
-                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
-                                    {% endfor %}
- </select>
-<br>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Reassign</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-<script src="{% static 'adminnew/js/jquery.core.js' %}"></script>
+<!-- <script src="{% static 'adminnew/js/jquery.core.js' %}"></script> -->
+<script src="{% static 'tss_new/js/jquery.min.js' %}"></script>
 <script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
+<script src="{% static 'tss_new/js/bootstrap.bundle.min.js' %}"></script>
 <!-- App js -->
 <script src="{% static 'adminnew/js/select2.full.js' %}"></script>
 <script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
@@ -340,6 +364,135 @@ font-size: 12px;" href="">Reassign</a>
 
 <script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'adminnew/js/dataTables.bootstrap4.min.js' %}"></script>
+
+
+<!-- <script>
+    
+    $(".notification-list").click(function(){
+     
+        $(".notification-list").toggleClass("show");
+    })
+</script> -->
+
+
+<script>
+    function create_custom_dropdowns() {
+        $('select').each(function (i, select) {
+            if (!$(this).next().hasClass('dropdown-select')) {
+                $(this).after('<div class="dropdown-select wide ' + ($(this).attr('class') || '') +
+                    '" tabindex="0"><span class="current"></span><div class="list"><ul></ul></div></div>'
+                    );
+                var dropdown = $(this).next();
+                var options = $(select).find('option');
+                var selected = $(this).find('option:selected');
+                dropdown.find('.current').html(selected.data('display-text') || selected.text());
+                options.each(function (j, o) {
+                    var display = $(o).data('display-text') || '';
+                    dropdown.find('ul').append('<li class="option ' + ($(o).is(':selected') ?
+                            'selected' : '') + '" data-value="' + $(o).val() +
+                        '" data-display-text="' + display + '">' + $(o).text() + '</li>');
+                });
+            }
+        });
+
+        $('.dropdown-select ul').before(
+            '<div class="dd-search"><input type="hidden" id="txtSearchValue" autocomplete="off" onkeyup="filter()" class="dd-searchbox" type="text"></div>'
+            );
+    }
+
+    // Event listeners
+
+    // Open/close
+    $(document).on('click', '.dropdown-select', function (event) {
+        if ($(event.target).hasClass('dd-searchbox')) {
+            return;
+        }
+        $('.dropdown-select').not($(this)).removeClass('open');
+        $(this).toggleClass('open');
+        if ($(this).hasClass('open')) {
+            $(this).find('.option').attr('tabindex', 0);
+            $(this).find('.selected').focus();
+        } else {
+            $(this).find('.option').removeAttr('tabindex');
+            $(this).focus();
+        }
+    });
+
+    // Close when clicking outside
+    $(document).on('click', function (event) {
+        if ($(event.target).closest('.dropdown-select').length === 0) {
+            $('.dropdown-select').removeClass('open');
+            $('.dropdown-select .option').removeAttr('tabindex');
+        }
+        event.stopPropagation();
+    });
+
+    function filter() {
+        var valThis = $('#txtSearchValue').val();
+        $('.dropdown-select ul > li').each(function () {
+            var text = $(this).text();
+            (text.toLowerCase().indexOf(valThis.toLowerCase()) > -1) ? $(this).show(): $(this).hide();
+        });
+    };
+    // Search
+
+    // Option click
+    $(document).on('click', '.dropdown-select .option', function (event) {
+        $(this).closest('.list').find('.selected').removeClass('selected');
+        $(this).addClass('selected');
+        var text = $(this).data('display-text') || $(this).text();
+        $(this).closest('.dropdown-select').find('.current').text(text);
+        $(this).closest('.dropdown-select').prev('select').val($(this).data('value')).trigger('change');
+    });
+
+    // Keyboard events
+    $(document).on('keydown', '.dropdown-select', function (event) {
+        var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find(
+            '.list .option.selected')[0]);
+        // Space or Enter
+        //if (event.keyCode == 32 || event.keyCode == 13) {
+        if (event.keyCode == 13) {
+            if ($(this).hasClass('open')) {
+                focused_option.trigger('click');
+            } else {
+                $(this).trigger('click');
+            }
+            return false;
+            // Down
+        } else if (event.keyCode == 40) {
+            if (!$(this).hasClass('open')) {
+                $(this).trigger('click');
+            } else {
+                focused_option.next().focus();
+            }
+            return false;
+            // Up
+        } else if (event.keyCode == 38) {
+            if (!$(this).hasClass('open')) {
+                $(this).trigger('click');
+            } else {
+                var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find(
+                    '.list .option.selected')[0]);
+                focused_option.prev().focus();
+            }
+            return false;
+            // Esc
+        } else if (event.keyCode == 27) {
+            if ($(this).hasClass('open')) {
+                $(this).trigger('click');
+            }
+            return false;
+        }
+    });
+
+    $(document).ready(function () {
+        create_custom_dropdowns();
+    });
+</script>
+
+
+
+
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -386,36 +539,27 @@ font-size: 12px;" href="">Reassign</a>
         });
     });
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% if messages %}
    <script>
-    {% for message in messages %}
- 
-       
-    message1 = "{{message}}"
-      
-       
+    {% for message in messages %}   
+        message1 = "{{message}}"  
         if(message1 == "error"){
 
-            Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: "{{ message }}",
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ message }}",
  
-})
-
-
-
+        })
         }
         else{
-
             Swal.fire(
 				  '',
 				  '{{ message }}',
 				  '{{message.tags}}'
 				)
-      
         }
     {% endfor %}
    </script>

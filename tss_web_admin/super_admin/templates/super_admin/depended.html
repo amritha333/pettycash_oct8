@@ -1,0 +1,283 @@
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />-->
+<!--<div class="panel panel-default" style="width:100%;    padding: 8px 7px;">-->
+<!--    <div style="    background: #2624359e;-->
+<!--    color: white;-->
+<!--    padding: 6px 2px;-->
+<!--    border-radius: 3px;-->
+<!--" class="panel-heading" role="tab" id="headingOne">-->
+<!--        <input style="    margin: 8px 12px;" name="employee" class="check-emp-all check-emp1" type="checkbox" value="all" id="all" >-->
+<!--        <a style="text-decoration: none;color: white;-->
+<!--        padding: 0px 3px;-->
+<!--        font-size: 12px;-->
+<!--        margin: 2px 9px;" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> <span  class="pull-right-container" style="c    color: white;-->
+<!--    padding: 0px 1px;-->
+<!--    font-size: 13px;-->
+<!--    margin: 2px -22px;-->
+<!--"><i style="    padding: 1px 21px;-->
+<!--    margin: 7px -1px;" class="fa fa-angle-down pull-right"></i>All Employees </span></a><br>-->
+<!--    </div>-->
+<!--    <div id="collapseOne" style="    background: #e2dfef;-->
+<!--    color: white!important;-->
+<!--    border-bottom-left-radius: 50px 20px;" class="panel-collapse collapse in addto-playlists show" role="tabpanel" aria-labelledby="headingOne">-->
+<!--        <div class="addto-search">-->
+<!--            <div class="form-input">-->
+<!--                <input  class="keyword" type="search" style="    width: 89%;-->
+<!--                padding: 1px 13px;-->
+<!--                margin: 9px 16px;" placeholder="search">-->
+<!--&lt;!&ndash;                <button class="search-button"><i class="fa fa-search"></i></button>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="new">-->
+<!--            {% for i1 in child_response %}-->
+<!--                <li style="list-style-type: none;    list-style-type: none;-->
+<!--                width: 89%;-->
+<!--                padding: 1px 13px;-->
+<!--                margin: 0px 7px;-->
+<!--                color: red;" >-->
+<!--                    <input checked name="YourCheckBokName[]" class="check-emp cv" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}" id="sd1{{forloop.counter}}" onclick="get_user_leave()">-->
+<!--                    <label style="    color: #af0000;" class="playlist-name" for="sd1{{forloop.counter}}">{{i1.name}}</label><br>-->
+<!--                </li>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<br>-->
+
+<!--<div class="panel panel-default" style="width:100%;    padding: 8px 7px;">-->
+<!--    <div style="    background: #262435e0;-->
+<!--    color: white;-->
+<!--    padding: 6px 2px;-->
+<!--    border-radius: 3px;-->
+<!--" class="panel-heading" role="tab" id="headingOne">-->
+<!--        <input style="    margin: 8px 12px;" name="employee" class="check-emp-all check-emp1" type="checkbox" value="all" id="all" >-->
+<!--        <a style="text-decoration: none;color: white;-->
+<!--        padding: 0px 3px;-->
+<!--        font-size: 12px;-->
+<!--        margin: 2px 9px;" data-toggle="collapse" data-parent="#accordion" href="#collapseOne1" aria-expanded="false" aria-controls="collapseOne"> <span  class="pull-right-container" style="c    color: white;-->
+<!--    padding: 0px 1px;-->
+<!--    font-size: 13px;-->
+<!--    margin: 2px -22px;-->
+<!--"><i style="    padding: 1px 21px;-->
+<!--    margin: 7px -1px;" class="fa fa-angle-down pull-right"></i>All Leave Types </span></a><br>-->
+<!--    </div>-->
+<!--    <div id="collapseOne1 " style="    background: #5655558c;-->
+<!--    color: white!important;-->
+<!--    border-bottom-left-radius: 50px 20px;" class="panel-collapse collapse in addto-playlists show"  role="tabpanel" aria-labelledby="headingOne">-->
+<!--        <div class="addto-search">-->
+<!--            <div class="form-input">-->
+<!--                <input  class="keyword" type="search" style="    width: 89%;-->
+<!--                padding: 1px 13px;-->
+<!--                margin: 9px 16px;" placeholder="search">-->
+<!--&lt;!&ndash;                <button class="search-button"><i class="fa fa-search"></i></button>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="new">-->
+<!--            {% for i1 in leave_list_data %}-->
+<!--                <li style="list-style-type: none;    list-style-type: none;-->
+<!--                width: 89%;-->
+<!--                padding: 1px 13px;-->
+<!--                margin: 0px 7px;-->
+<!--                color: red;" >-->
+<!--                    <input checked name="YourCheckBokName1[]" class="check-emp" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}"id="sd2{{forloop.counter}}" onclick="get_user_leave()">-->
+<!--                    <label style="    color: white;" class="playlist-name"  for="sd2{{forloop.counter}}">{{i1.name}}</label><br>-->
+<!--                </li>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<div class="card card-h-100 acco">
+    <div class="card-body p-0">
+        <div class="Checkbox-parent">
+            <input name="employee" class="check-emp-all check-emp1 material-icons" type="checkbox" value="all" id="all" >
+            <span class="Accordion Accordion--active">
+                <label>All Employees</label>
+                </input>
+            </span>
+
+        </div>
+        <div class="Accordion-panel acco-show addto-playlists">
+            <ul class="Checkbox-child">
+                <li>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control keyword" placeholder="Search" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                        <button class="btn btn-primary" type="button" id="button-addon1"><i class="fa fa-search"></i></button>
+                    </div>
+                </li>
+               {% for i1 in child_response %}
+                    <li>
+                        <input checked name="YourCheckBokName[]" class="check-emp cv" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}" id="sd1{{forloop.counter}}" onclick="get_user_leave()">
+                        <label class="playlist-name" for="sd1{{forloop.counter}}">{{i1.name}}</label><br>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="card card-h-100 acco">
+    <div class="card-body p-0">
+        <div class="Checkbox-parent">
+            <input name="employee" class="check-emp-all check-emp1 material-icons" type="checkbox" value="all" id="all_type" >
+            <span class="Accordion1 Accordion--active">
+                <label>All Leave Types</label>
+                </input>
+            </span>
+
+        </div>
+        <div class="Accordion-panel1 acco-show addto-playlists">
+            <ul class="Checkbox-child">
+                <li>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control keyword" placeholder="Search" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                        <button class="btn btn-primary" type="button" id="button-addon1"><i class="fa fa-search"></i></button>
+                    </div>
+                </li>
+                 {% for i1 in leave_list_data %}
+                    <li>
+                        <input checked name="YourCheckBokName1[]" class="check-emp" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}"id="sd2{{forloop.counter}}" onclick="get_user_leave()">
+                        <label class="playlist-name"  for="sd2{{forloop.counter}}">{{i1.name}}</label><br>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--{{i1|slice:"1:-1"}}-->
+<!--<input id="trial1" name="trial" class="check" type="checkbox" value="trial1" onclick="getServiceFeed123()">-->
+<!--<label>trial1</label><br>-->
+
+<!--<input id="trial11" name="trial1" class="check" type="checkbox" value="trial11">-->
+<!--<label>trial11</label><br>-->
+
+<!--<input id="trial111" name="trial1" class="check" type="checkbox" value="trial111">-->
+<!--<label>trial111</label><br>-->
+
+<script>
+    (function($){
+        $(".keyword").on('keyup', function(e) {
+            var $this = $(this);
+            var exp = new RegExp($this.val(), 'i');
+            $(".addto-playlists li label").each(function() {
+                var $self = $(this);
+                if(!exp.test($self.text())) {
+                    $self.parent().hide();
+                }
+                else {
+                    $self.parent().show();
+                }
+            });
+        });
+    })(jQuery);
+</script>
+
+
+
+<script>
+    function get_user_leave(){
+        $('#all').prop('checked', false); // Unchecks it
+        $('#all_type').prop('checked', false); // Unchecks it
+        var listCheck = [];
+        var listCheck1 = [];
+        $("input[name='YourCheckBokName[]']:checked").each(function() {
+            listCheck .push($(this).val());
+        });
+        console.log($("input[name='YourCheckBokName1[]']"));
+        $("input[name='YourCheckBokName1[]']:checked").each(function() {
+             console.log($(this).val());
+             listCheck1 .push($(this).val());
+        });
+        var h1 = document.querySelector("h2").innerText;
+        var ricksDate = new Date(h1);
+        $('#calendar').fullCalendar('destroy');
+        var calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/all_events1?type='+listCheck+"&leave_type="+listCheck1,
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                eventLimit: true,
+                defaultDate: ricksDate,
+                eventClick: function (event) {
+                    var id = event.id;
+                    var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+                    var countryId = $(this).val();  // get the selected country ID from the HTML input
+                    $.ajax({                       // initialize an AJAX request
+                    url: "event_depended",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                    data: {
+                            'event_id': id       // add the country id to the GET parameters
+                    },
+                    success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $("#leave_id").html(data);  // replace the contents of the city input with the data that came from the server
+                    $('#exampleModalLabel').modal('show');
+                    }
+                    });
+                },
+        });
+    }
+</script>
+
+<script>
+    $(".Checkbox-parent input").on('click', function () {
+        var _parent = $(this);
+        var nextli = $(this).parent().next().children().children();
+
+        if (_parent.prop('checked')) {
+            console.log('Checkbox-parent checked');
+            nextli.each(function () {
+                $(this).children().prop('checked', true);
+            });
+
+        } else {
+            console.log('Checkbox-parent un checked');
+            nextli.each(function () {
+                $(this).children().prop('checked', false);
+            });
+
+        }
+    });
+
+    $(".Checkbox-child input").on('click', function () {
+
+        var ths = $(this);
+        var parentinput = ths.closest('div').prev().children();
+        var sibblingsli = ths.closest('ul').find('li');
+
+        if (ths.prop('checked')) {
+            console.log('Checkbox-child checked');
+            parentinput.prop('checked', true);
+        } else {
+            console.log('Checkbox-child unchecked');
+            var status = true;
+            sibblingsli.each(function () {
+                console.log('sibb');
+                if ($(this).children().prop('checked')) status = false;
+            });
+            if (status) parentinput.prop('checked', false);
+        }
+    });
+
+    // show hide accordion
+
+    $(".Accordion").click(function () {
+        this.classList.toggle("Accordion--active");
+        $('.Accordion-panel').toggleClass('acco-show');
+
+    });
+
+    $(".Accordion1").click(function () {
+        this.classList.toggle("Accordion--active");
+        $('.Accordion-panel1').toggleClass('acco-show');
+
+    });
+</script>
