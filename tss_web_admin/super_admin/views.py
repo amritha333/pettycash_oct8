@@ -1124,6 +1124,7 @@ def getemployee_branch_dpt(request):
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
     response12 =response1['result']
     response = response12['result'][0]
+    
    
   
     name = ""
@@ -1133,6 +1134,7 @@ def getemployee_branch_dpt(request):
     name = response['name']
     company_name = response['company_id']
     username = response['user_name']
+    image_1920 = response['image_1920']
    
     try:
         employee_dpt  = response['department_id'][1]
@@ -1171,7 +1173,8 @@ def getemployee_branch_dpt(request):
         "employee_name":name,
         "emp_registration_id":emp_registration_id,
         'company_name':str(company_name[1]),
-        'username':username
+        'username':username,
+        'image_1920':image_1920
     }
     return JsonResponse(data,safe=False)
 
@@ -1200,6 +1203,7 @@ def user_add_action(request):
         
         username = request.POST.get("username",False)
         password_option = request.POST.get("password_option",False)
+        image_1920 = request.POST.get("image_1920",False)
         if User.objects.filter(username=username).exists():
             messages.warning(request,str("An account with the given username alredy exists"))
             return redirect("user_management")
@@ -1303,7 +1307,8 @@ def user_add_action(request):
                         status = "True",
                         add_by = request.user,
                         odoo_id = "False",
-                        company_name = company_name
+                        company_name = company_name,
+                        user_img = image_1920
 
 
 
@@ -1352,7 +1357,8 @@ def user_add_action(request):
                         status = "True",
                         add_by = request.user,
                         odoo_id = employee_id,
-                        company_name = company_name
+                        company_name = company_name,
+                        user_img = image_1920
 
 
                     )
@@ -1415,7 +1421,8 @@ def user_add_action(request):
                         status = "True",
                         add_by = request.user,
                         odoo_id = "False",
-                        company_name = company_name
+                        company_name = company_name,
+                        user_img = image_1920
 
 
                     )
@@ -1452,7 +1459,8 @@ def user_add_action(request):
                         status = "True",
                         add_by = request.user,
                         odoo_id = employee_id,
-                        company_name = company_name
+                        company_name = company_name,
+                        user_img = image_1920
 
 
                     )

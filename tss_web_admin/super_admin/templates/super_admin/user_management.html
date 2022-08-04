@@ -314,6 +314,7 @@
         
         {% csrf_token %}
     <div class="modal-body">
+        <input type="hidden" name="image_1920" id="image_1920">
 
             <div class="col-md-12">
                 <div class="row m-t-15">
@@ -838,6 +839,10 @@ $(".appnd_user_btn").click(function() {
                 console.log("hhhhhhhhhhhhhh")
                 console.log(data['employee_branch'])
                 username = data['username']
+
+                // alert(data['image'])
+
+                $("#image_1920").val(data['image_1920'])
      
 
                 if(username == false){

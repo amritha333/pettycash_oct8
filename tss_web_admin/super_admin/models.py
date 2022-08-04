@@ -118,6 +118,7 @@ class User_Management(models.Model):
     odoo_id = models.CharField(max_length=555,null=True)
     company_name = models.CharField(max_length=255,null=True)
     fcm_token=models.TextField(null=True) 
+    user_img = models.TextField(null=True)
 
 
 
