@@ -1,4 +1,6 @@
 
+from ast import Try
+from pyexpat import model
 from urllib import request
 from django.db import models
 
@@ -119,6 +121,7 @@ class User_Management(models.Model):
     company_name = models.CharField(max_length=255,null=True)
     fcm_token=models.TextField(null=True) 
     user_img = models.TextField(null=True)
+    login_password_invalid_count = models.IntegerField(null=True)
 
 
 
@@ -205,3 +208,20 @@ class Leave_Status_details(models.Model):
     dt = models.DateField(null=True)
     auth_user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="leave_status_user_login", null=True)
     note = models.CharField(max_length=255,null=True)
+
+
+
+class user_login_log_history(models.Model):
+    auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="user_login_log_history_auth_user_login", null=True)
+    user_id = models.ForeignKey(User_Management,on_delete=models.CASCADE,related_name="user_login_log_history_user_id",null=True)
+    ip_address = models.CharField(max_length=255,null=True)
+    address = models.CharField(max_length=255,null=True)
+    city = models.CharField(max_length=255,null=True)
+    country = models.CharField(max_length=255,null=True)
+    lat_addre =  models.CharField(max_length=255,null=True)
+    long_addr =  models.CharField(max_length=255,null=True)
+    org = models.CharField(max_length=255,null=True)
+    postal1 = models.CharField(max_length=255,null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(max_length=255,null=True)

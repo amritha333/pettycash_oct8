@@ -308,7 +308,7 @@ top: -12px !important;
                               
                               <div class="feild  groupinput">
                                 
-                                 <input type="text" name="uname" class="input form-control input-user-name" autocomplete="off" required="" value="{{user_email}}">
+                                 <input type="text" name="uname" class="input form-control input-user-name" id="uname123" autocomplete="off" required="" value="{{user_email}}">
                                  <label class="inputText">Username</label>
                                  
                               </div>
@@ -318,7 +318,7 @@ top: -12px !important;
                            <div class="col-12">
                               <div class="feild groupinput">
                                  <a href="page-recoverpw.html" class="text-muted forgot">Forgot your password?</a>
-                                 <input type="password" name="passwrd" class="input input-user-name" required="">
+                                 <input type="password" name="passwrd" id="password123" class="input input-user-name" required="">
                                  <label class="inputText">Password</label>
                               </div>
                            </div>
@@ -353,18 +353,35 @@ top: -12px !important;
                      </span>
                   </div>
               
+       
                   {% elif message == "login_date_error" %}
                   <div style="padding: 7px 12px;">
                      <span style="    padding: 9px 21px;
                      color: red;
                      font-size: 15px;">
                      
-                    
+                   
                     <center>
                        You cannot login today Try agian on {{login_date}}
                     </center>
                     </span>
                  </div>
+
+                 {% elif message == "userblocked" %}
+                 <div style="padding: 7px 12px;">
+                  <span style="    padding: 9px 21px;
+                  color: red;
+                  font-size: 15px;">
+                  
+                
+                 <center>
+                Your Account Has Been Temporarily Locked<br>
+                Please Contact Admin
+                 </center>
+                 </span>
+              </div>
+
+
                   {% endif %}
 
                  {% if messages %}
@@ -408,13 +425,75 @@ top: -12px !important;
       });
    }
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
    $(".submit_action").submit(function(){
        // alert("hhh")
+
+       event.preventDefault()
        $("#kl2").show();
+     
+      
+       $.getJSON('https://geolocation-db.com/json/')
+      .done (function(location) {
+         country = location.country_name
+         state = location.state
+         city = location.city
+         latitude = location.latitude
+         longitude = location.longitude
+         ipv4 = location.IPv4
+
+
+        
+        
+      
+      
+
+      let csrftoken = '{{ csrf_token }}'
+      $.ajax({
+      type: "POST",
+      headers:{'X-CSRFToken':csrftoken},
+      url: "login_action",
+      data: {
+        'uname': $("#uname123").val(),
+        'passwrd':$("#password123").val() ,// from form
+        'country':country,
+        'state':state,
+        'city':city,
+        'latitude':latitude,
+        'longitude':longitude,
+        'ipv4':ipv4
+
+      },
+      success: function (data)  {
+       
+       if(data['message'] == "success"){
+        
+         window.location.href = "admin_dashboard"
+       }
+       else if(data['message'] == "error"){
+         swal("Error ","Invalid username and password", "error");
+         $("#kl2").hide();
+       }
+       else if(data['message'] == "userblocked"){
+         swal("Your Account Has Been Temporarily Locked "," Please Contact Admin", "error");
+         $("#kl2").hide();
+       }
+      }
+    });
+      });
+     
+
+      
    })
+
+
+
 </script>
 
 
+<script>
+ 
+ </script>
 
 </html>

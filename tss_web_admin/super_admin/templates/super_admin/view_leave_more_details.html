@@ -326,13 +326,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in data_leave_status %}
+                                        {% for i in history_action %}
                                         <tr>
                                             <td class="fw-medium">{{forloop.counter}}</td>
-                                            <td>{{i.user_name}}</td>
-                                            <td>{{i.status}}</td>
-                                            <td>{{i.dt}}</td>
-                                            <td>{{i.note}}</td>
+                                            <td>{{i.employee_id.1}}</td>
+                                            <td>
+                                                {% if i.state == False %}
+                                                
+                                                {% else %}
+                                                {{i.state}}
+                                                {% endif %}
+                                            
+                                            </td>
+                                            <td>
+                                                {% if i.activity_date == False %}
+                                                
+                                                {% else %}
+                                                {{i.activity_date}}
+                                                {% endif %}
+                                                
+                                              
+                                            
+                                            </td>
+                                            <td>
+                                                {% if i.note == False %}
+                                                
+                                                {% else %}
+                                                {{i.note}}
+                                                {% endif %}
+                                              
+                                            
+                                            </td>
                                         </tr>
                                         {% endfor %}
 

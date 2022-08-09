@@ -126,7 +126,25 @@
                                         <div class="profile-card">
                                             <div class="row">
                                                 <div class="">
-                                                    <div><img src="{% static 'tss_new/images/user-4.jpg' %}" alt=""></div>
+                                                   
+                                                  {% for i in i.auth_user_id.user_management_user_login.all %}
+                                              
+                                                  {% if i.user_img == "false" %}
+                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  {% elif i.user_img == None  %}
+                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  {% elif i.user_img == false %}
+                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  {% elif i.user_img == '' %}
+                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  {% else %}
+                                                  <div><img style="    padding: 13px 12px;" class='b' src="data:image/jpeg;base64,{{i.user_img}}" alt=""></div>
+                                                
+                                                  {% endif %}
+                                                  {% endfor %}
+                                                
+                                               
+                                                    
                                                 </div>
                                                 <div class="col profile-info">
                                                     <h3 class="profile-name mb-3">{{i.leave_apply_user_name}}<span
@@ -353,6 +371,14 @@
 
 
 
+<script>
+    $(window).on('load resize', function () {
 
+	$('img.b').height("128px");
+    $('img.b').width("128px");
+}); 
+
+
+</script>
 
 {% endblock %}

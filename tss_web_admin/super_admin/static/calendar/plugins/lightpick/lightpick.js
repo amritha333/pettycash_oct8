@@ -332,6 +332,7 @@
 
     renderCalendar = function(el, opts)
     {
+
         var html = '',
             monthDate = moment(opts.calendar[0]);
 
@@ -341,7 +342,7 @@
             html += '<section class="lightpick__month">';
             html += '<header class="lightpick__month-title-bar">'
             html += '<div class="lightpick__month-title">'
-           
+
             + renderYearsList(day, opts)
             + renderMonthsList(day, opts)
             + '</div>';
@@ -406,16 +407,23 @@
 
     updateDates = function(el, opts)
     {
+        $('#calendar').fullCalendar('gotoDate', opts.startDate);
         var days = el.querySelectorAll('.lightpick__day');
+
         [].forEach.call(days, function(day) {
             day.outerHTML = renderDay(opts, parseInt(day.getAttribute('data-time')), false, day.className.split(' '));
+
         });
 
         checkDisabledDatesInRange(el, opts);
+
+
     },
 
     checkDisabledDatesInRange = function(el, opts)
     {
+        console.log(opts.startDate );
+
         if (opts.disabledDatesInRange || !opts.startDate || opts.endDate || !opts.disableDates) return;
 
         var days = el.querySelectorAll('.lightpick__day'),
@@ -425,6 +433,7 @@
             closestPrev = moment(disabledArray.filter(function(d) {
                 return moment(d).isBefore(opts.startDate);
             }).sort(function(a,b){
+
                 return moment(b).isAfter(moment(a));
             })[0]),
             closestNext = moment(disabledArray.filter(function(d) {

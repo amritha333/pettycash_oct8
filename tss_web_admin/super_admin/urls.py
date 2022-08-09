@@ -67,9 +67,8 @@ urlpatterns = [
     path('user_leave_gantt_chart_next_month_action',views.user_leave_gantt_chart_next_month_action,name='user_leave_gantt_chart_next_month_action'),
     path('user_leave_gantt_chart_prev_month_action',views.user_leave_gantt_chart_prev_month_action,name='user_leave_gantt_chart_prev_month_action'),
     path('calendar', views.calendar, name='calendar'),
-    path('event_depended', views.event_depended, name='event_depended'),
-    path('all_events', views.all_events),
-    path('all_events1', views.all_events1),
+   
+   
     path('login_page1',views.login_page1,name='login_page1'),
     path('view_notification_table',views.view_notification_table,name='view_notification_table'),
     path('leave_approve_action',views.leave_approve_action,name='leave_approve_action'),
@@ -82,6 +81,23 @@ urlpatterns = [
     path('leave_create_api',views.leave_create_api.as_view(),name='leave_create_api'),
     path('odoo_leave_status_update_api',views.odoo_leave_status_update_api.as_view(),name='odoo_leave_status_update_api'),
     path('depended', views.depended,name='depended'),
+    path('leave_calendar', views.leave_calendar, name='leave_calendar'),
+    path('event_depended', views.event_depended, name='event_depended'),
+    path('all_events', views.all_events, name='all_events'),
+    path('employee_events', views.employee_events, name='employee_events'),
+    path('cal_depended', views.cal_depended,name='cal_depended'),
+
+    path('username_exists_condition',views.username_exists_condition,name='username_exists_condition'),
+
+    path('user_login_log',views.user_login_log,name='user_login_log'),
+    path('user_login_log_date_filter_action',views.user_login_log_date_filter_action,name='user_login_log_date_filter_action'),
+
+
+    path('test_gantt_chart',views.test_gantt_chart,name='test_gantt_chart'),
+    
+
+
+
 
  
 
@@ -112,6 +128,8 @@ urlpatterns = [
     path('testchart',views.testchart,name='testchart'),
     path('img',views.img,name='img'),
     path('loader',views.loader,name='loader'),
+    path('test_current_address',views.test_current_address,name='test_current_address'),
+
     
     
     

@@ -603,3 +603,115 @@ def check_month_differnce(value,args):
 
     return True
     pass
+
+
+
+
+@register.filter(name='get_user_leave_data11')
+def get_user_leave_data11(value,args):
+    print("value:::::",str(value))
+    print("arg::::",str(args))
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+    
+    api_domain = "http://10.10.10.107:8069/"
+    
+    leave_history_response_url = api_domain+"api/get_leave_log_by_month"
+    print("rs122223444444::::")
+
+    print("odooo_id:::",str(value))
+    print("arggg:::::",str(args))
+
+    leave_history_payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+            "employee_id": int(value),
+            "date" : args
+        }
+    })
+    
+    leave_history_headers = {
+        'api_key': odoo_token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    print("rs122223444444::::")
+
+    leave_history_response1 = requests.request("GET", leave_history_response_url, headers=leave_history_headers, data=leave_history_payload).json()
+    print("rs122223::::")
+        
+    leave_history_response12  = leave_history_response1['result']
+    response = leave_history_response12['result']
+    print("responseeeeeeeeeeee")
+    print(response)
+    from datetime import date
+    import datetime
+    split_year_month = args.split("-")
+    year = split_year_month[0]
+    month = split_year_month[1]
+    print("year:::",str(year))
+    print("month:::",str(month))
+    data = []
+    for i in response:
+        print("---------start response------------")
+        from_date = i['date_from']
+        to_date = i['date_to']
+        from_date_format = datetime.datetime.fromisoformat(str(from_date))
+        to_date_format = datetime.datetime.fromisoformat(str(to_date))
+        from_date_year = from_date_format.date().year
+        from_date_month = from_date_format.date().month
+        to_date_year = to_date_format.date().year
+        to_date_month = to_date_format.date().month
+        print("from_date_year:::::",str(from_date_year))
+        print("from_date_month::::",str(from_date_month))
+        print("to_date_year::::",str(to_date_year))
+        print("to_date_month:::::",str(to_date_month))
+        import calendar
+        days = calendar.monthrange(int(year), int(month))[1]
+        print("total_days::::",str(days)) 
+
+        last_date = datetime.date(int(year), int(month), days)
+        print("last_date:::",str(last_date))
+        from_date_day = 0
+        to_date_day = 0
+
+       
+        if  (year == str(from_date_year) and str(from_date_month) == month)  and  (year == str(to_date_year) and str(to_date_month) == month):
+
+            from_date_day = from_date_format.day
+            to_date_day = to_date_format.day+1
+            print("from_date_day:::::",str(from_date_day))
+            print("to_date_day::::::",str(to_date_day))
+            print("last_date_day:::",str(last_date.day))
+
+            print("----same month--------")
+
+        elif year == str(from_date_year) and str(from_date_month) == month:
+            from_date_day = from_date_format.day
+            to_date_day = last_date.day+1
+
+
+            print("---------------from date only same")
+        elif year == str(to_date_year) and str(to_date_month) == month:
+            from_date_day  = 1
+            to_date_day = to_date_format.day+1
+            print("-----to date same only----------------")
+        else:
+            from_date_day = 1
+            to_date_day = last_date.day+1
+            print("both date can't same ")
+        data.append({
+            'id':i['id'],
+            "holiday_status_id":i['holiday_status_id'],
+            "date_from":i['date_from'],
+            "date_to":i['date_to'],
+            "from_date_day":from_date_day,
+            "to_date_day":to_date_day,
+           
+
+        })
+
+        print("---------end response-------------")
+
+    print("return value:::::::::::",str(data))
+    return data

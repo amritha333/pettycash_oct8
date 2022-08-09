@@ -1,0 +1,197 @@
+
+<div class="card card-h-100 acco">
+    <div class="card-body p-0">
+        <div class="Checkbox-parent">
+            <input name="employee" class="check-emp-all check-emp1 material-icons" type="checkbox" value="all" id="all" >
+            <span class="Accordion Accordion--active">
+                <label>All Employees</label>
+                </input>
+            </span>
+
+        </div>
+        <div class="Accordion-panel acco-show addto-playlists">
+            <ul class="Checkbox-child">
+                <li>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control keyword" placeholder="Search" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                        <button class="btn btn-primary" type="button" id="button-addon1"><i class="fa fa-search"></i></button>
+                    </div>
+                </li>
+               {% for i1 in child_response %}
+                    <li>
+                        <input checked name="YourCheckBokName[]" class="check-emp cv" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}" id="sd1{{forloop.counter}}" onclick="get_user_leave()">
+                        <label class="playlist-name" for="sd1{{forloop.counter}}">{{i1.name}}</label><br>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="card card-h-100 acco">
+    <div class="card-body p-0">
+        <div class="Checkbox-parent">
+            <input name="employee" class="check-emp-all check-emp1 material-icons" type="checkbox" value="all" id="all_type" >
+            <span class="Accordion1 Accordion--active">
+                <label>All Leave Types</label>
+                </input>
+            </span>
+
+        </div>
+        <div class="Accordion-panel1 acco-show addto-playlists">
+            <ul class="Checkbox-child">
+                <li>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control keyword" placeholder="Search" aria-label="Example text with button addon" aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+                    </div>
+                </li>
+                 {% for i1 in leave_list_data %}
+                    <li>
+                        <input checked name="YourCheckBokName1[]" class="check-emp" data-id="{{forloop.counter}}" type="checkbox" value="{{i1.id}}"id="sd2{{forloop.counter}}" onclick="get_user_leave()">
+                        <label class="playlist-name"  for="sd2{{forloop.counter}}">{{i1.name}}</label><br>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    (function($){
+        $(".keyword").on('keyup', function(e) {
+            var $this = $(this);
+            var exp = new RegExp($this.val(), 'i');
+            $(".addto-playlists li label").each(function() {
+                var $self = $(this);
+                if(!exp.test($self.text())) {
+                    $self.parent().hide();
+                }
+                else {
+                    $self.parent().show();
+                }
+            });
+        });
+    })(jQuery);
+</script>
+
+
+
+<script>
+    function get_user_leave(){
+        $('#all').prop('checked', false); // Unchecks it
+        $('#all_type').prop('checked', false); // Unchecks it
+        var listCheck = [];
+        var listCheck1 = [];
+        $("input[name='YourCheckBokName[]']:checked").each(function() {
+            listCheck .push($(this).val());
+        });
+        console.log($("input[name='YourCheckBokName1[]']"));
+        $("input[name='YourCheckBokName1[]']:checked").each(function() {
+             console.log($(this).val());
+             listCheck1 .push($(this).val());
+        });
+        var h1 = document.querySelector("h2").innerText;
+        var ricksDate = new Date(h1);
+        $('#calendar').fullCalendar('destroy');
+        var calendar = $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/employee_events?type='+listCheck+"&leave_type="+listCheck1,
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                eventLimit: true,
+                defaultDate: ricksDate,
+                eventClick: function (event) {
+                    var id = event.id;
+                    var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
+                    var countryId = $(this).val();  // get the selected country ID from the HTML input
+                    $.ajax({                       // initialize an AJAX request
+                    url: "event_depended",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                    data: {
+                            'event_id': id       // add the country id to the GET parameters
+                    },
+                    success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $("#leave_id").html(data);  // replace the contents of the city input with the data that came from the server
+                    $('#exampleModalLabel').modal('show');
+                    }
+                    });
+                },
+        });
+        $("button").click(function(){
+                if(event.target.className == "fc-today-button fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled"){
+                    var b = $('#calendar').fullCalendar('getDate');
+                    c=new Date(b).toISOString()
+                    $.ajax({
+                        url: 'cal_depended',
+                        data: {
+                            'date_emp': c
+                        },
+                        success: function (data) {
+                            $("#sub").html(data);
+                        }
+                    });
+                }
+            });
+    }
+</script>
+
+<script>
+    $(".Checkbox-parent input").on('click', function () {
+        var _parent = $(this);
+        var nextli = $(this).parent().next().children().children();
+
+        if (_parent.prop('checked')) {
+            console.log('Checkbox-parent checked');
+            nextli.each(function () {
+                $(this).children().prop('checked', true);
+            });
+
+        } else {
+            console.log('Checkbox-parent un checked');
+            nextli.each(function () {
+                $(this).children().prop('checked', false);
+            });
+
+        }
+    });
+
+    $(".Checkbox-child input").on('click', function () {
+
+        var ths = $(this);
+        var parentinput = ths.closest('div').prev().children();
+        var sibblingsli = ths.closest('ul').find('li');
+
+        if (ths.prop('checked')) {
+            console.log('Checkbox-child checked');
+            parentinput.prop('checked', true);
+        } else {
+            console.log('Checkbox-child unchecked');
+            var status = true;
+            sibblingsli.each(function () {
+                console.log('sibb');
+                if ($(this).children().prop('checked')) status = false;
+            });
+            if (status) parentinput.prop('checked', false);
+        }
+    });
+
+    // show hide accordion
+
+    $(".Accordion").click(function () {
+        this.classList.toggle("Accordion--active");
+        $('.Accordion-panel').toggleClass('acco-show');
+
+    });
+
+    $(".Accordion1").click(function () {
+        this.classList.toggle("Accordion--active");
+        $('.Accordion-panel1').toggleClass('acco-show');
+
+    });
+</script>

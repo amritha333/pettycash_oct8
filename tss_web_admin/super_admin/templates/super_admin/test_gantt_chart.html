@@ -1,0 +1,428 @@
+{% extends "super_admin/menu.html" %}
+{% load ganttchart %}
+{% load static %}
+{% load ganttchart %}
+{% block content %}
+
+
+
+
+
+<style>
+    #gantt_chart1 .card-box {
+    padding-top: 20px;
+    overflow-x: scroll;
+}
+
+#gantt_chart1 .tab-content {
+    padding: 15px 0;
+}
+
+#gantt_chart1 .fade:not(.show) {
+    opacity: 1 !important;
+}
+
+.gantt {
+    display: grid;
+    border: 0;
+    border-radius: 0px;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.gantt__row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    background-color: #fff;
+}
+
+
+
+
+
+.gantt__row:nth-child(3) .gantt__row-bars {
+    border-top: 0;
+}
+
+.gantt__row:nth-child(3) .gantt__row-first {
+    border-top: 0;
+}
+
+.gantt__row--empty {
+    background-color: #ffd6d2 !important;
+    z-index: 1;
+}
+
+.gantt__row--empty .gantt__row-first {
+    border-width: 1px 1px 0 0;
+}
+
+.gantt__row--lines {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    grid-template-columns: 150px repeat(31, 1fr);
+}
+
+.gantt__row--lines span {
+    display: block;
+    border-right: 1px solid #dee2e6;
+}
+
+.gantt__row--lines span.marker {
+    background-color: rgba(10, 52, 68, 0.13);
+    z-index: 2;
+}
+
+.gantt__row--lines:after {
+    grid-row: 1;
+    grid-column: 0;
+    background-color: #1688b345;
+    z-index: 2;
+    height: 100%;
+}
+
+.gantt__row--months {
+    color: #fff;
+    background-color: #485978 !important;
+    border-bottom: 1px solid #dee2e6;
+    grid-template-columns: 150px repeat(31, 1fr);
+}
+
+.gantt__row--months .gantt__row-first {
+    border-top: 0 !important;
+    background-color: #485978 !important;
+}
+
+.gantt__row--months span {
+    text-align: center;
+    font-size: 13px;
+    align-self: center;
+    font-weight: 500;
+    padding: 15px 0;
+}
+
+.gantt__row-first {
+    background-color: #fff;
+    border-width: 1px 0 0 0;
+    border-color: #dee2e6;
+    border-style: solid;
+    padding: 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    text-align: center;
+}
+
+.gantt__row-bars {
+    list-style: none;
+    display: grid;
+    padding: 0;
+    margin: 0;
+    grid-template-columns: repeat(31, 1fr);
+    grid-gap: 8px 0;
+    border-top: 1px solid #dee2e6;
+}
+
+.gantt__row-bars li {
+    font-weight: 500;
+    text-align: center;
+    font-size: 11px;
+    min-height: 15px;
+    background-color: #55de84;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.gantt__row-bars li.stripes {
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255, 255, 255, 0.1) 5px, rgba(255, 255, 255, 0.1) 12px);
+}
+
+.gantt__row-bars li:before,
+.gantt__row-bars li:after {
+    content: "";
+    height: 100%;
+    top: 0;
+    z-index: 4;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.gantt__row-bars li:before {
+    left: 0;
+}
+
+.gantt__row-bars li:after {
+    right: 0;
+}
+
+@media (max-width: 1600px) {
+    .gantt {
+        width: 300vh;
+    }
+}
+
+
+#gantt_chart1 .card-box::-webkit-scrollbar {
+    display: block;
+}
+
+
+/* #gantt_chart1 .card-box {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+} */
+
+#gantt_chart1 .nav-tabs {
+    border-bottom: 0px solid #dee2e6;
+}
+
+.brdr1 {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.brdr2 {
+    border-radius: 0;
+}
+
+.brdr3 {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Plugins css -->
+
+
+
+    <div class="box_header">
+        <div class="row">
+            <div class="col-md-7 col-12">
+                <div class="mainiconbox"><i class="fa fa-user"></i>
+                </div>
+                <h4 class="m-t-0 header-title">
+                    <div class="breadcrumbs ng-scope">
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a>Leave Management </a></li>
+                            <!-- <li><a>User  Settings</a></li> -->
+                        </ul>
+                        <div>Leave Gantt</div>
+                    </div>
+                </h4>
+            </div>
+            <div class="col-md-5 col-12">
+                <div class="pull-right p-t-10">
+    <!-- 
+                    <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newuser"> <i class="mdi mdi-plus-circle-outline"></i> APPLY NEW LEAVE
+                    </a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<div id="gantt_chart1">
+
+
+    <div class="card-box ">
+
+
+        <ul class="nav nav-tabs">
+
+            <li ><a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_prev_month_action"><button style="background-color: #485978;
+                border-color: #ffffff33;
+                color: white;" type="button"
+                        class="btn btn-pri brdr1"><i
+                            class="fa-solid fa-arrow-left"></i></button></a></li>
+            <li class="active"><a data-toggle="tab" href="#home"><button style="background-color: #485978;
+                border-color: #ffffff33;
+                color: white;" type="button"
+                        class="btn btn-pri bordr-lft brdr2">{{full_month_name}}</button></a></li>
+            <li><a data-year="{{year}}" data-month="{{month}}" href="#" class="gantt_chart_next_month_action"><button style="background-color: #485978;
+                border-color: #ffffff33;
+                color: white;" type="button"
+                        class="btn btn-pri bordr-lft brdr3"><i
+                            class="fa-solid fa-arrow-right"></i></button></a></li>
+
+        </ul>
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+                <div class="gantt">
+                    <div class="gantt__row gantt__row--months">
+                        <div class="gantt__row-first">Name</div>
+                        {% for i in "x"|rjust:days %}
+                        <span> {{forloop.counter}}</span>
+
+                        {% endfor %}
+                      
+
+                    </div>
+                    <div class="gantt__row gantt__row--lines" data-month="">
+
+                        {% for i in "x"|rjust:days %}
+                        <span></span>
+                        {% endfor %}
+                       
+                    
+                    </div>
+
+
+                    {% for i in get_chile_response %}
+                    <div class="gantt__row">
+                        <div class="gantt__row-first">
+                            {{i.name}}
+                        </div>
+                        <ul class="gantt__row-bars">
+                        {% for i in i.id|get_user_leave_data11:send_data %}
+
+               
+                
+                        {% if i.holiday_status_id.1 == "Annual Vacation" %}
+                   <li style="grid-column:  {{i.from_date_day}}/{{i.to_date_day}}; background-color: #ffce00;" class="stripes">
+                    Annual
+                    Vacation</li>
+
+                    {% elif i.holiday_status_id.1 == "Unpaid" %}
+                    <li style="grid-column:  {{i.from_date_day}}/{{i.to_date_day}}; background-color: #e30000;" class="stripes">
+                       Unpaid</li>
+
+                    {% elif i.holiday_status_id.1 == "Paid Time Off" %}
+                    <li style="grid-column:  {{i.from_date_day}}/{{i.to_date_day}}; background-color: #00c231;" class="stripes">
+                        Paid Time Off</li>
+                    {% elif i.holiday_status_id.1 == "Sick Time off" %}
+                    <li style="grid-column:  {{i.from_date_day}}/{{i.to_date_day}}; background-color: #00a7ff;" class="stripes">
+                        Sick Time off</li>
+                    {% else %}
+                    <li style="grid-column:  {{i.from_date_day}}/{{i.to_date_day}}; background-color: #00a7ff;" class="stripes">
+                        {{i.holiday_status_id.1}}</li>
+
+
+
+                    {% endif %}
+
+
+
+
+
+
+
+                        {% endfor %}
+                    </ul>
+                    </div>
+
+                    {% endfor %}
+          
+                </div>
+            </div>
+     
+          
+
+        </div>
+
+
+    </div>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(".gantt_chart_next_month_action").click(function(){
+        var year = $(this).attr("data-year");
+        var month = $(this).attr("data-month")
+
+
+
+
+
+
+        $.ajax({
+type: "GET",
+url: "user_leave_gantt_chart_next_month_action",
+data: {
+            'year': year,
+            'month' : month      
+        },
+beforeSend: function() {
+   $('#loader').removeClass('hidden')
+},
+success: function(data){
+   $("#gantt_chart1").html(data);
+},
+complete: function(){
+   $('#loader').addClass('hidden')
+},
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+    })
+</script>
+
+<script>
+
+    $(".gantt_chart_prev_month_action").click(function(){
+      
+        var year = $(this).attr("data-year");
+         var month = $(this).attr("data-month")
+        
+
+
+
+
+
+         $.ajax({
+            type: "GET",
+            url: "user_leave_gantt_chart_prev_month_action",
+            data: {
+                'year': year,
+                'month' : month      
+            },
+            beforeSend: function() {
+                $('#loader').removeClass('hidden')
+            },
+            success: function(data){
+                $("#gantt_chart1").html(data);
+            },
+            complete: function(){
+                $('#loader').addClass('hidden')
+            },
+        });
+
+
+
+
+
+
+    })
+ </script>
+
+{% endblock %}
