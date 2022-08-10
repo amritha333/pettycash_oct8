@@ -484,7 +484,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             </div>
                             <div class="col-sm-5 pad5 mt-2 ">
                                 <div class="form-group bmd-form-group">
-                                    <select class="input form-control" name="absence_status" >
+                                    <select class="input form-control" name="absence_status" id="absence_status" >
                                         <option>Confirmed</option>
                                         <option>Planned</option>
 
@@ -505,7 +505,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                     
                                     <div class="form-group"> 
                                         
-                                        <select name="employee_leave_replacer" class="form-control select2 " >
+                                        <select name="employee_leave_replacer" id="employee_leave_replacer" class="form-control select2 " >
                                         <option selected="selected" value="0">Select Employee Name</option>
                                         {% for i in replacer_response  %}
                                        
@@ -519,7 +519,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             </div>
                             <div class="col-sm-6 pad5 mt-2">
                                 <div class="form-group bmd-form-group">
-                                    <input name="employee_alternative_contcat_no" type="number"  class="input form-control">
+                                    <input name="employee_alternative_contcat_no" id="employee_alternative_contcat_no" type="number"  class="input form-control">
                                     <label class="inputText">Emergency Contact Number During Leave</label>
                                 </div>
                             </div>
@@ -533,7 +533,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                 <div class="col-sm-12 pad5 ">
                                     <div class="form-group bmd-form-group">
                                         <input style="    background: #2b2c422b;
-                                        color: black;" readonly value="{{emp_email}}" name="employee_email" type="text" class="input form-control getVal">
+                                        color: black;" readonly value="{{emp_email}}" id="employee_email" name="employee_email" type="text" class="input form-control getVal">
                                         <label class="inputText input-has-value">Email</label>
                                     </div>
                                 </div>
@@ -583,7 +583,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             <div class="col-md-6 mt-2">
                                 <div class="form-group bmd-form-group" id="to_date1">
                                     <div class="input-group bmd-date-group">
-                                        <input type="text" name="employee_leave_to_date" autocomplete="off"  class="form-control input" id="endDate" />
+                                        <input type="text" name="employee_leave_to_date" autocomplete="off" required  class="form-control input" id="endDate" />
                                         <label class="bmd-label-floating inputText labl_insd">To</label>
                                         <div class="input-group-append"> <span class="input-group-text "><i class="fa fa-calendar"></i></span>
                                         </div>
@@ -591,7 +591,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                 </div>
                                 <div id="to_date2" class="form-group bmd-form-group" style="display: none">
                                     <div class="input-group bmd-date-group">
-                                        <select name="request_date_from_period"  class="form-control  " >
+                                        <select name="request_date_from_period" id="request_date_from_period"  class="form-control  " >
                                             <option value="am"  >Morning</option>
                                             <option   value="pm">Afternoon</option>
                                            
@@ -620,7 +620,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                
                                     <div class="form-group bmd-form-group">
     
-                                        <textarea name="employee_leave_reason" class="form-control input_textaerea"></textarea>
+                                        <textarea name="employee_leave_reason" id="employee_leave_reason" class="form-control input_textaerea"></textarea>
                                         <label class="inputText">Reason for Leave/Comments</label>
     
                                     </div>
@@ -1600,10 +1600,87 @@ $("#emp_name_action").change(function(){
         
     }
 </script>
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(".submit_action").submit(function(){
+        event.preventDefault()
+
+        employee_name1 = $("#employee_name1").val()
+        employee_name = $("#emp_name_action").val()
+        leave_type_nm = $("#leave_type_nm").val()
+        employee_number = $("#employee_reg_number").val()
+        absence_status = $("#absence_status").val()
+        available_leave = $("#available_leave").val()
+        employee_leave_replacer = $("#employee_leave_replacer").val()
+        employee_alternative_contcat_no = $("#employee_alternative_contcat_no").val()
+        employee_email = $("#employee_email").val()
+        employee_leave_type = $("#emp_name").val()
+        absence_category = $("#absence_category").val()
+        startDate = $("#startDate").val()
+        let request_unit_half = $('#myCheckbox').is(':checked');
+
+        if(request_unit_half == true){
+            request_unit_half = "Half day"
+        }
+
+       
+        endDate = $("#endDate").val()
+        request_date_from_period = $("#request_date_from_period").val()
+        employee_total_days = $("#t1").val()
+        employee_leave_reason = $("#employee_leave_reason").val()
+        $form = $(this)
+        
+        
+        var data1 = new FormData()
+        data1.append('employee_attached_file', $('#f123')[0].files[0])
+        data1.append('employee_name1', employee_name1)
+        data1.append('leave_type_nm',leave_type_nm)
+        data1.append('employee_name',employee_name)
+        data1.append('employee_email',employee_email)
+        data1.append('employee_number',employee_number)
+        data1.append('employee_leave_type',employee_leave_type)
+        data1.append('employee_leave_from_date',startDate)
+        data1.append('employee_leave_to_date',endDate)
+        data1.append('employee_available_leave',available_leave)
+        data1.append('employee_leave_reason',employee_leave_reason)
+        data1.append('employee_total_days',employee_total_days)
+        data1.append('employee_leave_replacer',employee_leave_replacer)
+        data1.append('employee_alternative_contcat_no',employee_alternative_contcat_no)
+        data1.append('request_unit_half',request_unit_half)
+        data1.append('absence_status',absence_status)
+        data1.append('request_date_from_period',request_date_from_period)
+        data1.append('absence_category',absence_category)
+
+        csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+        console.log("data:::::")
+        console.log(data1)
+      
+        
+        $.ajax({                    
+        url: "user_leave_apply_action",                    
+        data: data1,
+		type: 'post',
+        processData: false,
+        contentType: false,
+        success: function (data) {  
+
+            if(data['submit_message'] == "success"){
+                window.location.href = "leave_management"
+            }
+            else{
+                $("#kl2").hide();
+               
+                swal('',data['message'], "error");
+
+            }
+
+       
+
+        }
+      });
+        
         // alert("hhh")
+        event.preventDefault()
         $("#kl2").show();
     })
 </script>

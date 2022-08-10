@@ -225,3 +225,8 @@ class user_login_log_history(models.Model):
     dt = models.DateField(auto_now_add=True)
     tm = models.TimeField(auto_now_add=True)
     status = models.CharField(max_length=255,null=True)
+
+
+
+class test_file_upload(models.Model):
+    file_data = models.FileField(upload_to ='uploads/',null=True)

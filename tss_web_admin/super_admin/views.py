@@ -133,7 +133,7 @@ def login_page1(request):
 
 
 
-api_domain = "http://10.10.10.107:8069/"
+api_domain = "http://erp1.veuz.in:8069/"
 
 
 
@@ -2038,6 +2038,7 @@ def leave_management(request):
     emp_name = ""
     emp_email = ""
     emp_id = ""
+    print("kkkkk22222222222222221111")
     try:
         odoo_data = User_Management.objects.get(auth_user=user_auth_id)
         odoo_id = odoo_data.odoo_id
@@ -2047,12 +2048,10 @@ def leave_management(request):
     except:
         pass
     leave_history_response = ""
-    print("hhhhh")
+    print("kkkkk22222222222222221111")
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
-    print("heyyyyyyyyyyyy")
     new_api_integration =  asyncio.run(odoo_new_leave_api(request,odoo_id,odoo_token_data.token))
-    print("new_data::::")
-    print(new_api_integration)
+    print("kkkkk22222222222222221111")
     leave_history_response = new_api_integration['leave_history']
     leave_type_response = new_api_integration['leave_types']
     entitlement_balances_response = new_api_integration['entitled_details']
@@ -2319,8 +2318,36 @@ def send_push_notification(send_user_id,leave_request_username):
     pass
 
 
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def test_file_upload_ajax(request):
+    print("heyyyyyyyyyyyyyyyyyyy")
+    employee_attached_file = request.FILES['employee_attached_file']
+    name = request.POST.get("name")
+    print("name:::::",str(name))
+    print("employee_attached_file:::::::::",str(employee_attached_file))
+
+    data_save = test_file_upload(
+        file_data = employee_attached_file
+    )
+    data_save.save()
+    print("employee_attached_file:::::",str(employee_attached_file))
+
+
+@csrf_exempt
 def user_leave_apply_action(request):
     if request.method == "POST":
+
+        # employee_attached_file = request.FILES['employee_attached_file']
+        # print("file::::::::::",str(employee_attached_file))
+        # data_upload =  test_file_upload(
+        #     file_data = employee_attached_file
+        # )
+        # data_upload.save()
         employee_name1 = request.POST.get("employee_name1",False)
         leave_type_nm = request.POST.get("leave_type_nm",False)
         user_auth_id = request.user.id
@@ -2346,17 +2373,14 @@ def user_leave_apply_action(request):
         absence_status = request.POST.get("absence_status",False)
         absence_category = request.POST.get("absence_category",False)
 
+        print("")
+
        
         if request_unit_half == "Half day":
             employee_leave_to_date = employee_leave_from_date
             pass
 
-        
-
-
-       
         request_date_from_period = request.POST.get("request_date_from_period",False)
-       
         leave_apply_url = api_domain+"api/post_leave"
         payload = json.dumps({
             "jsonrpc": "2.0",
@@ -2385,12 +2409,11 @@ def user_leave_apply_action(request):
             'Content-Type': 'application/json',
             'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
+        print("responseeeeeeeeeeeeeeeeeeeeeeeeee")
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
-       
-        response12 = response1.json()['result']
-        print("response::::")
-        print(response12)
         
+        response12 = response1.json()['result']
+       
         
        
         l1 = response12['result']
@@ -2407,10 +2430,15 @@ def user_leave_apply_action(request):
 
             mes1 = response12['result']
             m1 = mes1[:mes1.index("\n")]
+            data = []
+            data = {
+                'message':str(m1),
+                'submit_message':"error"
+            }
            
-            
+            print("kkkllll")
 
- 
+            return JsonResponse(data,safe=False)
             messages.warning(request,str(m1))
             return redirect("leave_management")
         elif response12['message'] == "success":
@@ -2520,7 +2548,16 @@ def user_leave_apply_action(request):
                     }
                 }
             )
+            data = []
+            data = {
+                'message':str(mes1),
+                'submit_message':'success'
+            }
+           
+            print("kkkllll")
             messages.success(request,str(mes1))
+            return JsonResponse(data,safe=False)
+           
             return redirect("leave_management")
 
 

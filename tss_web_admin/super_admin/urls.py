@@ -94,6 +94,9 @@ urlpatterns = [
 
 
     path('test_gantt_chart',views.test_gantt_chart,name='test_gantt_chart'),
+
+    path('test_file_upload_ajax',views.test_file_upload_ajax,name='test_file_upload_ajax'),
+    
     
 
 
