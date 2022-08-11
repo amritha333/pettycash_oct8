@@ -38,7 +38,7 @@
             <!-- LOGO -->
 
             <div class="topbar-left">
-    <a href="admin_dashboard" class="logo">
+    <a href="{% url 'admin_dashboard' %}" class="logo">
         <i>
             <img src="{% static 'adminnew/images/fav.png' %}" alt="">
         </i>
@@ -50,7 +50,7 @@
         <li>
 
             <p class="splnav"> <i class="fa fa-home"></i>
-                <a> Home</a>
+                <a href="{% url 'admin_dashboard' %}"> Home</a>
             </p>
         </li>
         <li>
@@ -71,7 +71,7 @@
         </li>
         {% if request.user.id|emp_url_perm_check:"Leave Management" %}
         <li>
-            <a href="leave_management"> <i class="fa fa-calendar"></i>
+            <a href="{% url 'leave_management' %}"> <i class="fa fa-calendar"></i>
                 <p>Leave <br></p>
             </a>
         </li>
@@ -79,7 +79,7 @@
         {% endif %}
         {% if request.user.id|emp_url_perm_check:"Employee" %}
         <li>
-            <a href="employee_master"> <i class="fa fa-user-circle"></i>
+            <a href="{% url 'employee_master' %}"> <i class="fa fa-user-circle"></i>
                 <p>Employee <br>Master</p>
             </a>
         </li>
@@ -89,7 +89,7 @@
         {% if request.user.id|emp_url_perm_check:"Petty Cash" %}
 
         <li>
-            <a href="petty_cash_management"> <i class="fa fa-money"></i>
+            <a href="{% url 'petty_cash_management' %}"> <i class="fa fa-money"></i>
                 <p>Petty Cash  <br></p>
             </a>
         </li>
@@ -174,11 +174,11 @@
                     <ul class="nav_second_sub collapse submnu" id="Organization">
 
                         {% if request.user.id|emp_url_perm_check:"Company" %}
-                        <li><a href="view_company_details">Company</a>
+                        <li><a href="{% url 'view_company_details' %}">Company</a>
                         </li>
                         {% endif %}
                         {% if request.user.id|emp_url_perm_check:"User" %}
-                        <li><a href="user_management">Users</a>
+                        <li><a href="{% url 'user_management' %}">Users</a>
                         </li>
                         {% endif %}
                         <li><a href="department.html">Department</a>
@@ -195,12 +195,16 @@
                     </li>
                     <ul class="nav_second_sub collapse submnu" id="User-Access">
                         {% if request.user.id|emp_url_perm_check:"Role" %}
-                        <li><a href="role_management">Roles</a>
+                        <li><a href="{% url 'role_management' %} ">Roles</a>
                         </li>
                         {% endif %}
+
+                       
                       <!--  <li><a href="permision.html">Permisions</a>
                         </li>-->
                     </ul>
+                    <li><a href="account/two_factor/">Account Security</a>
+                    </li>
             </div>
         </li>
 

@@ -198,6 +198,12 @@ def login_action(request):
         latitude = request.POST.get("latitude",False)
         longitude = request.POST.get("longitude",False)
         ipv4 = request.POST.get("ipv4",False)
+
+        data =[]
+        data = {
+            'message':'success'
+        }
+        
         if User.objects.filter(username=uname).exists():
             
             user = authenticate(username=uname, password=passwrd)
@@ -247,7 +253,7 @@ def login_action(request):
                     status = "True" 
                 )
                 save_token.save()
-            login(request, user)
+            # login(request, user)
             if st == True:
                 context={
                         'message':"success",
@@ -3361,23 +3367,30 @@ def leave_approve_action(request):
             responsible_for_approval = response_result['responsible_for_approval']
             data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending").update(status="approve",read_status=1)
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
-            send_request = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                "notification_broadcast2",
-                {       
-                    'type': 'send_notification',
-                    'message':{
-                        "message":str("Leave Approve Request"),
-                        "dt":str(send_request.dt),
-                        "status":str(leave__result_status),
-                        "requested_date_from":str(send_request.requested_from_dt),
-                        "requested_date_to":str(send_request.requested_to_dt),
-                        "send_user_id":send_request.auth_user_id.id,
-                        "category":"notification"
+            try:
+                send_request = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    "notification_broadcast2",
+                    {       
+                        'type': 'send_notification',
+                        'message':{
+                            "message":str("Leave Approve Request"),
+                            "dt":str(send_request.dt),
+                            "status":str(leave__result_status),
+                            "requested_date_from":str(send_request.requested_from_dt),
+                            "requested_date_to":str(send_request.requested_to_dt),
+                            "send_user_id":send_request.auth_user_id.id,
+                            "category":"notification"
+                        }
                     }
-                }
-            )
+                )
+            except:
+                pass
+            print("new methodddd")
+            print("responsible_for_approval::::::",str(responsible_for_approval))
+            print("leave__result_status::::::",str(leave__result_status))
+            
             updated_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Approved")
             if leave__result_status == "validate":
                 pass
@@ -3385,7 +3398,10 @@ def leave_approve_action(request):
             
                 try:
                     next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval)
-                    leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+                    try:
+                        leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+                    except:
+                        leave_data = odoo_notification.objects.get(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="approve")
                     next_approval_notification = odoo_notification(
                         notification_type="leave_approve_request",
                         message="leave request",
@@ -3920,7 +3936,7 @@ def all_events(request):
         df = datetime.fromisoformat(event['date_to'])
         from datetime import timedelta
         date_time_obj = df+timedelta(days=1)
-    
+        date_to = date_time_obj.date()
 
         title_data = str(event['employee_id'][1])+" on "+str(event['holiday_status_id'][1])+" : "+str(event['number_of_days'])+" days"
         color_data = ""
@@ -3942,7 +3958,7 @@ def all_events(request):
             'title':title_data,
             'id':event['id'],
             'start': event['date_from'],
-            'end': event['date_to'],
+            'end': date_to,
             'color':color_data,
             'className':classname1
         })
@@ -4003,6 +4019,7 @@ def employee_events(request):
         df = datetime.fromisoformat(event['date_to'])
         from datetime import timedelta
         date_time_obj = df + timedelta(days=1)
+        date_to = date_time_obj.date()
         title_data = str(event['employee_id'][1]) + " on " + str(event['holiday_status_id'][1]) + " : " + str(event['number_of_days']) + " days"
         color_data = ""
         classname1 = ""
@@ -4021,11 +4038,13 @@ def employee_events(request):
             'title': title_data,
             'id': event['id'],
             'start': event['date_from'],
-            'end': event['date_to'],
+            'end': date_to,
             'color': color_data,
             'className': classname1
         })
     return JsonResponse(out, safe=False)
+
+
 
 
 def cal_depended(request):
@@ -4225,3 +4244,24 @@ def test_gantt_chart(request):
         'send_data':send_data
     }
     return render(request,'super_admin/test_gantt_chart.html',context)
+
+
+
+
+def role_exists_check(request):
+
+    role = request.GET.get("role",False)
+
+    print("role:::::",role)
+
+    if Role_details.objects.filter(role_name=role).exists():
+
+        data = "exist"
+
+        return JsonResponse(data,safe=False)
+
+    else:
+
+        data = "success"
+
+        return JsonResponse(data,safe=False)

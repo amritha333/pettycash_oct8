@@ -301,14 +301,16 @@ top: -12px !important;
                   </h2>
                   <div class="account-form pb-5">
 					 
-                     <form class="submit_action" action="login_action"  method="post">
+                     <form name="frmUser" class="submit_action" action="account/login/"  method="post">
+                   
                         {% csrf_token %}
+                        <input type="hidden" name="login_view-current_step" value="auth" id="id_login_view-current_step">
                         <div class="form-group row m-b-20">
                            <div class="col-12">
                               
                               <div class="feild  groupinput">
                                 
-                                 <input type="text" name="uname" class="input form-control input-user-name" id="uname123" autocomplete="off" required="" value="{{user_email}}">
+                                 <input type="text" name="auth-username" class="input form-control input-user-name" id="uname123" autocomplete="off" required="" value="{{user_email}}">
                                  <label class="inputText">Username</label>
                                  
                               </div>
@@ -318,7 +320,7 @@ top: -12px !important;
                            <div class="col-12">
                               <div class="feild groupinput">
                                  <a href="page-recoverpw.html" class="text-muted forgot">Forgot your password?</a>
-                                 <input type="password" name="passwrd" id="password123" class="input input-user-name" required="">
+                                 <input type="password" name="auth-password" id="password123" class="input input-user-name" required="">
                                  <label class="inputText">Password</label>
                               </div>
                            </div>
@@ -468,8 +470,11 @@ top: -12px !important;
       success: function (data)  {
        
        if(data['message'] == "success"){
+
+
+         document.forms["frmUser"].submit();
         
-         window.location.href = "admin_dashboard"
+        
        }
        else if(data['message'] == "error"){
          swal("Error ","Invalid username and password", "error");

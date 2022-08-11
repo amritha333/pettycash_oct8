@@ -224,7 +224,7 @@
 <!-- <div id="newsrole" class="modal fade" role="dialog" data-backdrop="static">
 <div class="modal-dialog modal_large"> -->
 <!-- Modal content-->
-<form action="add_role_action" class="submit_action" method="POST">
+<form name="submit_action" action="add_role_action" class="submit_action" method="POST">
 
     <div class="confirm-box" id="kl2" style="display: none">
         <h1 style="    font-size: 14px;
@@ -946,10 +946,56 @@ $(this).val(cp_value );
    </script>
 {% endif %}
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+
+
 <script>
-    $(".submit_action").submit(function(){
-        // alert("hhh")
-        $("#kl2").show();
+
+    $(".submit_action").submit(function(event){
+
+    event.preventDefault()
+
+    $.ajax({                    
+
+        url: "role_exists_check",                    
+
+        data: {
+
+          'role': $("#role_name1").val()      
+
+        },
+
+        success: function (data) {  
+
+        
+
+            if(data == "exist"){
+
+
+
+                swal("role already exists ", "", "error");
+
+            }
+
+            else{
+
+               
+
+                $('.submit_action').submit();
+
+           }
+
+
+
+        }
+
+      });
+
+       
+
     })
+
 </script>
 {% endblock %}

@@ -91,12 +91,13 @@ urlpatterns = [
 
     path('user_login_log',views.user_login_log,name='user_login_log'),
     path('user_login_log_date_filter_action',views.user_login_log_date_filter_action,name='user_login_log_date_filter_action'),
+    path('role_exists_check',views.role_exists_check,name='role_exists_check'),
 
 
     path('test_gantt_chart',views.test_gantt_chart,name='test_gantt_chart'),
 
     path('test_file_upload_ajax',views.test_file_upload_ajax,name='test_file_upload_ajax'),
-    
+
     
 
 
