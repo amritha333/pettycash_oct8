@@ -1,5 +1,6 @@
 
 from ast import Try
+from operator import mod
 from pyexpat import model
 from urllib import request
 from django.db import models
@@ -230,3 +231,42 @@ class user_login_log_history(models.Model):
 
 class test_file_upload(models.Model):
     file_data = models.FileField(upload_to ='uploads/',null=True)
+
+
+
+
+class pattern_lock_table(models.Model):
+    auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="pattern_lock_user_login", null=True)
+    pattern_number = models.TextField(null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(max_length=255,null=True)
+
+
+
+
+class User_leave_draf_history(models.Model):
+    auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="User_leave_draf_history_user_login", null=True)
+    user_id = models.ForeignKey(User_Management,on_delete=models.CASCADE,related_name="User_leave_draf_history_user_id",null=True)
+    leave_type = models.CharField(max_length=255,null=True)
+    from_date = models.DateField(null=True)
+    to_date = models.DateField(null=True)
+    total_days = models.IntegerField(null=True)
+    reason = models.TextField(null=True)
+    alternative_contact_number = models.CharField(max_length=255,null=True)
+    employee_leave_replacer = models.IntegerField(null=True)
+    holiday_type = models.CharField(max_length=255,null=True)
+    employee_id = models.IntegerField(null=True)
+    request_unit_half = models.CharField(max_length=255,null=True)
+    request_date_form_period = models.CharField(max_length=255,null=True)
+    absence_status = models.CharField(null=True,max_length=255)
+    absence_category = models.CharField(max_length=255,null=True)
+    attached_file = models.FileField(upload_to="leave_attached_file",null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(max_length=255,null=True)
+    leave_type_id = models.IntegerField(null=True)
+    employee_name = models.CharField(max_length=255,null=True)
+    employee_reg_number = models.IntegerField(null=True)
+    
+

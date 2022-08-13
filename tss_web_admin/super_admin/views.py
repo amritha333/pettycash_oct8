@@ -140,6 +140,13 @@ api_domain = "http://erp1.veuz.in:8069/"
 @login_required(login_url='/index')
 def admin_dashboard(request):
     user = request.user
+
+    try:
+        data = pattern_lock_table.objects.get(auth_user_id=request.user,status='True')
+        return render(request,'super_admin/pattern_lock.html')
+        
+    except:
+        pass
     
     user_dat = User.objects.get(id=request.user.id)
     st = user_dat.is_superuser
@@ -2034,7 +2041,7 @@ async def odoo_new_leave_api(request,odoo_id,token):
     async with aiohttp.ClientSession() as session:
         async with session.get(token_url, headers=headers, data=payload) as res:
             response1 = await res.json()
-            print("response1::::",str(response1))
+            # print("response1::::",str(response1))
             response12 =response1['result']['result']
             return response12
     pass
@@ -2063,6 +2070,8 @@ def leave_management(request):
     entitlement_balances_response = new_api_integration['entitled_details']
     replacer_response = new_api_integration['possible_replacers']
     child_response = new_api_integration['childs_ids_with_current_empl']
+
+    draf_leave_details = User_leave_draf_history.objects.filter(auth_user_id=request.user,status="pending")
     
 
 
@@ -2076,7 +2085,8 @@ def leave_management(request):
         'replacer_response':replacer_response,
         'child_response':child_response,
         'entitlement_balances_response':entitlement_balances_response,
-        'child_count':len("child_response")
+        'child_count':len("child_response"),
+        'draf_leave_details':draf_leave_details
         
     }
 
@@ -2600,6 +2610,7 @@ from rest_framework.decorators import api_view
 @api_view(['POST'])
 def leave_status_update_api(request):
     if request.method == "POST":
+        print("-------------createdapiiiiiii")
         leave_id = request.POST.get("leave_id",False)
         state = request.POST.get("state",False)
         updated_data = odoo_notification.objects.filter( mapping_id = int(leave_id),notification_type="leave_type").update(status=state,read_status=0)
@@ -3391,7 +3402,7 @@ def leave_approve_action(request):
             print("responsible_for_approval::::::",str(responsible_for_approval))
             print("leave__result_status::::::",str(leave__result_status))
             
-            updated_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Approved")
+            # updated_leave_status = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Approved")
             if leave__result_status == "validate":
                 pass
             else:
@@ -3402,7 +3413,9 @@ def leave_approve_action(request):
                         leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
                     except:
                         leave_data = odoo_notification.objects.get(mapping_id=leave_id,auth_user_id=request.user,notification_type="leave_approve_request",status="approve")
-                    next_approval_notification = odoo_notification(
+                    
+                    print("-------------------next approveeeeeeeeeeeeeeeeeee----------------------")
+                    next_approval_notification = odoo_notification.objects.create(
                         notification_type="leave_approve_request",
                         message="leave request",
                         mapping_id = leave_id,
@@ -3417,18 +3430,11 @@ def leave_approve_action(request):
                         current_leave_status = leave__result_status,
                         category = "activities"
                     )
-                    next_approval_notification.save()
+                    
                     from datetime import date
 
                     today = date.today()
-                    add_leave_status = Leave_Status_details.objects.create(
-                        leave_mapping_id = int(leave_id),
-                        user_name = next_approve_user_data.employee_name,
-                        auth_user = next_approve_user_data.auth_user,
-                        dt = today,
-                        status = "Pending"
-
-                    )
+                   
                     channel_layer = get_channel_layer()
                     async_to_sync(channel_layer.group_send)(
                         "notification_broadcast2",
@@ -3447,7 +3453,9 @@ def leave_approve_action(request):
                     )
                 except:
                     pass
+            
 
+            print("--------------approveddddddddddddddddddddddddddd")
 
             messages.success(request,str("approved success"))
             return redirect(request.META['HTTP_REFERER']) 
@@ -3683,6 +3691,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 class leave_create_api(APIView):
     permission_classes = (IsAuthenticated,)
+
+    print("----------------createddddddddddddddddddddddd")
     
     def post(self, request, format=None):
         data = request.data
@@ -3761,6 +3771,7 @@ class leave_create_api(APIView):
 class odoo_leave_status_update_api(APIView):
 
     permission_classes = (IsAuthenticated,)
+    print("----------------createdddddddddddddddddddddddstatusssss")
     
     def post(self, request, format=None):
         print("0000")
@@ -4265,3 +4276,238 @@ def role_exists_check(request):
         data = "success"
 
         return JsonResponse(data,safe=False)
+
+
+
+def profile(request):
+    data = ""
+    try:
+        data = User_Management.objects.get(auth_user=request.user)
+    except:
+        pass
+    context = {
+        'data':data
+    }
+    return render(request,'super_admin/profile.html',context)
+
+
+
+def pattern_lock(request):
+    return render(request,'super_admin/pattern_lock.html')
+
+
+
+def set_lock_pattern(request):
+    data = False
+    try:
+        data = pattern_lock_table.objects.get(auth_user_id= request.user)
+        print("kkkkkkkkkkkkkk666666666666666666666kkkk")
+        data = True
+    except:
+        data = False
+        pass
+    return render(request,'super_admin/set_lock_pattern.html',{'data':data})
+
+
+
+def pattern_lock_submit_action(request):
+
+    if request.method == "POST":
+        lock = request.POST.get("lock",False)
+        print("lock:::",str(lock))
+
+        data_save = pattern_lock_table(
+            auth_user_id= request.user,
+            pattern_number=lock,
+            status = "True"
+        )
+        data_save.save()
+        return redirect("admin_dashboard")
+
+
+
+def pattern_login_action(request):
+
+    if request.method == "POST":
+        lock = request.POST.get("lock")
+
+        try:
+            data = pattern_lock_table.objects.get( auth_user_id= request.user,pattern_number=lock)
+            data_update = pattern_lock_table.objects.filter( auth_user_id= request.user,pattern_number=lock).update(status="login")
+            return redirect("admin_dashboard")
+        except:
+            return redirect("pattern_lock")
+            pass
+
+
+
+def logoutconfirmation(request):
+    try:
+        data_update = pattern_lock_table.objects.filter( auth_user_id= request.user).update(status="True")
+    except:
+        pass
+    return redirect("logout")
+
+
+
+def remove_pattern_lock(request):
+    data_delete = pattern_lock_table.objects.filter( auth_user_id= request.user)
+    data_delete.delete()
+    return redirect("admin_dashboard")
+
+
+def change_password(request):
+
+    return render(request,'super_admin/change_password.html')
+
+
+
+def update_password(request):
+
+    if request.method == "POST":
+
+
+
+        username = request.user
+
+        print("userrrrrrrrrrr",username)
+
+        oldpass = request.POST.get('oldpass')
+
+        print("oldpassword::::::;;",oldpass)
+
+        newpass = request.POST.get("newpass")
+
+        print("newpassword:::::::::",newpass)
+
+        confirmpass = request.POST.get("confirmpass")
+
+        print("confirmpassword:::::::;;",confirmpass)
+
+
+
+        if newpass == confirmpass :
+
+
+
+            user = authenticate(username=username,password=oldpass)
+
+            if user is not None:
+
+                user.set_password(newpass)
+
+                user.save()
+
+                print("---updated------")
+
+            else:
+
+
+
+                print('user is not exist')
+
+                messages.warning(request,str("error"))
+
+                return redirect('change_password')
+
+
+
+            if(User_Management.objects.filter(username = username , password = oldpass).exists()):
+
+                print("heyyyyyyyyy")
+
+                User_Management.objects.filter(username = username).update(password=newpass)
+                
+
+                return redirect('index')
+
+            else:
+
+                print('user is not exist')   
+
+        else:
+
+            messages.warning(request,str("notequal"))
+
+            return redirect('change_password')       
+
+    return redirect('index')
+
+
+
+
+def user_leave_apply_to_draft_action(request):
+
+    if request.method == "POST":
+        print("-------------data-----------------------???????????????")
+        employee_name1 = request.POST.get("employee_name1",False)
+        leave_type_nm = request.POST.get("leave_type_nm",False)
+        employee_name = request.POST.get("employee_name",False)
+        print("employee_name::::",str(employee_name))
+        employee_email = request.POST.get("employee_email",False)
+        employee_number = request.POST.get("employee_number",False)
+        employee_leave_type = request.POST.get("employee_leave_type",False)
+        employee_leave_from_date = request.POST.get("employee_leave_from_date",False)
+        employee_leave_to_date = request.POST.get("employee_leave_to_date",False)
+        employee_available_leave = request.POST.get("employee_available_leave",False)
+        employee_leave_reason = request.POST.get("employee_leave_reason",False)
+        employee_total_days = request.POST.get("employee_total_days",False)
+        employee_leave_replacer = request.POST.get("employee_leave_replacer",False)
+        employee_alternative_contcat_no = request.POST.get("employee_alternative_contcat_no",False)
+        request_unit_half= request.POST.get("request_unit_half",False)
+        absence_status = request.POST.get("absence_status",False)
+        absence_category = request.POST.get("absence_category",False)
+        if request_unit_half == "Half day":
+            employee_leave_to_date = employee_leave_from_date
+            pass
+
+        request_date_from_period = request.POST.get("request_date_from_period",False)
+        user_data = User_Management.objects.get(auth_user=request.user)
+        if employee_leave_to_date == '':
+            employee_leave_to_date = None
+        if employee_total_days == '':
+            employee_total_days = None
+        if employee_leave_from_date == '':
+            employee_leave_from_date = None
+        data_save_draft = User_leave_draf_history(
+            auth_user_id = request.user,
+            user_id_id= user_data.id,
+            leave_type = leave_type_nm,
+            from_date = employee_leave_from_date,
+            to_date = employee_leave_to_date,
+            total_days = employee_total_days,
+            reason = employee_leave_reason,
+            alternative_contact_number = employee_alternative_contcat_no,
+            employee_leave_replacer = employee_leave_replacer,
+            employee_id = employee_name,
+            request_unit_half = request_unit_half,
+            request_date_form_period = request_date_from_period,
+            absence_status = absence_status,
+            absence_category = absence_category,
+            leave_type_id = employee_leave_type,
+            employee_name = employee_name1,
+            status = "pending",
+            employee_reg_number = employee_number
+
+
+        )
+        data_save_draft.save()
+
+
+
+
+        data = []
+        data = {
+            'message':'success'
+        }
+        return JsonResponse(data,safe=False)
+        pass
+
+
+
+
+
+def leave_draft_modal_action(request):
+    id = request.GET.get("id",False)
+    print("id:::::::::::",str(id))
+    return render(request,'super_admin/leave_draft_modal.html')

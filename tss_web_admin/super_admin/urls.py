@@ -98,6 +98,24 @@ urlpatterns = [
 
     path('test_file_upload_ajax',views.test_file_upload_ajax,name='test_file_upload_ajax'),
 
+    path('profile',views.profile,name='profile'),
+    path('pattern_lock',views.pattern_lock,name='pattern_lock'),
+
+    path('set_lock_pattern',views.set_lock_pattern,name='set_lock_pattern'),
+    path('pattern_lock_submit_action',views.pattern_lock_submit_action,name='pattern_lock_submit_action'),
+    path('pattern_login_action',views.pattern_login_action,name='pattern_login_action'),
+    path('logoutconfirmation',views.logoutconfirmation,name='logoutconfirmation'),
+    path('remove_pattern_lock',views.remove_pattern_lock,name='remove_pattern_lock'),
+    path('change_password',views.change_password,name='change_password'),
+    path('update_password',views.update_password,name='update_password'),
+    path('user_leave_apply_to_draft_action',views.user_leave_apply_to_draft_action,name='user_leave_apply_to_draft_action'),
+    path('leave_draft_modal_action',views.leave_draft_modal_action,name='leave_draft_modal_action'),
+    
+
+
+
+
+
     
 
 

@@ -1,0 +1,335 @@
+<form class="submit_action"  action="user_leave_apply_action" method="POST" enctype="multipart/form-data" >
+    <div id="draft_leave" class="modal modal-right fade" role="dialog" data-backdrop="static"  >
+    <div class="modal-dialog modal-full">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Leave Application Form</h4>
+            <div class="pull-right"> <a class="btn enlarge_modal" data-toggle="tooltip" data-original-title="Fullscreen"><i
+                            class="mdi mdi-crop-free" aria-hidden="true"></i> </a>
+                <a class="btn dslarge_modal" data-toggle="tooltip" data-original-title="Back"><i
+                            class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
+            </div>
+        </div>
+        
+        <div class="confirm-box" id="kl2" style="display: none">
+            <h1 style="    font-size: 14px;
+            color: white;    background: #423d58;">Please wait...</h1>
+            <div id="progress-bar">
+                <div id="inner-pb"></div>
+            </div>
+          </div>
+            {% csrf_token %}
+            <input type="hidden" name="employee_name1" id="employee_name1" value="{{emp_name}}">
+           
+        <div class="modal-body">
+            <input type="hidden" name="leave_type_nm" id="leave_type_nm">
+          
+                <div class="form_enterbox col-md-12">
+    
+    
+    
+    
+    
+    
+                    <div class="row mt-2">
+    
+    
+    
+    
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <div class="form-group bmd-form-group">
+                                        <select name="employee_name" class="form-control select2" id="emp_name_action">
+                                            {% for i in child_response %}
+                                            <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
+    
+                                            {% endfor %}
+                                        </select>
+    
+                                        
+                                        <!-- <input style="    background: #2b2c422b;
+                                        color: black;" readonly value="{{emp_name}}" name="employee_name" type="text" class="input form-control getVal"> -->
+                                        <label class="inputText input-has-value">Employee Name</label>
+                                    </div>
+                                </div>
+    
+                                <div class="col-sm-4 pad5 mt-2">
+                                    <div class="form-group bmd-form-group">
+                                        <input style="    background: #2b2c422b;
+                                        color: black;" readonly value="{{emp_id}}" name="employee_number" id="employee_reg_number" type="text" class="input form-control">
+                                        <label class="inputText">Employee Number</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 pad5 mt-2 ">
+                                    <div class="form-group bmd-form-group">
+                                        <select class="input form-control" name="absence_status" id="absence_status" >
+                                            <option>Confirmed</option>
+                                            <option>Planned</option>
+    
+                                           
+                                        </select>
+                                        <label class="inputText">Absence Status</label>
+                                    </div>
+                                </div>
+                             
+                                <div class="col-sm-12 pad5 mt-2" style="display:none" id="leave_avaiable_id">
+                                    <div class="form-group bmd-form-group">
+                                        <input style="    width: 33%;    background: #2b2c422b;" readonly id="available_leave" name="employee_available_leave" type="text" class="input form-control">
+                                        <label class="inputText">Leave Available</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9 pad5 mt-2">
+                                    <div class="form-group bmd-form-group">
+                                        
+                                        <div class="form-group"> 
+                                            
+                                            <select name="employee_leave_replacer" id="employee_leave_replacer" class="form-control select2 " >
+                                            <option selected="selected" value="0">Select Employee Name</option>
+                                            {% for i in replacer_response  %}
+                                           
+                                            <option value="{{i.id}}" >{{i.name}} {{i.registration_number}}</option>
+                                          
+                                            {% endfor %}
+                                         
+                                        </select> </div> 
+                                        <label class="inputText">Replace By</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 pad5 mt-2">
+                                    <div class="form-group bmd-form-group">
+                                        <input name="employee_alternative_contcat_no" id="employee_alternative_contcat_no" type="number"  class="input form-control">
+                                        <label class="inputText">Emergency Contact Number During Leave</label>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+    
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <div class="col-sm-12 pad5 ">
+                                        <div class="form-group bmd-form-group">
+                                            <input style="    background: #2b2c422b;
+                                            color: black;" readonly value="{{emp_email}}" id="employee_email" name="employee_email" type="text" class="input form-control getVal">
+                                            <label class="inputText input-has-value">Email</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 pad5  mt-2">
+                                    <div class="form-group bmd-form-group">
+                                        <select class="input form-control" name="employee_leave_type" id="emp_name">
+                                            <option value="no" selected="selected">Select Leave Type</option>
+    
+                                            {% for leave_type in leave_type_response %}
+        
+                                            <option value="{{leave_type.id}}">{{leave_type.name}}</option>
+        
+                                            {% endfor %}
+                                        </select>
+                                        <label class="inputText">Leave Type</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 pad5 mt-2 ">
+                                    <div class="form-group bmd-form-group">
+                                      <input style="    background: #2b2c422b;" readonly class="input form-control" id="absence_category" name="absence_category" type="text">
+    
+                                           
+                                        <label class="inputText">Absence Category</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group bmd-form-group">
+                                                <div class="input-group bmd-date-group">
+                                                    <input  type="text" name="employee_leave_from_date" required class="form-control input" id="startDate" />
+                                                    <label class="bmd-label-floating inputText labl_insd">From</label>
+                                                    <div class="input-group-append"> <span class="input-group-text "><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="half_day1"  class="col-md-12" style="    margin: -28px 0px;
+                                        padding: 16p 18px;display: none;
+                                    ">
+                                          <input name="request_unit_half" id="myCheckbox" type="checkbox" value="Half day" /> <span style="font-size: 12px;
+                                          font-weight: bold;">Half Day</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group bmd-form-group" id="to_date1">
+                                        <div class="input-group bmd-date-group">
+                                            <input type="text" name="employee_leave_to_date" autocomplete="off" required  class="form-control input" id="endDate" />
+                                            <label class="bmd-label-floating inputText labl_insd">To</label>
+                                            <div class="input-group-append"> <span class="input-group-text "><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="to_date2" class="form-group bmd-form-group" style="display: none">
+                                        <div class="input-group bmd-date-group">
+                                            <select name="request_date_from_period" id="request_date_from_period"  class="form-control  " >
+                                                <option value="am"  >Morning</option>
+                                                <option   value="pm">Afternoon</option>
+                                               
+                                               
+                                              
+                                              
+                                               
+                                             
+                                            </select>
+    
+                                            <label class="bmd-label-floating inputText labl_insd"> </label>
+                                            <div class="input-group-append"> <span class="input-group-text "><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="col-md-12 mt-2 ">
+                                    <div class="form-group bmd-form-group">
+                                        <input readonly style="    background: #2b2c422b;
+                                        color: black;" type="text" name="employee_total_days" id="t1" class="input form-control">
+                                        <label class="inputText">Total Days</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12  mt-2">
+                                   
+                                        <div class="form-group bmd-form-group">
+        
+                                            <textarea name="employee_leave_reason" id="employee_leave_reason" class="form-control input_textaerea"></textarea>
+                                            <label class="inputText">Reason for Leave/Comments</label>
+        
+                                        </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+    
+    
+    
+                     
+                    
+                    </div>
+                   
+    
+                 
+    
+                    <div class="row">
+                        <div class="col-md-6 colp_r_15">
+                            <div class="row">
+                             
+                                <style>
+                                    .select2-results{
+                                        display: block!important;
+                                    }
+                                </style>
+                             
+                            </div>
+                        </div>
+                    
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="sub_hdng_edit">View Entitlement Balances</h4>
+                        </div>
+                        <div class="col-md-12 pad0 " >
+    
+                            <div class="tbl_stngs commen_table m-t-8">
+    
+                                <table id="example" class="table table-bordered dt-responsive nowrap table-hover dataTable no-footer" style="width: 100%">
+    
+                                    <thead>
+                                    <tr>
+                                        <th>Sr #</th>
+                                        <th>Leave Type</th>
+                                        <th>Total </th>
+                                        <th>Total Available</th>
+                                      
+                                    </tr>
+                                    </thead>
+                               
+                                        <tbody id="entitlement_data1">
+                                        {% for i in entitlement_balances_response %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>
+                                       {{i.leave_type}}
+                                        </td>
+                                        <td>{{i.total_leaves}}</td>
+                                        <td>{{i.total_leave_balance}}</td>
+                                    </tr>
+                          
+                                    {% endfor %}
+                                    </tbody>
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 m-t-10">
+                            <h4 class="sub_hdng_edit" style="background-color: #2b2c42!important">Attachment </h4>
+                        </div>
+    
+                        <div class="col-md-12 pad0 ">
+                            <div class="table_createNewBtn"><a style="color: white"  href="#" class="add_file_action"> + Add File</a></div>
+                      
+                        </div>
+    
+    
+    
+                        <div id="add_file1" style="display: none;width:300px;">
+                            <div class="row">
+                                <div class="col-md-12 colp_r_15">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 resumeFileField">
+                                        <div class="form-group">
+                                            <div class="file-upload">
+    
+                                                <div class="image-upload-wrap">
+                                                    <input class="file-upload-input" id="f123" name="employee_attached_file" type='file' onchange="readURL(this);" accept="image/*" />
+                                                    <div class="drag-text">
+                                                        <h3>Drag and drop a file or select File</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="file-upload-content">
+                                                    <img class="file-upload-image" src="#" alt="your image" />
+                                                    <div class="image-title-wrap">
+                                                        <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+           
+             
+          
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a href="#" class="btn  leave_draft_action" style="    background: #a78204;
+            color: white;">Draft</a>
+            <button type="submit" class="btn btn-primary" >Submit</button>
+        </div>
+        
+    
+    </div>
+    </div>
+    </div>
+    
+    
+    </form>
+    

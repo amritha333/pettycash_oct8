@@ -35,9 +35,67 @@
                         </div>
                     </div>
                 </div>
+                {% if draf_leave_details %}
+             <div class="card" style="       box-shadow: -2px -1px -1px rgb(0 0 0 / 30%);
+             padding: 1em;
+             border: 1px solid rgba(0,0,0,0.15);
+             display: grid;
+             gap: 1em;
+             background: #fafafa;">
+                <br>
+                              
+                <table id="example5" class="table table-hover responsive nowrap table-bordered" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>Leave Type</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Total Days</th>
+                        <th>Created At</th>
+                        <th>Absence Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in draf_leave_details %}
+                      <tr>
+                        <td>
+                         {{i.leave_type}}
+                        </td>
+                        <td>{{i.from_date}}</td>
+                        <td>{{i.to_date}}</td>
+                        <td>{{i.total_days}}</td>
+                        <td>{{i.dt}}</td>
+                        <td>
+                            {{i.absence_status}}
+                        </td>
+                        <td>
+                            <a href="#" class="draft_action" data-id="{{i.id}}" data-leave-type-id="{{i.leave_type_id}}" data-leave-type-name="{{i.leave_type}}"
+                            data-absence-status="{{i.absence_status}}" data-from-date="{{i.from_date|safe}}" data-to-date="{{i.to_date|safe}}"
 
+                            data-absence-category="{{i.absence_category}}"
+                            data-total-days="{{i.total_days}}" data-leave-reason="{{i.reason}}" data-alternative-contact-number="{{i.alternative_contact_number}}"
+                            data-employee-reg-number="{{i.employee_reg_number}}" 
+                            data-employee-name="{{i.employee_name}}" data-employee-id="{{i.employee_id}}" 
+                            >
+                          <div class="badge badge-success badge-success-alt" style="background-color: #02bfcd;
+                          padding: 7px 30px;">Draft</div>
+                          </a>
+                        </td>
+                   
+                      </tr>
+
+                      {% endfor %}
+            
+                    
+                    </tbody>
+                  </table>
+             </div>
+
+             {% endif %}
               
                 <div class="card-box ">
+                    
                    <a href="user_leave_gantt_chart" style="    float: right;
                    padding: 3px 16px;    background: #72819c;    margin: 0px 11px;
     color: white;" ><i class="fa-solid fa-chart-gantt"></i></a>
@@ -83,6 +141,8 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                         
                         .dropdown:hover .dropbtn {background-color: #02220300;}
                         </style>
+
+                        
                     <div class="dropdown">
                         <button class="dropbtn">
                             <img style="width: 5%;    float: left;" src="https://cdn-icons-png.flaticon.com/512/1736/1736143.png"><span style="    color: #0c0c0c;
@@ -279,6 +339,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
 </div>
 </div>
 </div>
+<div id="user_leave_draft"></div>
 <style>
 
 
@@ -460,8 +521,8 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-12 mt-2">
-                                <div class="form-group bmd-form-group">
-                                    <select name="employee_name" class="form-control select2" id="emp_name_action">
+                                <div class="form-group bmd-form-group" id="child_select1">
+                                    <select name="employee_name" class="form-control select2 emp_name_action" id="emp_name_action">
                                         {% for i in child_response %}
                                         <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
 
@@ -496,7 +557,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                          
                             <div class="col-sm-12 pad5 mt-2" style="display:none" id="leave_avaiable_id">
                                 <div class="form-group bmd-form-group">
-                                    <input readonly id="available_leave" name="employee_available_leave" type="text" class="input form-control">
+                                    <input style="    width: 33%;    background: #2b2c422b;" readonly id="available_leave" name="employee_available_leave" type="text" class="input form-control">
                                     <label class="inputText">Leave Available</label>
                                 </div>
                             </div>
@@ -554,7 +615,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             </div>
                             <div class="col-sm-5 pad5 mt-2 ">
                                 <div class="form-group bmd-form-group">
-                                  <input readonly class="input form-control" id="absence_category" name="absence_category" type="text">
+                                  <input style="    background: #2b2c422b;" readonly class="input form-control" id="absence_category" name="absence_category" type="text">
 
                                        
                                     <label class="inputText">Absence Category</label>
@@ -739,7 +800,9 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-info" >Submit</button>
+        <a href="#" class="btn  leave_draft_action" style="    background: #a78204;
+        color: white;">Draft</a>
+        <button type="submit" class="btn btn-primary" >Submit</button>
     </div>
     
 
@@ -911,8 +974,8 @@ $(window).click(function() {
 <script src="{% static 'adminnew/js/jquery.core.js'  %}"></script>
 <script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
 <!-- App js -->
-<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
-<script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
+<!-- <script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+<script src="{% static 'adminnew/js/select2-custome.js' %}"></script> -->
 
 
 <script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
@@ -1342,6 +1405,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
 <script>
     $(document).ready(function () {
     $('#example').DataTable();
+    $('#example111').DataTable();
 });
 </script>
 <script type="text/javascript">
@@ -1682,6 +1746,254 @@ $("#emp_name_action").change(function(){
         // alert("hhh")
         event.preventDefault()
         $("#kl2").show();
+    })
+</script>
+
+<script>
+    $(".leave_draft_action").click(function(){
+        employee_name1 = $("#employee_name1").val()
+        employee_name = $("#emp_name_action").val()
+        leave_type_nm = $("#leave_type_nm").val()
+        employee_number = $("#employee_reg_number").val()
+        absence_status = $("#absence_status").val()
+        available_leave = $("#available_leave").val()
+        employee_leave_replacer = $("#employee_leave_replacer").val()
+        employee_alternative_contcat_no = $("#employee_alternative_contcat_no").val()
+        employee_email = $("#employee_email").val()
+        employee_leave_type = $("#emp_name").val()
+        absence_category = $("#absence_category").val()
+        startDate = $("#startDate").val()
+        let request_unit_half = $('#myCheckbox').is(':checked');
+        if(request_unit_half == true){
+            request_unit_half = "Half day"
+        }
+
+       
+        endDate = $("#endDate").val()
+        request_date_from_period = $("#request_date_from_period").val()
+        employee_total_days = $("#t1").val()
+        employee_leave_reason = $("#employee_leave_reason").val()
+        var data1 = new FormData()
+        data1.append('employee_attached_file', $('#f123')[0].files[0])
+        data1.append('employee_name1', employee_name1)
+        data1.append('leave_type_nm',leave_type_nm)
+        data1.append('employee_name',employee_name)
+        data1.append('employee_email',employee_email)
+        data1.append('employee_number',employee_number)
+        data1.append('employee_leave_type',employee_leave_type)
+        data1.append('employee_leave_from_date',startDate)
+        data1.append('employee_leave_to_date',endDate)
+        data1.append('employee_available_leave',available_leave)
+        data1.append('employee_leave_reason',employee_leave_reason)
+        data1.append('employee_total_days',employee_total_days)
+        data1.append('employee_leave_replacer',employee_leave_replacer)
+        data1.append('employee_alternative_contcat_no',employee_alternative_contcat_no)
+        data1.append('request_unit_half',request_unit_half)
+        data1.append('absence_status',absence_status)
+        data1.append('request_date_from_period',request_date_from_period)
+        data1.append('absence_category',absence_category)
+        var token = '{{csrf_token}}';
+
+        csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+        console.log("data:::::")
+        console.log(data1)
+        $("#kl2").show();
+        $.ajax({   
+            headers: { "X-CSRFToken": token },                 
+        url: "user_leave_apply_to_draft_action",                    
+        data: data1,
+		type: 'post',
+        processData: false,
+        contentType: false,
+        success: function (data) {  
+           
+            alert(data['message'])
+
+            if(data['message'] == "success"){
+                
+                window.location.href = "leave_management"
+            }
+            else{
+                $("#kl2").hide();
+               
+                swal('',data['message'], "error");
+
+            }
+
+       
+
+        }
+      });
+      
+
+        // console.log("name1::::",employee_name1)
+        // console.log("employee_name::::",employee_name)
+        // console.log("leave_type_nm:::::",leave_type_nm)
+        // console.log("employee_number:::::",employee_number)
+        // console.log("absence_status::::::",absence_status)
+        // console.log("available_leave:::::",available_leave)
+        // console.log("employee_leave_replacer::::",employee_leave_replacer)
+        // console.log("employee_alternative_contcat_no::::",employee_alternative_contcat_no)
+        // console.log("employee_email:::::",employee_email)
+        // console.log("employee_leave_type::::",employee_leave_type)
+        // console.log("absence_category::",absence_category)
+        // console.log("startDate::::",startDate)
+        // console.log("request_unit_half:::",request_unit_half)
+        // console.log("endDate::::::",endDate)
+        // console.log("request_date_from_period:::",request_date_from_period)
+        // console.log("employee_total_days::::::::",employee_total_days)
+        // console.log("employee_leave_reason:::",employee_leave_reason)
+
+    })
+</script>
+<script>
+    $(document).ready(function() {
+  $("#example5").DataTable({
+    aaSorting: [],
+    responsive: true,
+
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+
+  $(".dataTables_filter input")
+    .attr("placeholder", "Search here...")
+    .css({
+      width: "300px",
+      display: "inline-block"
+    });
+
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+</script>
+
+
+
+<script>
+    $(".draft_action").click(function(){
+        // $('.').val(null).trigger("change")
+    //    $('span.select2-selection__rendered').html('sss');
+        // $('.emp_name_action').prop('selectedIndex',0);
+        var id = $(this).attr("data-id")
+        leave_type_id = $(this).attr("data-leave-type-id")
+        leave_type_name = $(this).attr("data-leave-type-name")
+        var absence_status = $(this).attr('data-absence-status')
+
+
+        $("#employee_alternative_contcat_no").val($(this).attr('data-alternative-contact-number'))
+
+        if($(this).attr("data-employee-reg-number") == 'None'){
+
+        }
+        else{
+        $("#employee_reg_number").val($(this).attr("data-employee-reg-number"))
+    }
+        
+        $("#employee_leave_reason").val($(this).attr("data-leave-reason"))
+        if($(this).attr('data-total-days') == 'None'){
+
+        }
+        else{
+            $("#t1").val($(this).attr('data-total-days'))
+        }
+
+       
+        $("#startDate").val($(this).attr('data-from-date'))
+        $("#absence_category").val($(this).attr('data-absence-category'))
+        if($(this).attr('data-to-date') == 'None'){
+
+        }
+        else{
+            $("#endDate").val($(this).attr('data-to-date'))
+        }
+       
+
+       
+        if(absence_status == "Confirmed"){
+            var select_absense_status = $('#absence_status');
+            select_absense_status.empty().append('<option value='+absence_status+'>'+absence_status+'</option>');
+            select_absense_status.append('<option value=Planned>Planned</option>');
+
+        }
+        else if(absence_status == "Planned"){
+            var select_absense_status = $('#absence_status');
+            select_absense_status.empty().append('<option value='+absence_status+'>'+absence_status+'</option>');
+            select_absense_status.append('<option value=Confirmed>Confirmed</option>');
+        }
+      
+        var select = $('#emp_name');
+        $("#leave_type_nm").val(leave_type_name)
+select.empty().append('<option value='+leave_type_id+'>'+leave_type_name+'</option>');
+        
+        {{ leave_type_response|safe }}.forEach(item => {
+
+            if(item['id'] == leave_type_id){
+
+            }
+            else{
+                select.append('<option value='+item['id']+'>'+item['name']+'</option>');
+            }
+ 
+
+ 
+})
+
+
+var employee_select = $("#emp_name_action");
+
+
+
+
+
+
+employee_name = $(this).attr("data-employee-name")
+employee_id = $(this).attr("data-employee-id")
+
+
+employee_select.empty();
+// $("#emp_name_action").select2().val("1");
+   $('span.select2-selection__rendered').html('sss');
+$('#emp_name_action')
+
+    .find('option')
+    .empty()
+    .end()
+    .append('<option value="1">a1111</option><option value="12" >11112</option><option value="3">1113</option><option value="4">4</option>')
+    .val(12)
+;
+
+
+
+
+
+
+
+
+
+        $("#newuser").modal("show")
+    //     var url ="leave_draft_modal_action";
+    //     $.ajax({                      
+    //     url: url,        
+    //     data: {
+    //       'id': id       
+    //     },
+    //     success: function (data) {  
+    //         alert(data)
+    //       $("#user_leave_draft").html(data); 
+
+    //       $("#draft_leave").modal("show")
+
+    //     }
+    //   });
     })
 </script>
 {% endblock %}
