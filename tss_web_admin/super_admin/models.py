@@ -268,5 +268,6 @@ class User_leave_draf_history(models.Model):
     leave_type_id = models.IntegerField(null=True)
     employee_name = models.CharField(max_length=255,null=True)
     employee_reg_number = models.IntegerField(null=True)
+    employee_replacer_name = models.CharField(max_length=255,null=True)
     
 

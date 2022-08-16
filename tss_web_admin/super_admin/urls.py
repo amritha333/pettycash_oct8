@@ -151,6 +151,8 @@ urlpatterns = [
     path('img',views.img,name='img'),
     path('loader',views.loader,name='loader'),
     path('test_current_address',views.test_current_address,name='test_current_address'),
+    path('demo',views.demo,name='demo'),
+    
 
     
     

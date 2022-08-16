@@ -47,6 +47,7 @@
                 <table id="example5" class="table table-hover responsive nowrap table-bordered" style="width:100%">
                     <thead>
                       <tr>
+                        <th>Employee Name</th>
                         <th>Leave Type</th>
                         <th>From Date</th>
                         <th>To Date</th>
@@ -59,6 +60,9 @@
                     <tbody>
                         {% for i in draf_leave_details %}
                       <tr>
+                        <td>
+                            {{i.employee_name}}
+                        </td>
                         <td>
                          {{i.leave_type}}
                         </td>
@@ -77,6 +81,8 @@
                             data-total-days="{{i.total_days}}" data-leave-reason="{{i.reason}}" data-alternative-contact-number="{{i.alternative_contact_number}}"
                             data-employee-reg-number="{{i.employee_reg_number}}" 
                             data-employee-name="{{i.employee_name}}" data-employee-id="{{i.employee_id}}" 
+                            data-employee-replacer-name = "{{i.employee_replacer_name}}" data-employee-leave-replacer="{{i.employee_leave_replacer}}" 
+                            data-draft-id = "{{i.id}}"
                             >
                           <div class="badge badge-success badge-success-alt" style="background-color: #02bfcd;
                           padding: 7px 30px;">Draft</div>
@@ -565,6 +571,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                 <div class="form-group bmd-form-group">
                                     
                                     <div class="form-group"> 
+                                        <input type="hidden" name="employee_replacer_text" id="employee_replacer_text">
                                         
                                         <select name="employee_leave_replacer" id="employee_leave_replacer" class="form-control select2 " >
                                         <option selected="selected" value="0">Select Employee Name</option>
@@ -798,10 +805,11 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
          
       
     </div>
+    <input type="hidden" name="leave_draft_id" id="leave_application_type">
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <a href="#" class="btn  leave_draft_action" style="    background: #a78204;
-        color: white;">Draft</a>
+        color: white;" id="leave_draft_btn">Draft</a>
         <button type="submit" class="btn btn-primary" >Submit</button>
     </div>
     
@@ -1714,6 +1722,7 @@ $("#emp_name_action").change(function(){
         data1.append('absence_status',absence_status)
         data1.append('request_date_from_period',request_date_from_period)
         data1.append('absence_category',absence_category)
+        data1.append('leave_draft_id',$("#leave_application_type").val())
 
         csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
         console.log("data:::::")
@@ -1750,6 +1759,21 @@ $("#emp_name_action").change(function(){
 </script>
 
 <script>
+$("#employee_leave_replacer").change(function() {
+    
+    $("#employee_replacer_text").val($(this).find("option:selected").text())
+
+
+
+
+});
+
+
+
+
+
+
+
     $(".leave_draft_action").click(function(){
         employee_name1 = $("#employee_name1").val()
         employee_name = $("#emp_name_action").val()
@@ -1763,6 +1787,7 @@ $("#emp_name_action").change(function(){
         employee_leave_type = $("#emp_name").val()
         absence_category = $("#absence_category").val()
         startDate = $("#startDate").val()
+        employee_replacer_text  = $("#employee_replacer_text").val()
         let request_unit_half = $('#myCheckbox').is(':checked');
         if(request_unit_half == true){
             request_unit_half = "Half day"
@@ -1792,6 +1817,7 @@ $("#emp_name_action").change(function(){
         data1.append('absence_status',absence_status)
         data1.append('request_date_from_period',request_date_from_period)
         data1.append('absence_category',absence_category)
+        data1.append('employee_replacer_text',employee_replacer_text)
         var token = '{{csrf_token}}';
 
         csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
@@ -1807,7 +1833,7 @@ $("#emp_name_action").change(function(){
         contentType: false,
         success: function (data) {  
            
-            alert(data['message'])
+           
 
             if(data['message'] == "success"){
                 
@@ -1889,6 +1915,7 @@ $("#emp_name_action").change(function(){
         var absence_status = $(this).attr('data-absence-status')
 
 
+
         $("#employee_alternative_contcat_no").val($(this).attr('data-alternative-contact-number'))
 
         if($(this).attr("data-employee-reg-number") == 'None'){
@@ -1906,8 +1933,14 @@ $("#emp_name_action").change(function(){
             $("#t1").val($(this).attr('data-total-days'))
         }
 
+        if($(this).attr('data-from-date') == "None"){
+            $("#startDate").val('')
+        }
+        else{
        
         $("#startDate").val($(this).attr('data-from-date'))
+
+        }
         $("#absence_category").val($(this).attr('data-absence-category'))
         if($(this).attr('data-to-date') == 'None'){
 
@@ -1931,8 +1964,20 @@ $("#emp_name_action").change(function(){
         }
       
         var select = $('#emp_name');
+       
         $("#leave_type_nm").val(leave_type_name)
-select.empty().append('<option value='+leave_type_id+'>'+leave_type_name+'</option>');
+        
+        if(leave_type_id == 'None'){
+            select.empty().append('<option value=0>Select Leave Type</option>');
+        }
+        else if(leave_type_name == ''){
+           
+            select.empty().append('<option value=0>Select Leave Type</option>');
+        }
+        else{
+            select.empty().append('<option value='+leave_type_id+'>'+leave_type_name+'</option>');
+        }
+
         
         {{ leave_type_response|safe }}.forEach(item => {
 
@@ -1957,26 +2002,77 @@ var employee_select = $("#emp_name_action");
 
 employee_name = $(this).attr("data-employee-name")
 employee_id = $(this).attr("data-employee-id")
+$("#employee_name1").val(employee_name)
 
+console.log("employee_name::::",employee_name)
+console.log("employee_id::::::",employee_id)
+
+employee_select_option = '<option value='+employee_id+'>'+employee_name+'</option>'
 
 employee_select.empty();
-// $("#emp_name_action").select2().val("1");
-   $('span.select2-selection__rendered').html('sss');
+{{ child_response|safe }}.forEach(item => {
+
+    if(item['id'] == employee_id){
+       
+    }
+    else{
+        employee_select_option= employee_select_option+'<option value='+item['id']+'>'+item['name']+'</option>';
+    }
+})
+   $('span#select2-emp_name_action-container').html(employee_name);
 $('#emp_name_action')
 
     .find('option')
     .empty()
     .end()
-    .append('<option value="1">a1111</option><option value="12" >11112</option><option value="3">1113</option><option value="4">4</option>')
-    .val(12)
+    .append(employee_select_option)
+    .val(employee_id)
 ;
 
 
 
 
 
+employee_replacer_name = $(this).attr('data-employee-replacer-name');
+employee_leave_replacer = $(this).attr('data-employee-leave-replacer');
+console.log("employee_leave_replacer:::",employee_leave_replacer)
+console.log("employee_replacer_name:::::",employee_replacer_name)
+
+$('span#select2-employee_leave_replacer-container').html(employee_replacer_name);
 
 
+var leave_replacer_select = $("#employee_leave_replacer");
+leave_replacer_select.empty();
+leave_replacer_option = ''
+if(employee_leave_replacer > 0){
+
+    leave_replacer_option = leave_replacer_option+'<option value='+employee_leave_replacer+'>'+employee_replacer_name+'</option>';
+    
+}
+{{ replacer_response|safe }}.forEach(item => {
+
+if(item['id'] == employee_leave_replacer){
+   
+}
+else{
+    leave_replacer_option= leave_replacer_option+'<option value='+item['id']+'>'+item['name']+'</option>';
+}
+})
+$('#employee_leave_replacer')
+
+    .find('option')
+    .empty()
+    .end()
+    .append(leave_replacer_option)
+    .val(employee_leave_replacer)
+;
+
+
+$("#leave_application_type").val($(this).attr("data-draft-id"))
+
+
+
+$("#leave_draft_btn").hide()
 
 
         $("#newuser").modal("show")
@@ -1994,6 +2090,98 @@ $('#emp_name_action')
 
     //     }
     //   });
+    })
+</script>
+
+<script>
+    $(".newbtn_crete").click(function(){
+        $("#leave_draft_btn").show()
+        $("#leave_application_type").val(0)
+       
+        employee_name = `{{emp_name}}`
+        employee_id = `{{odoo_id}}`
+       
+
+        console.log("employee_name1111::::",employee_name)
+        console.log("employee_id111::::::",employee_id)
+        
+        var employee_select = $("#emp_name_action");
+        $("#employee_reg_number").val(`{{emp_id}}`)
+     
+employee_select_option = '<option value='+employee_id+'>'+employee_name+'</option>'
+$("#employee_name1").val(employee_name)
+employee_select.empty();
+{{ child_response|safe }}.forEach(item => {
+
+    if(item['id'] == employee_id){
+       
+    }
+    else{
+        employee_select_option= employee_select_option+'<option value='+item['id']+'>'+item['name']+'</option>';
+    }
+})
+   $('span#select2-emp_name_action-container').html(employee_name);
+$('#emp_name_action')
+
+    .find('option')
+    .empty()
+    .end()
+    .append(employee_select_option)
+    .val(employee_id)
+;
+
+
+
+
+var leave_replacer_select = $("#employee_leave_replacer");
+leave_replacer_select.empty();
+leave_replacer_option = ''
+
+leave_replacer_option = leave_replacer_option+'<option value=0>Select Employee Name</option>';
+    
+
+{{ replacer_response|safe }}.forEach(item => {
+
+  
+
+
+    leave_replacer_option= leave_replacer_option+'<option value='+item['id']+'>'+item['name']+'</option>';
+
+})
+$('#employee_leave_replacer')
+
+    .find('option')
+    .empty()
+    .end()
+    .append(leave_replacer_option)
+    .val(0)
+;
+$('span#select2-employee_leave_replacer-container').html("Select Employee Name");
+$("#startDate").val($(this).attr(''))
+$("#endDate").val($(this).attr(''))
+var select_absense_status = $('#absence_status');
+select_absense_status.empty().append('<option value=Confirmed>Confirmed</option>');
+select_absense_status.append('<option value=Planned>Planned</option>');       
+$("#employee_alternative_contcat_no").val('')
+$("#t1").val('')   
+$("#employee_leave_reason").val('')
+$("#absence_category").val('')
+
+
+var select = $('#emp_name');
+$("#leave_type_nm").val('')
+select.empty().append('<option value=0>Select Leave Type</option>');
+
+        
+{{ leave_type_response|safe }}.forEach(item => {
+
+           
+                select.append('<option value='+item['id']+'>'+item['name']+'</option>');
+            
+ 
+
+ 
+})
     })
 </script>
 {% endblock %}

@@ -2051,7 +2051,6 @@ def leave_management(request):
     emp_name = ""
     emp_email = ""
     emp_id = ""
-    print("kkkkk22222222222222221111")
     try:
         odoo_data = User_Management.objects.get(auth_user=user_auth_id)
         odoo_id = odoo_data.odoo_id
@@ -2061,10 +2060,8 @@ def leave_management(request):
     except:
         pass
     leave_history_response = ""
-    print("kkkkk22222222222222221111")
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     new_api_integration =  asyncio.run(odoo_new_leave_api(request,odoo_id,odoo_token_data.token))
-    print("kkkkk22222222222222221111")
     leave_history_response = new_api_integration['leave_history']
     leave_type_response = new_api_integration['leave_types']
     entitlement_balances_response = new_api_integration['entitled_details']
@@ -2072,10 +2069,6 @@ def leave_management(request):
     child_response = new_api_integration['childs_ids_with_current_empl']
 
     draf_leave_details = User_leave_draf_history.objects.filter(auth_user_id=request.user,status="pending")
-    
-
-
-   
     context = {
         'leave_type_response':leave_type_response,
         'leave_history_response':leave_history_response,
@@ -2086,7 +2079,8 @@ def leave_management(request):
         'child_response':child_response,
         'entitlement_balances_response':entitlement_balances_response,
         'child_count':len("child_response"),
-        'draf_leave_details':draf_leave_details
+        'draf_leave_details':draf_leave_details,
+        'odoo_id':odoo_id
         
     }
 
@@ -2115,6 +2109,8 @@ def get_total_available_leave_count(request):
     
     selected_employee_id = request.GET.get("selected_employee_id",False)
     odoo_login_id = 0
+    print("leave_type::::",str(leave_type))
+    print("selected_employee_id:::",str(selected_employee_id))
     half_day_status = ""
     try:
         user_data = User_Management.objects.get(auth_user=request.user.id)
@@ -2143,6 +2139,7 @@ def get_total_available_leave_count(request):
             'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
         leave_available_response1 = requests.request("GET", leave_available_url, headers=headers, data=payload).json()
+        print("response43443:::",str(leave_available_response1))
         leave_available_response12 = leave_available_response1['result']
         
         response_message = leave_available_response12['message']
@@ -2357,6 +2354,8 @@ def test_file_upload_ajax(request):
 @csrf_exempt
 def user_leave_apply_action(request):
     if request.method == "POST":
+        
+        
 
         # employee_attached_file = request.FILES['employee_attached_file']
         # print("file::::::::::",str(employee_attached_file))
@@ -2370,6 +2369,9 @@ def user_leave_apply_action(request):
         data_employee = User_Management.objects.get(auth_user=user_auth_id)
 
         employee_name = request.POST.get("employee_name",False)
+
+        print("new employee_name::::",str(employee_name))
+        print("new employee id:::",str(employee_name1))
         employee_email = request.POST.get("employee_email",False)
         employee_number = request.POST.get("employee_number",False)
         employee_leave_type = request.POST.get("employee_leave_type",False)
@@ -2388,15 +2390,14 @@ def user_leave_apply_action(request):
         request_unit_half= request.POST.get("request_unit_half",False)
         absence_status = request.POST.get("absence_status",False)
         absence_category = request.POST.get("absence_category",False)
-
-        print("")
-
-       
         if request_unit_half == "Half day":
             employee_leave_to_date = employee_leave_from_date
             pass
 
+
         request_date_from_period = request.POST.get("request_date_from_period",False)
+        if employee_leave_replacer == 'null':
+            employee_leave_replacer =int(0)
         leave_apply_url = api_domain+"api/post_leave"
         payload = json.dumps({
             "jsonrpc": "2.0",
@@ -2427,6 +2428,8 @@ def user_leave_apply_action(request):
         }
         print("responseeeeeeeeeeeeeeeeeeeeeeeeee")
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
+        print("result::::",str(response1))
+        
         
         response12 = response1.json()['result']
        
@@ -2571,6 +2574,11 @@ def user_leave_apply_action(request):
             }
            
             print("kkkllll")
+            try:
+                leave_draft_id = request.POST.get("leave_draft_id",False)
+                update_status = User_leave_draf_history.objects.filter(id=leave_draft_id).update(status="submit")
+            except:
+                pass
             messages.success(request,str(mes1))
             return JsonResponse(data,safe=False)
            
@@ -4439,6 +4447,12 @@ def update_password(request):
 def user_leave_apply_to_draft_action(request):
 
     if request.method == "POST":
+        try:
+            employee_attached_file = request.FILES['employee_attached_file']
+            print("employee_attached_file:::",str(employee_attached_file))
+        except:
+            employee_attached_file = None
+
         print("-------------data-----------------------???????????????")
         employee_name1 = request.POST.get("employee_name1",False)
         leave_type_nm = request.POST.get("leave_type_nm",False)
@@ -4457,11 +4471,14 @@ def user_leave_apply_to_draft_action(request):
         request_unit_half= request.POST.get("request_unit_half",False)
         absence_status = request.POST.get("absence_status",False)
         absence_category = request.POST.get("absence_category",False)
+        employee_replacer_text = request.POST.get("employee_replacer_text",False)
         if request_unit_half == "Half day":
             employee_leave_to_date = employee_leave_from_date
             pass
 
         request_date_from_period = request.POST.get("request_date_from_period",False)
+        if employee_leave_type == 'no':
+            employee_leave_type = None
         user_data = User_Management.objects.get(auth_user=request.user)
         if employee_leave_to_date == '':
             employee_leave_to_date = None
@@ -4487,7 +4504,10 @@ def user_leave_apply_to_draft_action(request):
             leave_type_id = employee_leave_type,
             employee_name = employee_name1,
             status = "pending",
-            employee_reg_number = employee_number
+            employee_reg_number = employee_number,
+            employee_replacer_name=employee_replacer_text,
+            attached_file= employee_attached_file
+            
 
 
         )
@@ -4511,3 +4531,16 @@ def leave_draft_modal_action(request):
     id = request.GET.get("id",False)
     print("id:::::::::::",str(id))
     return render(request,'super_admin/leave_draft_modal.html')
+
+
+
+def demo(request):
+    print("gggg")
+    data = User_leave_draf_history.objects.get(id=31)
+    print("data::::",str(data.attached_file))
+    data_save = test_file_upload(
+        file_data = data.attached_file
+    )
+    data_save.save()
+
+    return 
