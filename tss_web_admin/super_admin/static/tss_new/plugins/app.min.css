@@ -2999,12 +2999,13 @@ pre[class*="language-"] {
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #303e67;
-    line-height: 38px
+    /* line-height: 38px */
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 38px;
-    right: 8px
+    right: 8px;
+    display: none;
 }
 
 .select2-container--default .select2-selection--multiple {

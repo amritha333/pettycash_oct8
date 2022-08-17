@@ -2206,8 +2206,96 @@ def get_total_available_leave_count(request):
 
 
 
+@test_w1('Petty Cash')
 def petty_cash_management(request):
-    return render(request,'super_admin/petty_cash_management.html')
+
+
+
+    select_employee_api = ""
+
+
+
+
+    try:
+
+        odoo_token_data = odoo_api_request_token.objects.get(status="True")
+
+        odoo_token = odoo_token_data.token
+
+        employee_data_url =api_domain+"api/get_employees"
+
+
+
+        user_data = User_Management.objects.all()
+
+        list_data = list(user_data.values_list('odoo_id',flat=True))
+
+        print("list_data:::",str(list_data))
+
+        
+
+        payload = json.dumps({
+
+            "jsonrpc": "2.0",
+
+            "params": {
+
+                 "reassign" : "True",
+
+            "employee_ids": list_data
+
+            }
+
+        })
+
+        headers = {
+
+            'api_key': odoo_token,
+
+            'Content-Type': 'application/json',
+
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+
+        }
+
+
+
+
+
+        select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
+
+        
+
+        
+
+
+
+        response_result = select_employee_api1.json()['result']
+
+        
+
+        select_employee_api = response_result['result']
+
+    except:
+
+        pass
+
+
+
+    
+
+    context = {
+
+        'select_employee_api':select_employee_api,
+
+    }
+
+    
+
+    return render(request,'super_admin/petty_cash_management.html',context)
+
+
+
 
 
 def advance_salary_management(request):

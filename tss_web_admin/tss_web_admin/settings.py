@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auto_logout.middleware.auto_logout',
 ]
 
 ROOT_URLCONF = 'tss_web_admin.urls'
@@ -157,3 +158,12 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_REDIRECT_URL = 'admin_dashboard'
+
+from datetime import timedelta
+
+from datetime import timedelta
+
+AUTO_LOGOUT = {
+    'IDLE_TIME': timedelta(minutes=10),
+    'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
+}
