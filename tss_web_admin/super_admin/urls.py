@@ -110,6 +110,16 @@ urlpatterns = [
     path('update_password',views.update_password,name='update_password'),
     path('user_leave_apply_to_draft_action',views.user_leave_apply_to_draft_action,name='user_leave_apply_to_draft_action'),
     path('leave_draft_modal_action',views.leave_draft_modal_action,name='leave_draft_modal_action'),
+
+    path('get_employee_validate_entitle_balance',views.get_employee_validate_entitle_balance,name='get_employee_validate_entitle_balance'),
+    path('user_enable_email_otp',views.user_enable_email_otp,name='user_enable_email_otp'),
+    path('email_otp_authentication_enable_action',views.email_otp_authentication_enable_action,name='email_otp_authentication_enable_action'),
+    path('email_otp_disable_action',views.email_otp_disable_action,name='email_otp_disable_action'),
+    path('email_otp_action',views.email_otp_action,name='email_otp_action'),
+    path('email_otp_verification_action',views.email_otp_verification_action,name='email_otp_verification_action'),
+    
+
+
     
 
 
@@ -152,7 +162,7 @@ urlpatterns = [
     path('loader',views.loader,name='loader'),
     path('test_current_address',views.test_current_address,name='test_current_address'),
     path('demo',views.demo,name='demo'),
-    
+
 
     
     

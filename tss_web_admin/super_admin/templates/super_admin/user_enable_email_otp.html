@@ -1,0 +1,75 @@
+{% extends "super_admin/menu.html" %}
+
+
+{% load static %}
+
+{% block content %}
+
+
+
+<style>
+    html, body {
+    background-color: #26243585;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  svg {
+  /*   border: solid black; */
+    width: 500px;
+    max-width: 700px;
+  }
+  </style>
+  
+  
+  
+  
+  
+  <?xml version="1.0" encoding="utf-8"?>
+  <!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+
+<br>
+<div class="row">
+    <div class="col-md-12">
+        <img style="    width: 12%;
+        float: left;" src="{% static 'gmail.png' %}">
+    </div>
+    {% if status == True %}
+
+    <a href="email_otp_disable_action" style="    background: #2f797e;
+    color: white;
+    padding: 9px 10px;">
+      Disable Email Otp Authentication
+    </a>
+
+    {% else %}
+    <div class="col-md-12">
+        <h1 style="    font-weight: bold;
+        color: white;
+        "> 
+           Enable Email Authentication
+        </h1>
+    
+        <form action="email_otp_authentication_enable_action" method="POST">
+          {% csrf_token %}
+    
+            <input type="email" name="email" style="    width: 18%;" class="form-control" placeholder="Enter Your Email ">
+    
+            <input style="padding: 4px 18px;
+            margin: 6px 0px;
+            background: #0085f7;
+            border: none;
+            color: white;" type="submit" value="submit">
+        </form>
+     </div>
+     {% endif %}
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "super_admin/menu.html" %}
 
 {% load static %}
-
+{% load entitle_balance %}
 {% block content %}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -724,7 +724,18 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                 <div class="row">
                     <div class="col-12">
                         <h4 class="sub_hdng_edit">View Entitlement Balances</h4>
+
+                       <div>
+                        <a href="#" style="       background: #2b2c42c4;
+    color: white;
+    padding: 5px 13px;
+    font-size: 14px;float: right;" class="entitle_balance_validate">
+                           <i class="fa fa-check" aria-hidden="true"></i> Validate
+                        </a>
+                       </div>
+                       
                     </div>
+              
                     <div class="col-md-12 pad0 " >
 
                         <div class="tbl_stngs commen_table m-t-8">
@@ -737,6 +748,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                     <th>Leave Type</th>
                                     <th>Total </th>
                                     <th>Total Available</th>
+                                    <th>Total Taken</th>
                                   
                                 </tr>
                                 </thead>
@@ -750,6 +762,9 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                                     </td>
                                     <td>{{i.total_leaves}}</td>
                                     <td>{{i.total_leave_balance}}</td>
+                                    <td>
+                                        {{ i.total_leaves|leave_taken_method:i.total_leave_balance }}
+                                    </td>
                                 </tr>
                       
                                 {% endfor %}
@@ -808,7 +823,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
     <input type="hidden" name="leave_draft_id" id="leave_application_type">
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <a href="#" class="btn  leave_draft_action" style="    background: #a78204;
+        <a href="#" class="btn  leave_draft_action" style="    background: #14bcd7;
         color: white;" id="leave_draft_btn">Draft</a>
         <button type="submit" class="btn btn-primary" >Submit</button>
     </div>
@@ -1597,6 +1612,7 @@ checkbox.addEventListener('change', (event) => {
 $("#emp_name_action").change(function(){
     var selectedemploye_name = $(this).children("option:selected").val();  
    
+   
     $.ajax({
             url: 'get_selected_employee_entitlement_balance',
             // datatype: 'json',
@@ -1605,11 +1621,15 @@ $("#emp_name_action").change(function(){
             },
             type: 'GET',
             success: function (data) {  
+                employee_reg_number = data['employee_reg_number']
+                employee_name1 = data['employee_name1']
+                $("#employee_reg_number").val(employee_reg_number)
+    $("#employee_name1").val(employee_name1)
 
              
             
 
-               $("#entitlement_data1").html(data);
+            //    $("#entitlement_data1").html(data);
 
           
                 
@@ -2182,6 +2202,37 @@ select.empty().append('<option value=0>Select Leave Type</option>');
 
  
 })
+    })
+</script>
+
+<script>
+    $(".entitle_balance_validate").click(function(){
+       
+
+        employee_id = $("#emp_name_action").val()
+
+        $.ajax({
+            url: 'get_employee_validate_entitle_balance',
+            // datatype: 'json',
+            data: {
+                'employee_id': employee_id       
+            },
+            type: 'GET',
+            success: function (data) {  
+              
+             
+            
+
+            $("#entitlement_data1").html(data);
+
+          
+                
+            }
+            
+        });
+
+
+        
     })
 </script>
 {% endblock %}

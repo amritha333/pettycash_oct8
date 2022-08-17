@@ -1,5 +1,5 @@
 
-    
+    {% load entitle_balance %}
     
     
     {% for i in entitlement_balances_response %}
@@ -10,17 +10,20 @@
     </td>
     <td>{{i.total_leaves}}</td>
     <td>{{i.total_leave_balance}}</td>
+    <td>
+        {{ i.total_leaves|leave_taken_method:i.total_leave_balance }}
+    </td>
 </tr>
 
 {% endfor %}
 
 
 <script>
-    var id = `{{emp_registration_id}}`
-    var name = `{{employee_name1}}`
+    // var id = `{{emp_registration_id}}`
+    // var name = `{{employee_name1}}`
     
-    $("#employee_reg_number").val(id)
-    $("#employee_name1").val(name)
+    // $("#employee_reg_number").val(id)
+    // $("#employee_name1").val(name)
 
 </script>
 

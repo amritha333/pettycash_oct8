@@ -261,6 +261,15 @@ def login_action(request):
                 )
                 save_token.save()
             # login(request, user)
+            try:
+                data_email_otp = Login_otp.objects.get(auth_user_id_id= user.id)
+                context={
+                        'message':"email_otp",
+                            
+                }
+                return JsonResponse(context,safe=False) 
+            except Login_otp.DoesNotExist:
+                pass
             if st == True:
                 context={
                         'message':"success",
@@ -2783,29 +2792,7 @@ def view_leave_more_details(request):
 
 def get_selected_employee_entitlement_balance(request):
     employee_id = request.GET.get("employee_id",False)
-   
-
-    entitlement_balances_url = api_domain+"api/get_leave_entitlement"
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
-    entitlement_balances_payload = json.dumps({
-        "jsonrpc": "2.0",
-        "params": {
-            "employee_id" : int(employee_id)
-               
-        }
-    })
-    entitlement_balances_header = {
-        'api_key': odoo_token_data.token,
-        'Content-Type': 'application/json',
-        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-    }
-    entitlement_balances_response1 = requests.request("GET", entitlement_balances_url, headers=entitlement_balances_header, data=entitlement_balances_payload).json()
-    entitlement_balances_response12 = entitlement_balances_response1['result']
-    entitlement_balances_response = entitlement_balances_response12['result']
-
-
-    
-
     employee_data_url =api_domain+"api/get_employee"
     payload = json.dumps({
         "jsonrpc": "2.0",
@@ -2818,24 +2805,20 @@ def get_selected_employee_entitlement_balance(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
-
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
-    
     response12 =response1['result']
-    print("resppp::::")
-    print(response12)
-    
     response = response12['result'][0]
-
-    print(response)
-    
-   
-    
     employee_name1 = response['name']
-  
     emp_registration_id = response['registration_number']
+
+    data = []
+    data = {
+        'employee_reg_number':emp_registration_id,
+        'employee_name1':employee_name1
+    }
+    return JsonResponse(data,safe=False)
   
-    return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':entitlement_balances_response,'emp_registration_id':emp_registration_id,'employee_name1':employee_name1})
+    return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':'','emp_registration_id':emp_registration_id,'employee_name1':employee_name1})
 
 
 
@@ -4544,3 +4527,113 @@ def demo(request):
     data_save.save()
 
     return 
+
+
+
+
+def get_employee_validate_entitle_balance(request):
+    employee_id = request.GET.get("employee_id",False)
+    print("employee_id:::",str(employee_id))
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    entitlement_balances_url = api_domain+"api/get_leave_entitlement"
+    entitlement_balances_payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+            "employee_id" : int(employee_id)
+               
+        }
+    })
+    entitlement_balances_header = {
+        'api_key': odoo_token_data.token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    entitlement_balances_response1 = requests.request("GET", entitlement_balances_url, headers=entitlement_balances_header, data=entitlement_balances_payload).json()
+    entitlement_balances_response12 = entitlement_balances_response1['result']
+    entitlement_balances_response = entitlement_balances_response12['result']
+    return render(request,'super_admin/get_selected_employee_entitlement_balance.html',{'entitlement_balances_response':entitlement_balances_response})
+
+
+
+def user_enable_email_otp(request):
+    status = False
+    try:
+        data = Login_otp.objects.get(auth_user_id=request.user)
+        status = True
+    except:
+        pass
+
+    return render(request,'super_admin/user_enable_email_otp.html',{'status':status})
+
+
+
+def email_otp_authentication_enable_action(request):
+    if request.method == "POST":
+        email = request.POST.get("email",False)
+        print("email::::",str(email))
+        try:
+            data = Login_otp.objects.get(auth_user_id=request.user)
+        except Login_otp.DoesNotExist:
+            data_save = Login_otp(
+                otp_type = "email_otp",
+                email = email,
+                status = "True",
+                auth_user_id = request.user
+            )
+            data_save.save()
+        return redirect("admin_dashboard")
+
+
+def email_otp_disable_action(request):
+    data_delete =  Login_otp.objects.get(auth_user_id=request.user)
+    data_delete.delete()
+    return redirect("admin_dashboard")
+
+
+def email_otp_action(request):
+    if request.method == "POST":
+        username = request.POST.get("username",False)
+        password = request.POST.get("password",False)
+        print("username::::",str(username))
+        print("password:::::",str(password))
+        user = authenticate(username=username, password=password)
+        import random
+        fixed_digits = 5
+        data = random.randrange(11111, 99999, fixed_digits)
+        email_data = Login_otp.objects.get(auth_user_id_id=user.id)
+        import smtplib
+        from email.message import EmailMessage
+        msg = EmailMessage()
+        msg.set_content('your otp is '+str(data))
+        msg['Subject'] = 'TSS APP LOGIN OTP'
+        msg['From'] = "amrithakumar34@gmail.com"
+        msg['To'] = str(email_data.email)
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login("amrithakumar34@gmail.com", "uehxynftlsmrvuly")
+        server.send_message(msg)
+        server.quit()
+        update_data = Login_otp.objects.filter(auth_user_id_id=user.id).update(otp=data)
+        return render(request,'super_admin/email_otp.html',{'username':username,'password':password})
+
+
+
+def email_otp_verification_action(request):
+    username = request.GET.get("username")
+    password = request.GET.get("password")
+    otp = request.GET.get("otp")
+    print("user_name::::",str(username))
+    print("password:::",str(password))
+    print("otp:::::",str(otp))
+    user = authenticate(username=username, password=password)
+    data = []
+    try:
+        data1 =  Login_otp.objects.get(auth_user_id_id=user.id,otp=otp)
+        data = {
+            'message':'success'
+        }
+        return JsonResponse(data,safe=False)
+    except Login_otp.DoesNotExist:
+        data = {
+            'message':'error'
+        }
+        return JsonResponse(data,safe=False)

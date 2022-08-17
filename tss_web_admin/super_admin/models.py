@@ -271,3 +271,18 @@ class User_leave_draf_history(models.Model):
     employee_replacer_name = models.CharField(max_length=255,null=True)
     
 
+otp_type = (
+    ("email_otp","email_otp"),
+    ("sms_otp","sms_otp")
+)
+
+
+class Login_otp(models.Model):
+    otp_type = models.CharField(max_length=255,null=True,choices=otp_type)
+    email = models.CharField(max_length=255,null=True)
+    otp = models.CharField(max_length=255,null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(max_length=255,null=True)
+    auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="Login_otp_user_login", null=True)
+
