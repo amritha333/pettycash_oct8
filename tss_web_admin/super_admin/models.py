@@ -251,7 +251,7 @@ class User_leave_draf_history(models.Model):
     leave_type = models.CharField(max_length=255,null=True)
     from_date = models.DateField(null=True)
     to_date = models.DateField(null=True)
-    total_days = models.IntegerField(null=True)
+    total_days = models.FloatField(null=True)
     reason = models.TextField(null=True)
     alternative_contact_number = models.CharField(max_length=255,null=True)
     employee_leave_replacer = models.IntegerField(null=True)

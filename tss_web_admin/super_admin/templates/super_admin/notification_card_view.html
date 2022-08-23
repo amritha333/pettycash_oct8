@@ -1,0 +1,99 @@
+
+{% load static %}
+{% load notification %}
+    {% for i in notifictaion %}
+    
+        <div class="col-lg-4 col-xl-3 mb-3">
+        <a href="view_leave_more_details?id={{i.mapping_id}}">
+            <div class="profile-card">
+                <div class="row">
+                    <div class="">
+                       
+                      {% for i in i.auth_user_id.user_management_user_login.all %}
+                  
+                      {% if i.user_img == "false" %}
+                      <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
+                      {% elif i.user_img == None  %}
+                      <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
+                      {% elif i.user_img == false %}
+                      <div><img style="padding: 0px 0px;"  height="128px" width="128px" src="{% static '60111.jpg' %}" alt=""></div>
+                      {% elif i.user_img == '' %}
+                      <div><img style="padding: 12px 12px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
+                      {% else %}
+                      <div><img style="padding: 12px 12px;"  height="128px" width="128px" src="data:image/jpeg;base64,{{i.user_img}}" alt=""></div>
+                    
+                      {% endif %}
+                      {% endfor %}
+                    
+                   
+                        
+                    </div>
+                    <div class="col profile-info">
+                        <h3 class="profile-name mb-3">{{i.leave_apply_user_name}}<span
+                                class="badge badge-soft-info ml-2">{{i.leave_type_name}}</span>
+                        {% if i.dt|get_notifications_date_ago == 0 %}
+
+                        {% else %}
+                        <small class="text-muted float-end font-13 dys">{{  i.dt|get_notifications_date_ago}} day ago</small>
+                        {% endif %}
+                        </h3>
+                        <span class="text-muted mr-1">
+                            <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_from_dt}}
+                            
+                        </span> - <span class="text-muted ml-1">
+                            <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_to_dt}}
+                            
+                        </span><br>
+                        {% if i.notification_type == "leave_approve_request" %}
+
+                            {% if i.status == "Pending" %}
+                            <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}"  class="approve_confirmation" href="#">
+                            
+                            <button type="button" class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop">Approve</button></a>
+
+                            <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" class="refuse_confirmation"  href="#">
+                            <button type="button" class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop1">Reject</button></a>
+
+
+                            {% elif i.status == "approve" %}
+                            <button type="button"  class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+
+                            {% elif i.status == "reject"  %}
+                            <button type="button"  class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Reject</button>
+
+                            {% elif i.status == "reassign"  %}
+                            <button type="button"  class="btn btn-soft-secondary waves-effect waves-light py-0 px-2 mg-top">Reassign</button>
+
+                            {% endif %}
+                        {% endif %}
+
+                        
+                        {% if i.notification_type == "leave_type" %}
+
+                            {% if i.status == "confirm" %}
+                        
+                            <button type="button"  class="btn btn-soft-primary waves-effect waves-light py-0 px-2 mg-top">To Approve</button>
+
+                            {% elif i.status == "refuse" %}
+
+                            <button type="button"  class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Refused</button>
+
+                            {% elif i.status == "validate1" %}
+
+                            <button type="button"  class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Second Approval</button>
+
+                            {% elif i.status == "validate" %}
+                            <button type="button"  class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                        {% else %}
+                        <button type="button" class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">{{i.status}}</button>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        </div>
+        {% endfor %}  
+
+
+       

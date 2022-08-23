@@ -651,7 +651,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             <div class="col-md-6 mt-2">
                                 <div class="form-group bmd-form-group" id="to_date1">
                                     <div class="input-group bmd-date-group">
-                                        <input type="text" name="employee_leave_to_date" autocomplete="off" required  class="form-control input" id="endDate" />
+                                        <input type="text" name="employee_leave_to_date" autocomplete="off"   class="form-control input" id="endDate" />
                                         <label class="bmd-label-floating inputText labl_insd">To</label>
                                         <div class="input-group-append"> <span class="input-group-text "><i class="fa fa-calendar"></i></span>
                                         </div>
@@ -879,9 +879,11 @@ display: none;
 }
 </style>
      <div id="loader" class="lds-dual-ring hidden overlay"></div>
-
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
 <script src="{% static 'adminnew/js/custome.js' %}"></script>
+
 <script src="{% static 'adminnew/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'adminnew/js/metisMenu.min.js' %}"></script>
 <script src="{% static 'adminnew/js/jquery.slimscroll.js' %}"></script>
@@ -1413,7 +1415,10 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
             }
         });
     });
+
+    
 </script>
+
 
 <script src="{% static 'adminnew/js/jquery.core.js' %}"></script>
 <script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
@@ -1696,6 +1701,7 @@ $("#emp_name_action").change(function(){
 <script>
     $(".submit_action").submit(function(){
         event.preventDefault()
+        alert("fff")
 
         employee_name1 = $("#employee_name1").val()
         employee_name = $("#emp_name_action").val()
@@ -2234,5 +2240,12 @@ select.empty().append('<option value=0>Select Leave Type</option>');
 
         
     })
+
+
+
+
 </script>
+
+
+
 {% endblock %}

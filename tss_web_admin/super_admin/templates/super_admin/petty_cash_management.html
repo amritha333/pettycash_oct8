@@ -171,11 +171,11 @@
                         class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
         </div>
     </div>
-    <form action="pettycash_action" method="POST">
+    <form action="pettycash_action" method="POST"  enctype="multipart/form-data">
         
         {% csrf_token %}
     <div class="modal-body">
-        <input type="hidden" name="leave_type_nm" id="leave_type_nm">
+       
 
             <div class="col-md-12">
                 <div class="row m-t-15">
@@ -189,13 +189,13 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="radio">
-                                            <input name="payment_type" value="days" type="radio" id="expense_id" checked="">
+                                            <input name="payment_type" value="Expense" type="radio" id="expense_id" checked="">
                                             <label for="expense_id" id="expense">Expense</label> <span>
                                             <input type="number" class="password_day_countbox hide "
                                                    style="max-width: 50px;margin-left: 20px"> </span>
                                         </div>
                                         <div class="radio">
-                                            <input name="payment_type" type="radio" value="none" id="supplier_id">
+                                            <input name="payment_type" type="radio" value="Supplier" id="supplier_id">
                                             <label for="supplier_id" id="supplier">Supplier</label>
                                         </div>
                                     </div>
@@ -206,10 +206,10 @@
                             <div class="col-md-6 colp_r_15 mt-4" id="select_supplier" style="display: none">
                                 <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Supplier</label> 
                                         
-                                    <select name="job_no" class="form-control select2 select2-hidden-accessible" id="" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                    <select name="supplier_data" class="form-control select2 select2-hidden-accessible" id="" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="">Select Supplier</option>
 
-                                    {% for employee in select_employee_api %}
+                                    {% for employee in select_supplier_api %}
                                     <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
                                     {% endfor %}
                                 </select> </div> 
@@ -259,7 +259,7 @@
                                     <select name="job_no" class="form-control select2 select2-hidden-accessible" id="" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="">Select Job No</option>
 
-                                    {% for employee in select_employee_api %}
+                                    {% for employee in select_job_no %}
                                     <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
                                     {% endfor %}
                                     </select> </div> 

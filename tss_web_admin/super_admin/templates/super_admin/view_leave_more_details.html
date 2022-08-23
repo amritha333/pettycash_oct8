@@ -137,7 +137,7 @@
 
                                 <!-- staticBackdrop Modal -->
                                 <div class="modal modlbtns" id="staticBackdrop2" data-backdrop="static"
-                                    data-keyboard="false" tabindex="-1" role="dialog"
+                                    data-keyboard="false"  role="dialog"
                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
@@ -157,7 +157,7 @@
                                             <div class="modal-body">
                                                 <p>Are you sure you want to reassign this leave request ?
                                                 </p>
-                                                <select name="" >
+                                                <select name="" id="position" >
                                                     {% for employee in select_employee_api %}
                                                     <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
                                                     {% endfor %}
@@ -372,6 +372,11 @@
     </div>
     <!-- container -->
 </div>
+<style>
+    #select2-position-container{
+        display: block;
+    }
+</style>
 <script src="https://code.jquery.com/jquery.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -387,14 +392,19 @@
 <script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
 <script src="{% static 'tss_new/js/bootstrap.bundle.min.js' %}"></script>
 <!-- App js -->
-<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+
 <script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
 
 
 <script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'adminnew/js/dataTables.bootstrap4.min.js' %}"></script>
-
-
+<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+<script>
+    $("#position").select2({
+  allowClear:true,
+  placeholder: 'Position'
+});
+</script>
 <!-- <script>
     
     $(".notification-list").click(function(){

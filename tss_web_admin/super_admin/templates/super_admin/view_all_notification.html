@@ -118,7 +118,7 @@
 
                                 <div class="tab-pane fade show active" id="cuckoo" role="tabpanel"
                                     aria-labelledby="profile-tab">
-                                <div class="row profil">
+                                <div class="row profil view_notifi" >
                                 {% for i in notifictaion %}
                                 
                                     <div class="col-lg-4 col-xl-3 mb-3">
@@ -130,15 +130,15 @@
                                                   {% for i in i.auth_user_id.user_management_user_login.all %}
                                               
                                                   {% if i.user_img == "false" %}
-                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
                                                   {% elif i.user_img == None  %}
-                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
                                                   {% elif i.user_img == false %}
-                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px" src="{% static '60111.jpg' %}" alt=""></div>
                                                   {% elif i.user_img == '' %}
-                                                  <div><img style="    padding: 13px 12px;" class='b' src="{% static '59.jpg' %}" alt=""></div>
+                                                  <div><img style="padding: 12px 12px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
                                                   {% else %}
-                                                  <div><img style="    padding: 13px 12px;" class='b' src="data:image/jpeg;base64,{{i.user_img}}" alt=""></div>
+                                                  <div><img style="padding: 12px 12px;"  height="128px" width="128px" src="data:image/jpeg;base64,{{i.user_img}}" alt=""></div>
                                                 
                                                   {% endif %}
                                                   {% endfor %}
@@ -211,8 +211,27 @@
                                         </div>
                                     </a>
                                     </div>
-                                    {%endfor%}  
+                                    {% endfor %}  
+
+
+                                   
                                 </div>
+                               {% if type == 'notification' %}
+                                <div class="row">
+                                    <div class="col-md-12" style="    align-items: center;
+                                    text-align: center;">
+                                     <a id="cp2" href="#" style="background: #d7e0e1;
+                                     color: white;
+                                     padding: 9px 11px;" class="">Previous</a> 
+                              <a id="cp1"  href="#" style="background: #02c0ce;
+                              color: white;
+                              padding: 9px 11px;display: none;" class="card_view_prev_pag">Previous</a> <a href="#" class="card_view_next_pag" style="background: #02c0ce;
+    color: white;
+    padding: 9px 11px;">Next</a>
+                                    </div>
+                                </div>
+
+                                {% endif %}
                     </div>
                 </div>
             </div>
@@ -381,4 +400,51 @@
 
 </script>
 
+
+<script>
+    count = 10
+
+    $(".card_view_next_pag").click(function(){
+        var url ="notification_card_view";
+        $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'count':count
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+        
+          count = count+10
+          $(".view_notifi").html(data);  
+
+        $("#cp2").hide()
+        $("#cp1").show()
+
+        }
+      });
+
+    })
+
+
+    $(".card_view_prev_pag").click(function(){
+        count = count-20
+        if(count == 0){
+            $("#cp2").show()
+        $("#cp1").hide()
+        }
+        var url ="notification_card_view";
+        $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'count':count
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+         
+          
+          $(".view_notifi").html(data);  
+          count = count + 10
+
+        }
+      });  
+    })
+</script>
 {% endblock %}

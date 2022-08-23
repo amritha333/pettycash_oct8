@@ -3343,8 +3343,8 @@ body.enlarged.bg-transparent {
 .notification-list .noti-icon-badge {
     display: inline-block;
     position: absolute;
-    top: 2px;
-    right: 8px;
+    top: 5px;
+    right: 2px;
 }
 
 .notification-list .notify-item {

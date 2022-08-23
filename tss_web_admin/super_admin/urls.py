@@ -117,6 +117,11 @@ urlpatterns = [
     path('email_otp_disable_action',views.email_otp_disable_action,name='email_otp_disable_action'),
     path('email_otp_action',views.email_otp_action,name='email_otp_action'),
     path('email_otp_verification_action',views.email_otp_verification_action,name='email_otp_verification_action'),
+    path('notification_card_view',views.notification_card_view,name='notification_card_view'),
+
+    path('pettycash_action',views.pettycash_action,name='pettycash_action'),
+    
+    
     
 
 
@@ -162,6 +167,8 @@ urlpatterns = [
     path('loader',views.loader,name='loader'),
     path('test_current_address',views.test_current_address,name='test_current_address'),
     path('demo',views.demo,name='demo'),
+    path('upload_img1',views.upload_img1,name='upload_img1')
+    
 
 
     
