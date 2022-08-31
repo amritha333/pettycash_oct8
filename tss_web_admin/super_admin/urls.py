@@ -120,6 +120,7 @@ urlpatterns = [
     path('notification_card_view',views.notification_card_view,name='notification_card_view'),
 
     path('pettycash_action',views.pettycash_action,name='pettycash_action'),
+    path('odoo_leave_reassign_api',views.odoo_leave_reassign_api.as_view(),name='odoo_leave_reassign_api'),
     
     
     
@@ -167,7 +168,11 @@ urlpatterns = [
     path('loader',views.loader,name='loader'),
     path('test_current_address',views.test_current_address,name='test_current_address'),
     path('demo',views.demo,name='demo'),
-    path('upload_img1',views.upload_img1,name='upload_img1')
+    path('upload_img1',views.upload_img1,name='upload_img1'),
+
+
+    path('test_post_api',views.test_post_api,name='test_post_api'),
+    
     
 
 

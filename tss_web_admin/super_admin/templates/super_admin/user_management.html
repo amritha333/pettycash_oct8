@@ -584,6 +584,9 @@
             </div>
       
     </div>
+
+    <input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
+    <input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-info" >Save</button>
@@ -888,6 +891,9 @@ $(".appnd_user_btn").click(function() {
                 $("#empl_name").val(data['employee_name'])
                 $("#emp_registration_id").val(data['emp_registration_id'])
                 $("#company_name").val(data['company_name'])
+                $("#odoo_employee_branch_id").val(data['odoo_employee_branch_id'])
+              
+                $("#odoo_employee_company_id").val(data['odoo_employee_company_id'])
 
           
                 

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'corsheaders',
     
 ]
 
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auto_logout.middleware.auto_logout',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'tss_web_admin.urls'
@@ -167,3 +170,5 @@ AUTO_LOGOUT = {
     'IDLE_TIME': timedelta(minutes=10),
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
 }
+
+CORS_ORIGIN_ALLOW_ALL = True   

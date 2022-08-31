@@ -90,27 +90,22 @@
                         </td>
                    
                       </tr>
-
                       {% endfor %}
-            
-                    
                     </tbody>
                   </table>
              </div>
 
              {% endif %}
-              
                 <div class="card-box ">
-                    
                    <a href="user_leave_gantt_chart" style="    float: right;
                    padding: 3px 16px;    background: #72819c;    margin: 0px 11px;
-    color: white;" ><i class="fa-solid fa-chart-gantt"></i></a>
+                    color: white;" ><i class="fa-solid fa-chart-gantt"></i></a>
 
-<a href="leave_calendar" style="    float: right;
-padding: 3px 16px;    background: #72819c;
-color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
+                <a href="leave_calendar" style="    float: right;
+                padding: 3px 16px;    background: #72819c;
+                color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
 
-                   <div class="row" style="      ">
+                   <div class="row" style="">
                     <style>
                         .dropbtn {
                           background-color: #04aa6d00;
@@ -153,10 +148,11 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                         <button class="dropbtn">
                             <img style="width: 5%;    float: left;" src="https://cdn-icons-png.flaticon.com/512/1736/1736143.png"><span style="    color: #0c0c0c;
                                color: #0c0c0c;
-    float: left;
-    margin: 7px 1px;
-    font-weight: bold;
-    font-size: 12px;">Employee</span> 
+                               float: left;
+                                margin: 7px 1px;
+                                font-weight: bold;
+                                font-size: 12px;">
+                                Employee</span> 
                         </button>
                         <div class="dropdown-content" style="overflow:scroll; height:500px;">
                             {% for i1 in child_response %}
@@ -169,9 +165,6 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                      
     
                         {% else %}
-    
-                       
-                       
                             <a class="m-4 child_mark" id="child_emp{{forloop.counter}}" onclick="child_function('{{i1.id}}','{{forloop.counter}}')" href="#" style="    background:  #72819c;
                             color: white;
                             padding: 12px 40px;
@@ -513,18 +506,8 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
         <input type="hidden" name="leave_type_nm" id="leave_type_nm">
       
             <div class="form_enterbox col-md-12">
-
-
-
-
-
-
                 <div class="row mt-2">
-
-
-
-
-                    <div class="col-md-6">
+                   <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-12 mt-2">
                                 <div class="form-group bmd-form-group" id="child_select1">
@@ -563,7 +546,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                          
                             <div class="col-sm-12 pad5 mt-2" style="display:none" id="leave_avaiable_id">
                                 <div class="form-group bmd-form-group">
-                                    <input style="    width: 33%;    background: #2b2c422b;" readonly id="available_leave" name="employee_available_leave" type="text" class="input form-control">
+                                    <input style="width: 33%;    background: #2b2c422b;" readonly id="available_leave" name="employee_available_leave" type="text" class="input form-control">
                                     <label class="inputText">Leave Available</label>
                                 </div>
                             </div>
@@ -774,7 +757,11 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+               
+               
+
+
+                <div class="row" id="attachment" style="display:none">
                     <div class="col-12 m-t-10">
                         <h4 class="sub_hdng_edit" style="background-color: #2b2c42!important">Attachment </h4>
                     </div>
@@ -813,6 +800,7 @@ color: white;" ><i class="fa fa-calendar" aria-hidden="true"></i></a>
                         </div>
                     </div>
                 </div>
+              
 
             </div>
 
@@ -1140,17 +1128,22 @@ $(".appnd_user_btn").click(function() {
             },
             type: 'GET',
             success: function (data) {  
-
                 var response_message = data['respose_status']
-
                 var half_day_status = data['half_day_status']
                 var requires_allocation = data['requires_allocation']
+                var support_document = data['support_document']
+                
+                if(support_document == true){
+                    $("#attachment").show()
+                }
+                else{
+                    $("#attachment").hide()
+                }
                 
                
                 if(requires_allocation == "yes"){
                     $("#leave_avaiable_id").show()
                     $("#absence_category").val("Paid Leave")
-
                 }
                 else{
                     $("#leave_avaiable_id").hide()
@@ -1188,41 +1181,20 @@ $(".appnd_user_btn").click(function() {
                     text: 'The chosen leave option is not available !',
  
                     })
-                }
-
-               
-               
-              
-
-          
-                
-            }
-            
-        });
-       
-        
-       
+                } 
+            }   
+        });  
     })
 </script>
-
-
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 var message = `{{message}}`
-
-
-
-
 if(message == "added"){
-
     Swal.fire({
   icon: 'success',
   title: 'add...',
   text: 'create new user data successfully',
- 
 })
 }
 
@@ -1234,28 +1206,19 @@ else if(message == "already_exists"){
  
 })
 }
-
 </script>
-
 <script>
-
-
-
 $("#to_dt_change").on("change",function(){
     
     var selected = $(this).val();
     var date = new Date($('#from_dt_change').val());
-   
-
-    
     var start = $(this).val();
     var end = $('#from_dt_change').val();
-
     var start = new Date(start);
-end   = new Date(end);
-diff  = new Date(start - end);
-days  = diff/1000/60/60/24;
-days = days+1
+    end   = new Date(end);
+    diff  = new Date(start - end);
+    days  = diff/1000/60/60/24;
+    days = days+1
 //    alert(days)
    $("#total_days").val(days)
    
@@ -1305,15 +1268,6 @@ $('#from_dt_change').attr('min', minDate);
     
     });
         </script>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1493,6 +1447,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
 </script>
 
 <script>
+    var image_byte_code = false
     function readURL(input) {
         if (input.files && input.files[0]) {
 
@@ -1500,6 +1455,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
 
             reader.onload = function(e) {
                 $('.image-upload-wrap').hide();
+                image_byte_code = e.target.result
 
                 $('.file-upload-image').attr('src', e.target.result);
                 $('.file-upload-content').show();
@@ -1518,6 +1474,7 @@ ${hours.toString().length == 1 ? "0" + hours : hours}
     }
 
     function removeUpload() {
+        image_byte_code = false;
         $('.file-upload-input').replaceWith($('.file-upload-input').clone());
         $('.file-upload-content').hide();
         $('.image-upload-wrap').show();
@@ -1701,7 +1658,7 @@ $("#emp_name_action").change(function(){
 <script>
     $(".submit_action").submit(function(){
         event.preventDefault()
-        alert("fff")
+        
 
         employee_name1 = $("#employee_name1").val()
         employee_name = $("#emp_name_action").val()
@@ -1749,6 +1706,7 @@ $("#emp_name_action").change(function(){
         data1.append('request_date_from_period',request_date_from_period)
         data1.append('absence_category',absence_category)
         data1.append('leave_draft_id',$("#leave_application_type").val())
+        data1.append('image_byte_code',image_byte_code)
 
         csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
         console.log("data:::::")

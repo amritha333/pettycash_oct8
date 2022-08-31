@@ -1059,12 +1059,8 @@ def employee_master(request):
 
 def employee_more_details(request):
     employee_id = request.GET.get("employee_id",False)
-    
-
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
-
-
     employee_data_url =api_domain+"api/get_employee"
     payload = json.dumps({
         "jsonrpc": "2.0",
@@ -1077,50 +1073,87 @@ def employee_more_details(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
-
     response = requests.request("GET", employee_data_url, headers=headers, data=payload)
-    
-
     response_result = response.json()['result']
-
     data_response = response_result['result'][0]
-    
-
-
-    address_response = api_domain+"api/get_employee_addreess"
-    address_payload = json.dumps({
-        "jsonrpc": "2.0",
-        "params": {
-            "address_home_id" : data_response['address_home_id'][0]
-        }
-    })
-    address_headers = {
-        'api_key': odoo_token,
-        'Content-Type': 'application/json',
-        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
-    }
-    address_res = ""
-    address_response1 = ""
     try:
-        address_response = requests.request("GET", address_response, headers=address_headers, data=address_payload)
-   
-        address_res = address_response.json()['result']['result']
-        address_response1 = address_res[0]
+        address_response = api_domain+"api/get_employee_address"
+        address_payload = json.dumps({
+            "jsonrpc": "2.0",
+            "params": {
+                "address_home_id" : data_response['address_home_id'][0]
+            }
+        })
+        address_headers = {
+            'api_key': odoo_token,
+            'Content-Type': 'application/json',
+            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+        }
     except:
         pass
+
+    address_res = ""
+
+    address_response1 = ""
+
+    try:
+
+        address_response = requests.request("GET", address_response, headers=address_headers, data=address_payload)
+        address_res = address_response.json()['result']['result']
+
+        address_response1 = address_res[0]
+
+    except:
+
+        pass
+
     
 
-
-
-    
     context = {
+
         'response':data_response,
+
         'dept':"test",
+
         'address_response':address_response1,
+
         'state':"test",
+
         'country_id':"test"
+
     }
+
     return render(request,'super_admin/employee_more_details.html',context)
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 from datetime import date
 
@@ -1230,6 +1263,7 @@ def getemployee_branch_dpt(request):
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
     response12 =response1['result']
     response = response12['result'][0]
+    print("response:::",str(response))
     
    
   
@@ -1241,6 +1275,8 @@ def getemployee_branch_dpt(request):
     company_name = response['company_id']
     username = response['user_name']
     image_1920 = response['image_1920']
+    company_id = ''
+    branch_id = ''
    
     try:
         employee_dpt  = response['department_id'][1]
@@ -1252,6 +1288,7 @@ def getemployee_branch_dpt(request):
         employee_dpt = False
     try:
         employee_branch = response['branch_id'][1]
+        branch_id = response['branch_id'][0]
         if  employee_branch == "false":
             employee_branch = ""
 
@@ -1286,7 +1323,9 @@ def getemployee_branch_dpt(request):
         'company_name':str(company_name[1]),
         'username':username,
         'image_1920':image_1920,
-        'user_edit_status':user_edit_status
+        'user_edit_status':user_edit_status,
+        'odoo_employee_company_id' :company_name[0],
+        'odoo_employee_branch_id' :branch_id
     }
     return JsonResponse(data,safe=False)
 
@@ -1310,9 +1349,8 @@ def user_management1(message):
 def user_add_action(request):
     if request.method == "POST":
         import time
-
-        
-        
+        odoo_employee_company_id = request.POST.get("odoo_employee_company_id",False)
+        odoo_employee_branch_id = request.POST.get("odoo_employee_branch_id",False)
         username = request.POST.get("username",False)
         password_option = request.POST.get("password_option",False)
         image_1920 = request.POST.get("image_1920",False)
@@ -1420,7 +1458,8 @@ def user_add_action(request):
                         add_by = request.user,
                         odoo_id = "False",
                         company_name = company_name,
-                        user_img = image_1920
+                        user_img = image_1920,
+                        
 
 
 
@@ -1470,7 +1509,9 @@ def user_add_action(request):
                         add_by = request.user,
                         odoo_id = employee_id,
                         company_name = company_name,
-                        user_img = image_1920
+                        user_img = image_1920,
+                        employee_branch_id = odoo_employee_branch_id,
+                        employee_company_id = odoo_employee_company_id
 
 
                     )
@@ -1572,7 +1613,9 @@ def user_add_action(request):
                         add_by = request.user,
                         odoo_id = employee_id,
                         company_name = company_name,
-                        user_img = image_1920
+                        user_img = image_1920,
+                        employee_branch_id = odoo_employee_branch_id,
+                        employee_company_id = odoo_employee_company_id
 
 
                     )
@@ -2117,7 +2160,6 @@ def leave_management(request):
 def get_total_available_leave_count(request):
 
     leave_type = request.GET.get("leave_type",False)
-    
     selected_employee_id = request.GET.get("selected_employee_id",False)
     odoo_login_id = 0
     print("leave_type::::",str(leave_type))
@@ -2128,8 +2170,6 @@ def get_total_available_leave_count(request):
         odoo_login_id = user_data.odoo_id
     except:
         pass
-
-
     leave_available_response = ""
     respose_status= ""
     requires_allocation = ""
@@ -2150,61 +2190,41 @@ def get_total_available_leave_count(request):
             'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
         leave_available_response1 = requests.request("GET", leave_available_url, headers=headers, data=payload).json()
-        print("response43443:::",str(leave_available_response1))
         leave_available_response12 = leave_available_response1['result']
-        
         response_message = leave_available_response12['message']
-        
+       
         respose_status = response_message
         leave_available_response = leave_available_response12['result']
         half_day_status = leave_available_response['request_unit']
         requires_allocation = leave_available_response['requires_allocation']
-        
-        
-    
+        support_document = leave_available_response['support_document']
+        print("support_document::;;;",support_document)
     except:
         pass
-
-
-
-    
-    
-
     leave_type_name = ""
     total_available_leave = 0
     annual_status = False
-
-
-
-
-
-    
-
     try:
-        
+       
         leave_type_name = str(leave_available_response['type_name'])
         total_available_leave = str(leave_available_response['remaining_leaves'])
         annual_status = leave_available_response[0]['is_annual_vacation']
-        
+       
     except:
         pass
-
     
-
-    
-
-
-
     data= {
         'respose_status':respose_status,
         'total_available_leave' :total_available_leave ,
         'leave_type_name':leave_type_name,
         'annual_status':annual_status,
         'half_day_status':half_day_status,
-        'requires_allocation':requires_allocation
+        'requires_allocation':requires_allocation,
+        'support_document' : support_document
     }
-        
+       
     return JsonResponse(data,safe=False)
+
 
 
 async def new_supplier_api(request,list_data,odoo_token):
@@ -2435,30 +2455,33 @@ def test_file_upload_ajax(request):
 @csrf_exempt
 def user_leave_apply_action(request):
     if request.method == "POST":
-       
-       
-
-        # employee_attached_file = request.FILES['employee_attached_file']
-        # print("file::::::::::",str(employee_attached_file))
-        # data_upload =  test_file_upload(
-        #     file_data = employee_attached_file
-        # )
-        # data_upload.save()
+        image_byte_code = request.POST.get("image_byte_code")
+        if image_byte_code == 'false':
+            image_byte_code = False
+            pass
+        try:
+            image_byte_code1 = request.POST.get("image_byte_code")
+            image_byte_code = image_byte_code1.split(',')[1]
+        except:
+            pass
+        attached_file_name = False
+        try:
+            attached_file_name1 = request.FILES['employee_attached_file']
+            print("attached_file_name1:::::",str(attached_file_name1))
+            attached_file_name = str(attached_file_name1)
+        except:
+            pass
         employee_name1 = request.POST.get("employee_name1",False)
         leave_type_nm = request.POST.get("leave_type_nm",False)
         user_auth_id = request.user.id
         data_employee = User_Management.objects.get(auth_user=user_auth_id)
-
         employee_name = request.POST.get("employee_name",False)
-
         print("new employee_name::::",str(employee_name))
         print("new employee id:::",str(employee_name1))
         employee_email = request.POST.get("employee_email",False)
         employee_number = request.POST.get("employee_number",False)
         employee_leave_type = request.POST.get("employee_leave_type",False)
-     
         if  employee_leave_type == 'no':
-           
             messages.warning(request,str("Please Select Leave Type !!!"))
             return redirect("leave_management")
         employee_leave_from_date = request.POST.get("employee_leave_from_date",False)
@@ -2478,8 +2501,6 @@ def user_leave_apply_action(request):
         if request_unit_half == "Half day":
             employee_leave_to_date = employee_leave_from_date
             pass
-
-
         request_date_from_period = request.POST.get("request_date_from_period",False)
         if employee_leave_replacer == 'null':
             employee_leave_replacer =int(0)
@@ -2500,13 +2521,12 @@ def user_leave_apply_action(request):
                 'request_unit_half':request_unit_half,
                 'request_date_from_period':request_date_from_period,
                 'absence_status':absence_status,
-                'absence_category':absence_category
-               
+                'absence_category':absence_category,
+                'binary_attachment':image_byte_code,
+                'binary_attachment_name':attached_file_name
             }
         })
-
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
-
         headers = {
             'api_key': odoo_token_data.token,
             'Content-Type': 'application/json',
@@ -2515,12 +2535,7 @@ def user_leave_apply_action(request):
         print("responseeeeeeeeeeeeeeeeeeeeeeeeee")
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
         print("result::::",str(response1))
-       
-       
         response12 = response1.json()['result']
-       
-       
-       
         l1 = response12['result']
         responsible_for_approval = ""
         try:
@@ -2528,11 +2543,7 @@ def user_leave_apply_action(request):
         except:
             pass
         if response12['message'] == "error":
-
             message = response12['result']
-           
-
-
             mes1 = response12['result']
             m1 = mes1[:mes1.index("\n")]
             data = []
@@ -2540,9 +2551,7 @@ def user_leave_apply_action(request):
                 'message':str(m1),
                 'submit_message':"error"
             }
-           
             print("kkkllll")
-
             return JsonResponse(data,safe=False)
             messages.warning(request,str(m1))
             return redirect("leave_management")
@@ -2550,14 +2559,10 @@ def user_leave_apply_action(request):
             from datetime import date
             today = date.today()
             message = response12['result']
-         
             mes1 = "Your Leave from "+str(employee_leave_from_date)+" to "+str(employee_leave_to_date)+" has been submitted"
-
             r1 = response12['result']
             leave_id = r1['leave_id']
             leave_state = r1['state']
-           
-
             leave_notification = odoo_notification(
                 notification_type="leave_type",
                 message = "The leave you applied on ",
@@ -2573,7 +2578,6 @@ def user_leave_apply_action(request):
                category = "notification"
             )
             leave_notification.save()
-
             check_data=""
             second_user_id = 0
             submit_status = Leave_Status_details(
@@ -2582,24 +2586,16 @@ def user_leave_apply_action(request):
                 status = "Submit",
                 dt = today,
                 auth_user = request.user
-
-
             )
             submit_status.save()
-           
-
-
             try:
                 check_data = User_Management.objects.get(odoo_id=int(responsible_for_approval))
                 user__id = check_data.auth_user
                 message = "one leave request from " +employee_name1
                 try:
-
                     send_push_notification(user__id,employee_name1)
                 except:
                     pass
-
-
                 print("check_data::::",str(check_data.auth_user.id))
                 second_user_id = check_data.auth_user.id
                
@@ -2625,17 +2621,10 @@ def user_leave_apply_action(request):
                             status = "Pending",
                         dt = today,
                         auth_user = check_data.auth_user
-
-
                 )
-                submit_status1.save()
-               
-               
+                submit_status1.save() 
             except:
                 pass
-
-           
-
             print("ttttttaaat:::",str(second_user_id))
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
@@ -2658,7 +2647,6 @@ def user_leave_apply_action(request):
                 'message':str(mes1),
                 'submit_message':'success'
             }
-           
             print("kkkllll")
             try:
                 leave_draft_id = request.POST.get("leave_draft_id",False)
@@ -2667,11 +2655,11 @@ def user_leave_apply_action(request):
                 pass
             messages.success(request,str(mes1))
             return JsonResponse(data,safe=False)
-           
-            return redirect("leave_management")
+            return redirect("leave_management")    
 
-        
 
+
+@login_required(login_url='/index')
 def view_all_notification(request):
     type = request.GET.get("type",False)
     print("type:::",str(type))
@@ -2767,43 +2755,41 @@ def test_r2(request):
     return HttpResponse("Done")
 
 
-
+@login_required(login_url='/index')
 def view_leave_more_details(request):
     id = request.GET.get("id",False)
-    
     leave_more_details_url = api_domain+"api/get_leave_details"
     payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
-                "leave_id" : int(id)
-                
+                "leave_id" : int(id)  
             }
     })
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
-
     headers = {
         'api_key': odoo_token_data.token,
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
     response1 = requests.request("GET", leave_more_details_url, headers=headers, data=payload)
-   
     response12 = response1.json()['result']
-    print("response:::",str(response12))
-   
     r1 = response12['result'][0]
-
+    attach = ""
+    type1 = ""
+    name = ""
+    try:
+        attach = r1['attachments'][0]['datas']
+        type1 = r1['attachments'][0]['mimetype']
+        name = r1['attachments'][0]['name']
+    except:
+        pass
     df = r1['leave_logs']
-  
     emp_name = ""
     try:
         data_emp = User_Management.objects.get(auth_user=request.user)
         emp_name = data_emp.employee_name
     except :
         pass
-
-
-
     approve_button_status = ""
     try:
         approval_instance = odoo_notification.objects.get(mapping_id=id,auth_user_id=request.user,notification_type="leave_approve_request",status="Pending")
@@ -2811,22 +2797,14 @@ def view_leave_more_details(request):
     except:
         approve_button_status ="no"
         pass
-    
-
-
-
     select_employee_api = ""
-
-
     try:
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
         odoo_token = odoo_token_data.token
         employee_data_url =api_domain+"api/get_employees"
-
         user_data = User_Management.objects.all()
         list_data = list(user_data.values_list('odoo_id',flat=True))
         print("list_data:::",str(list_data))
-        
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
@@ -2839,21 +2817,12 @@ def view_leave_more_details(request):
             'Content-Type': 'application/json',
             'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
-
-
-
         select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
-        
-        
-
         response_result = select_employee_api1.json()['result']
-        
         select_employee_api = response_result['result']
     except:
         pass
-
     data_leave_status = Leave_Status_details.objects.filter(leave_mapping_id=id)
-
     context = {
         'r1':r1,
         'emp_name':emp_name,
@@ -2861,10 +2830,12 @@ def view_leave_more_details(request):
         'id':id,
         'select_employee_api':select_employee_api,
         'data_leave_status':data_leave_status,
-        'history_action':df
+        'history_action':df,
+        'attach':attach,
+        'type1':type1,
+        'name':name
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
-
 
 
 def get_selected_employee_entitlement_balance(request):
@@ -4834,3 +4805,87 @@ def pettycash_action(request):
         return JsonResponse(data,safe=False)
         return redirect("petty_cash_management")
 
+
+
+
+@csrf_exempt
+def test_post_api(request):
+    print("-------------methodddddd")
+    if request.method == "POST":
+        print("----------------------***************")
+        body_unicode = request.body.decode('utf-8') 	
+        body = json.loads(body_unicode) 	
+        print(body)
+        
+        uname = request.POST.get("username",False)
+        password = request.POST.get("password",False)
+        print("uname::::::",str(uname))
+        print("password::::",str(password))
+        return JsonResponse({"message":"success"})
+
+
+
+
+class odoo_leave_reassign_api(APIView):
+
+    permission_classes = (IsAuthenticated,)
+    def post(self, request, format=None):
+        data = request.data
+        leave_id = data['leave_id']
+        state = data['state']
+        responsible_for_approval_user_id = data['responsible_for_approval_user_id']
+        activity_done_by = data['activity_done_by']
+        activity_user = User_Management.objects.get(odoo_id=activity_done_by)
+        approval_user = User_Management.objects.get(odoo_id=responsible_for_approval_user_id)
+        data_update_approve_status = odoo_notification.objects.filter(mapping_id=leave_id,auth_user_id=activity_user.auth_user,notification_type="leave_approve_request",status="Pending").update(status="reassign",read_status=1)
+        data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=state,read_status=0)
+        next_approve_user_data = ""
+        try:
+            next_approve_user_data = User_Management.objects.get(odoo_id=int(responsible_for_approval_user_id)) 
+        except:
+            pass
+        try:
+            leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
+        except:
+            leave_data = odoo_notification.objects.get(mapping_id=leave_id,auth_user_id=activity_user.auth_user,notification_type="leave_approve_request")
+            pass
+        try:
+            next_approval_notification = odoo_notification(
+                notification_type="leave_approve_request",
+                message="leave request",
+                mapping_id = leave_id,
+                requested_from_dt = leave_data.requested_from_dt,
+                requested_to_dt = leave_data.requested_to_dt,
+                read_status = 0,
+                status = "Pending",
+                auth_user_id_id = next_approve_user_data.auth_user.id,
+                leave_type_name = leave_data.leave_type_name,
+                leave_apply_user_name = leave_data.leave_apply_user_name,
+                description = "null",
+                current_leave_status = state,
+                category = "activities"
+            )
+            next_approval_notification.save()
+        except:
+            pass 
+        try:
+            leave_status_update = Leave_Status_details.objects.filter(auth_user=activity_user.auth_user).update(status="Reassigning",note=next_approve_user_data.employee_name)
+        except:
+            pass
+        from datetime import date
+        today = date.today()
+        try:
+            add_leave_status = Leave_Status_details.objects.create(
+                leave_mapping_id = int(leave_id),
+                user_name = next_approve_user_data.employee_name,
+                auth_user = next_approve_user_data.auth_user,
+                dt = today,
+                status = "Pending"
+            )
+        except:
+            pass
+
+        content = {
+           "message":"success"
+        }
+        return Response(content)

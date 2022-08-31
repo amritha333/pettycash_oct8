@@ -123,6 +123,8 @@ class User_Management(models.Model):
     fcm_token=models.TextField(null=True) 
     user_img = models.TextField(null=True)
     login_password_invalid_count = models.IntegerField(null=True)
+    employee_branch_id = models.IntegerField(null=True)
+    employee_company_id = models.IntegerField(null=True)
 
 
 

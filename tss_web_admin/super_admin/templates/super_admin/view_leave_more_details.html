@@ -118,7 +118,7 @@
 
                                                 <input type="hidden" name="leave_mapping_id" value="{{id}}">
                                                 <input type="hidden" name="leave_status" value="{{r1.state}}">
-                                                <textarea class="form-control" placeholder="Note"
+                                                <textarea class="form-control" placeholder="Note" name="note"
                                                     id="floatingTextarea2" style="height: 60px"></textarea>
                                             </div>
                                             <!-- end modalbody -->
@@ -157,7 +157,7 @@
                                             <div class="modal-body">
                                                 <p>Are you sure you want to reassign this leave request ?
                                                 </p>
-                                                <select name="" id="position" >
+                                                <select name="selected_employee_id" id="position" >
                                                     {% for employee in select_employee_api %}
                                                     <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
                                                     {% endfor %}
@@ -308,6 +308,19 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-11 mb-3 mt-4">
+                                            <div class="form-group bmd-form-group required_item">
+                                                <label class="inputText">Attachment</label>
+                                                <a href="data:{{type1}};base64,{{attach}}" target="_blank">
+                                                <div class="badge badge-success badge-success-alt" style="background-color: #f3f6f9; padding: 6px 30px; margin-top: 6px; color: black;">
+                                                <img height="40px" width="40px"  style="margin-left: -27px;" src="{% static 'file_image1.png' %}">{{name}}</div></a>
+                                                
+                                            </div>
+                                        </div>
+
                             </div>
                         </div>
                     </div>
