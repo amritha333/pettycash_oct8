@@ -121,6 +121,10 @@ urlpatterns = [
 
     path('pettycash_action',views.pettycash_action,name='pettycash_action'),
     path('odoo_leave_reassign_api',views.odoo_leave_reassign_api.as_view(),name='odoo_leave_reassign_api'),
+    path('user_switch_company_and_branch',views.user_switch_company_and_branch,name='user_switch_company_and_branch'),
+    path('update_active_company_action',views.update_active_company_action,name='update_active_company_action'),
+    
+    
     
     
     

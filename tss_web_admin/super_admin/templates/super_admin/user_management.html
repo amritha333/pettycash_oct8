@@ -314,8 +314,13 @@
         </div>
       </div>
     <form action="user_add_action" class="submit_action" method="POST" name="frmUser">
+
+
         
         {% csrf_token %}
+
+       
+        
     <div class="modal-body">
         <input type="hidden" name="image_1920" id="image_1920">
 
@@ -519,6 +524,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="multiple_cmpy_data">
+               
             </div>
             <div class="row expirationbox mt-4">
                 <div class="col-12">
@@ -846,8 +854,86 @@ $(".appnd_user_btn").click(function() {
                 console.log(data['employee_branch'])
                 username = data['username']
                 user_edit_status = data['user_edit_status']
-             
+                multiple_company = data['multiple_company_details']
+                console.log(multiple_company)
+            console.log("---typeeee")
+              console.log(typeof(multiple_company))
+              
+              
+           
 
+
+
+              company_data = ''
+
+              for (const key in multiple_company) {
+
+                company_name = multiple_company[key]['company_name']
+               
+                console.log(typeof(company_name))
+              
+
+                company_data += ` <div class="row mt-2" style="    background: #d6d7e5;
+                padding: 4px 11px;    border-radius: 12px;">
+                    <div class="col-md-12">
+                        <h1 style="    font-size: 16px;
+                        font-weight: bold;">`+multiple_company[key]['company_name']+`</h1>
+
+                        <input type="hidden" name='multi_company_id[]' value=`+multiple_company[key]['id']+` />
+                        <input type="hidden" name='multi_company_name[]' value='`+company_name+`' />
+                       
+                    </div>
+                    <div class="col-md-12">
+                       <div class="row">
+                    `
+                    var multiple_branck = ''
+                    var multiple_branch_id = ''
+                    for (const k1 in multiple_company[key]['branches'] ){
+                        multiple_branck += multiple_company[key]['branches'][k1]['name']+"&"+multiple_company[key]['branches'][k1]['id']+",";
+                        multiple_branch_id += multiple_company[key]['branches'][k1]['id']+",";
+                        var batc = multiple_company[key]['branches'][k1]['name']
+                        
+
+                        company_data+=` 
+                        <div class="col-md-3">
+                            <p style='    background: #b1b1b5;
+    padding: 7px 9px;
+    color: white;
+    border-radius: 5px;'>`+batc+`</p>
+                        </div>
+                        
+                      `
+               
+
+
+                       
+                    }
+                    
+
+               
+                    company_data += ` 
+                    <input type="hidden" name="multiple_branch[]" value='`+multiple_branck+`'/>
+                    <input type="hidden" name="multiple_branch_id[]" value='`+multiple_branch_id+`'/>
+                    </div>
+                        
+                    </div></div>`
+                   
+
+
+              
+
+
+
+                // console.log("------------start-------")
+                // console.log(multiple_company[key]['company_name'])
+                // console.log(multiple_company[key]['branches'][0]['name'])
+                // console.log(typeof(multiple_company[key]['branches'][0]['name']))
+                // console.log("-------------end---------")
+
+              }
+           
+
+              $(".multiple_cmpy_data").html(company_data)
                 // alert(data['image'])
 
                 $("#image_1920").val(data['image_1920'])

@@ -288,3 +288,23 @@ class Login_otp(models.Model):
     status = models.CharField(max_length=255,null=True)
     auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="Login_otp_user_login", null=True)
 
+
+
+
+
+class User_company_details(models.Model):
+    auth_user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="User_company_details_user_login", null=True)
+    user_id = models.ForeignKey(User_Management,on_delete=models.CASCADE,related_name="User_company_details_user_id",null=True)
+    company_name = models.CharField(max_length=255,null=True)
+    company_id = models.IntegerField(null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(null=True,max_length=255)
+
+class User_company_based_branch_details(models.Model):
+    company_id = models.ForeignKey(User_company_details,on_delete=models.CASCADE,related_name="User_company_details_company_id")
+    branch_name = models.CharField(null=True,max_length=255)
+    branch_id = models.IntegerField(null=True)
+    dt = models.DateField(auto_now_add=True)
+    tm = models.TimeField(auto_now_add=True)
+    status = models.CharField(null=True,max_length=255)

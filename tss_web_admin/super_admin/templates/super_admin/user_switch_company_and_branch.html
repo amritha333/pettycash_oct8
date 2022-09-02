@@ -1,0 +1,53 @@
+<div class="modal fade" id="exampleModal25" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Company </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form action="update_active_company_action" method="POST">
+
+          {% csrf_token %}
+        
+        <div class="modal-body">
+          <div class="row">
+
+            {% for i in employee_company_instance %}
+            <div class="col-md-12 mt-2" style="background: #c1bbbb;
+            padding: 6px 12px;">
+
+             <div class="row" style="    padding: 4px 3px;">
+
+              <input type="radio" name="company" value="{{i.id}}" {% if i.status == "True" %} checked {% else %} {% endif %} >  <span style="    padding: 2px 8px;
+              font-weight: bold;
+              color: #423d58;">{{i.company_name}}</span>
+             </div>
+             <div class="row" style="    padding: 0px 30px;">
+           
+             
+              {% for j in i.User_company_details_company_id.all %}
+              <div class="col-md-6">
+                <input type="radio" value="{{j.id}}" name="branch" {% if j.status == "True" %} checked {% else %} {% endif %} >  <span style="    padding: 2px 8px;
+                font-weight: bold;
+                color: #423d58;">{{j.branch_name}}</span>
+            </div>
+              {% endfor %}
+            
+             </div>
+            </div>
+
+
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>

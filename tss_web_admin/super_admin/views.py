@@ -133,7 +133,7 @@ def login_page1(request):
 
 
 
-api_domain = "http://erp1.veuz.in:8069/"
+api_domain = "http://10.10.10.126:8069/"
 
 
 
@@ -1030,9 +1030,10 @@ def view_company_details(request):
 
 
 
-async def odoo_employee_details_api(request,token):
+async def odoo_employee_details_api(request,token,user_type):
     token_url = api_domain+"api/get_employees"
-    payload = json.dumps({ "jsonrpc": "2.0","params": {"login": "admin","password": "admin@veuz@123","db": "tss_migration_may14"}})
+    print("user_type:::::",str(user_type))
+    payload = json.dumps({ "jsonrpc": "2.0","params": {"login": "admin","password": "admin@veuz@123","db": "tss_migration_may14","is_admin":user_type}})
     headers =  {
         'api_key': token,
         'Content-Type': 'application/json',
@@ -1049,7 +1050,15 @@ async def odoo_employee_details_api(request,token):
 def employee_master(request):
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
-    response1 = asyncio.run(odoo_employee_details_api(request,odoo_token))
+    user_type = ''
+    user_type_instance = User.objects.get(id=request.user.id)
+    if user_type_instance.is_superuser  == True:
+        user_type = True
+    else:
+        print("----not admin user")
+
+    response1 = asyncio.run(odoo_employee_details_api(request,odoo_token,user_type))
+    print("response::::",str(response1))
     context = {
         'data':response1['result']
     }
@@ -1164,65 +1173,54 @@ def user_management(request):
     message = request.GET.get("message",False)
     role_data = Role_details.objects.all()
     today = date.today()
-
     status = inside_user_permission("User",request.user)
-    
     all_user_data = ""
     if(status['view_all'] == True):
-
-    
         all_user_data = User_Management.objects.all().order_by("-id")
     elif (status['read'] == True):
         all_user_data = User_Management.objects.filter(add_by=request.user).order_by("-id")
-        
-
-
-    
-
-
-
-
-    
-
     data_base_exists_employee_id = User_Management.objects.all()
-
     data_exists_employee = list(data_base_exists_employee_id.values_list("odoo_id",flat=True))
-
-    
-    
-
     params_data  = ",".join(data_exists_employee)
-    
     select_employee_api = ""
+    user_type = ''
+    user_type_instance = User.objects.get(id=request.user.id)
+    if user_type_instance.is_superuser  == True:
+        user_type = True
+    else:
+        print("----not admin user")
+
+    print("user_type::",str(user_type))
+
+    print("employee_existing_type::::")
+    print(type(data_exists_employee))
+    print("user_type:::")
+    print(type(user_type))
+
     
-    try:
-        odoo_token_data = odoo_api_request_token.objects.get(status="True")
-        odoo_token = odoo_token_data.token
-        employee_data_url =api_domain+"api/get_employees"
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    odoo_token = odoo_token_data.token
+    employee_data_url =api_domain+"api/get_employees"
+    payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+        "employee_ids": data_exists_employee,
+        'is_admin':user_type,
         
-        payload = json.dumps({
-            "jsonrpc": "2.0",
-            "params": {
-            "employee_ids": data_exists_employee
-            }
-        })
-        headers = {
-            'api_key': odoo_token,
-            'Content-Type': 'application/json',
-            'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
-
-
-
-        select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
-        
-        
-
-        response_result = select_employee_api1.json()['result']
-        
-        select_employee_api = response_result['result']
-    except:
-        pass
+    })
+    headers = {
+        'api_key': odoo_token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    print("payload:::::",str(payload))
+    select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
+    print("response:::::::::::::::::",str(select_employee_api1))
+    response_result = select_employee_api1.json()['result']
+    print("response_result::::",str(response_result))
+    select_employee_api = response_result['result']
+    
 
     # print("select_employee:::::",str(select_employee_api))
     
@@ -1244,6 +1242,7 @@ def user_management(request):
 def getemployee_branch_dpt(request):
     
     employee_id = request.GET.get("employee_id")
+    print("employee_id::::",str(employee_id))
 
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
@@ -1261,9 +1260,10 @@ def getemployee_branch_dpt(request):
     }
 
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
+    
     response12 =response1['result']
     response = response12['result'][0]
-    print("response:::",str(response))
+    
     
    
   
@@ -1277,6 +1277,9 @@ def getemployee_branch_dpt(request):
     image_1920 = response['image_1920']
     company_id = ''
     branch_id = ''
+
+    multiple_company_details = response['branch_list']
+    print("multiple_company::::::",str(multiple_company_details))
    
     try:
         employee_dpt  = response['department_id'][1]
@@ -1325,7 +1328,8 @@ def getemployee_branch_dpt(request):
         'image_1920':image_1920,
         'user_edit_status':user_edit_status,
         'odoo_employee_company_id' :company_name[0],
-        'odoo_employee_branch_id' :branch_id
+        'odoo_employee_branch_id' :branch_id,
+        'multiple_company_details':multiple_company_details
     }
     return JsonResponse(data,safe=False)
 
@@ -1528,7 +1532,40 @@ def user_add_action(request):
                             description = role_description[i]
                         )
                         data_save_user_role.save()
-                   
+
+                    multi_company_id = request.POST.getlist("multi_company_id[]")
+                    multi_company_name = request.POST.getlist("multi_company_name[]")
+                    multiple_branch = request.POST.getlist("multiple_branch[]")
+                    multiple_branch_id = request.POST.getlist("multiple_branch_id[]")
+                    role_length = len(multi_company_id)
+                    for i in range(0,role_length):
+                        multiple_branch_name =str(multiple_branch[i][0:-1])
+                        branch_List = multiple_branch_name.split(',')
+                        branch_List_length = len(branch_List)
+                        if i == 0:
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True)
+                            for j in range(0,branch_List_length):
+                                if j == 0:
+                                    l1 = str(branch_List[j])
+                                    branch_list = str(l1).split('&')
+                                    save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=True)
+                                    save_multiple_company_based_branch_instance.save()
+                                else:
+                                    l1 = str(branch_List[j])
+                                    branch_list = str(l1).split('&')
+                                    save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
+                                    save_multiple_company_based_branch_instance.save()
+                        else:
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False)
+                            for j in range(0,branch_List_length):
+                                l1 = str(branch_List[j])
+                                branch_list = str(l1).split('&')
+                                save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
+                                save_multiple_company_based_branch_instance.save()
+
+
+                        
+
                        
                 
                 # url = redirect("user_management")
@@ -1632,7 +1669,37 @@ def user_add_action(request):
                             description = role_description[i]
                         )
                         data_save_user_role.save()
-                   
+
+                    multi_company_id = request.POST.getlist("multi_company_id[]")
+                    multi_company_name = request.POST.getlist("multi_company_name[]")
+                    multiple_branch = request.POST.getlist("multiple_branch[]")
+                    multiple_branch_id = request.POST.getlist("multiple_branch_id[]")
+                    role_length = len(multi_company_id)
+                    for i in range(0,role_length):
+                        multiple_branch_name =str(multiple_branch[i][0:-1])
+                        branch_List = multiple_branch_name.split(',')
+                        branch_List_length = len(branch_List)
+                        if i == 0:
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True)
+                            for j in range(0,branch_List_length):
+                                if j == 0:
+                                    l1 = str(branch_List[j])
+                                    branch_list = str(l1).split('&')
+                                    save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=True)
+                                    save_multiple_company_based_branch_instance.save()
+                                else:
+                                    l1 = str(branch_List[j])
+                                    branch_list = str(l1).split('&')
+                                    save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
+                                    save_multiple_company_based_branch_instance.save()
+                        else:
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False)
+                            for j in range(0,branch_List_length):
+                                l1 = str(branch_List[j])
+                                branch_list = str(l1).split('&')
+                                save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
+                                save_multiple_company_based_branch_instance.save()
+
                         
                 messages.success(request,str("password:"+str(password)))
                 return redirect("user_management")
@@ -4889,3 +4956,37 @@ class odoo_leave_reassign_api(APIView):
            "message":"success"
         }
         return Response(content)
+    
+
+
+
+def user_switch_company_and_branch(request):
+    employee_company_instance = User_company_details.objects.filter(auth_user_id=request.user)
+    context = {
+        'employee_company_instance':employee_company_instance
+    }
+    return render(request,'super_admin/user_switch_company_and_branch.html',context)
+
+
+
+def update_active_company_action(request):
+    if request.method == "POST":
+        company = request.POST.get("company",False)
+        branch = request.POST.get("branch",False)
+        print("company::::::",str(company))
+        print("branch:::::",str(branch))
+       
+        data_check = User_company_based_branch_details.objects.get(id=branch)
+        company_id = data_check.company_id.id
+        print("company_id::::",str(company_id))
+        if int(company) == int(company_id):
+            update_company1 = User_company_details.objects.filter(auth_user_id=request.user.id).update(status=False)
+            update_branch = User_company_based_branch_details.objects.filter(company_id__auth_user_id=request.user.id).update(status=False)
+
+            update_company = User_company_details.objects.filter(id=company).update(status=True)
+            update_branch1 = User_company_based_branch_details.objects.filter(id=branch).update(status=True)
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+             messages.warning(request,str("The selected company and branch are incompatible in the equal to operator"))
+             return redirect(request.META['HTTP_REFERER'])
+

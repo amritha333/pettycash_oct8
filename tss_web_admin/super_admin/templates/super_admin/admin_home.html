@@ -240,10 +240,13 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
         <li class="hide-phone app-search">
-            <h1 style="      line-height: 7px;
+            <h1 class="comapny_switch_btn" style="    line-height: 7px;
             font-size: 13px;
             font-weight: bold;
-            color: #242222;">
+            color: #242222;
+            background: #262435;
+            padding: 9px 23px;
+            color: white;">
               {{request.user|get_branch_department}}
             </h1>
             <!-- <form>
@@ -888,6 +891,7 @@ const firebaseConfig = {
       </div>
     </div>
   </div>
+  <div id="switch_company_modal"></div>
   <script src="https://code.jquery.com/jquery.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -901,6 +905,59 @@ const firebaseConfig = {
     })
 </script>
 
+<script>
+    $(".comapny_switch_btn").click(function(){
+       
+        var url ="user_switch_company_and_branch";
+        $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+            $("#switch_company_modal").html(data)
+            $("#exampleModal25").modal("show")
+           
 
+        }
+      });
+        
+    })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if messages %}
+   <script>
+    {% for message in messages %}
+        message1 = "{{message}}"
+     
+    
+       
+        if(message1 == "error"){
+
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: "{{ message }}",
+ 
+})
+
+
+
+        }
+        else{
+
+Swal.fire(
+      '',
+      '{{ message }}',
+      '{{message.tags}}'
+    )
+
+
+      
+        }
+    {% endfor %}
+   </script>
+{% endif %}
 </body>
 </html>
