@@ -1045,6 +1045,9 @@ async def odoo_employee_details_api(request,token,user_type):
             response12 =response1['result']
             return response12
 
+
+
+
 @login_required(login_url='/index')
 @test_w1('Employee')
 def employee_master(request):
@@ -1055,6 +1058,7 @@ def employee_master(request):
     if user_type_instance.is_superuser  == True:
         user_type = True
     else:
+        user_type = True
         print("----not admin user")
 
     response1 = asyncio.run(odoo_employee_details_api(request,odoo_token,user_type))
@@ -1179,25 +1183,16 @@ def user_management(request):
         all_user_data = User_Management.objects.all().order_by("-id")
     elif (status['read'] == True):
         all_user_data = User_Management.objects.filter(add_by=request.user).order_by("-id")
-    data_base_exists_employee_id = User_Management.objects.all()
+    data_base_exists_employee_id = User_company_details.objects.all()
     data_exists_employee = list(data_base_exists_employee_id.values_list("odoo_id",flat=True))
-    params_data  = ",".join(data_exists_employee)
+    # params_data  = ",".join(data_exists_employee)
     select_employee_api = ""
     user_type = ''
     user_type_instance = User.objects.get(id=request.user.id)
     if user_type_instance.is_superuser  == True:
         user_type = True
     else:
-        print("----not admin user")
-
-    print("user_type::",str(user_type))
-
-    print("employee_existing_type::::")
-    print(type(data_exists_employee))
-    print("user_type:::")
-    print(type(user_type))
-
-    
+        user_type = True
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     employee_data_url =api_domain+"api/get_employees"
@@ -1214,16 +1209,9 @@ def user_management(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
-    print("payload:::::",str(payload))
     select_employee_api1 = requests.request("GET", employee_data_url, headers=headers, data=payload)
-    print("response:::::::::::::::::",str(select_employee_api1))
     response_result = select_employee_api1.json()['result']
-    print("response_result::::",str(response_result))
     select_employee_api = response_result['result']
-    
-
-    # print("select_employee:::::",str(select_employee_api))
-    
     context = {
         'role_data':role_data,
         'message':message,
@@ -1240,10 +1228,7 @@ def user_management(request):
 
 
 def getemployee_branch_dpt(request):
-    
     employee_id = request.GET.get("employee_id")
-    print("employee_id::::",str(employee_id))
-
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     odoo_token = odoo_token_data.token
     employee_data_url =api_domain+"api/get_employee"
@@ -1258,15 +1243,10 @@ def getemployee_branch_dpt(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
     }
-
     response1  = requests.request("GET", employee_data_url, headers=headers, data=payload).json()
-    
     response12 =response1['result']
+    print(response12)
     response = response12['result'][0]
-    
-    
-   
-  
     name = ""
     employee_dpt = ""
     employee_branch = ""
@@ -1277,16 +1257,11 @@ def getemployee_branch_dpt(request):
     image_1920 = response['image_1920']
     company_id = ''
     branch_id = ''
-
     multiple_company_details = response['branch_list']
-    print("multiple_company::::::",str(multiple_company_details))
-   
     try:
         employee_dpt  = response['department_id'][1]
         if employee_dpt == "false":
             employee_dpt = ""
-        
-
     except:
         employee_dpt = False
     try:
@@ -1298,26 +1273,10 @@ def getemployee_branch_dpt(request):
     except:
         employee_branch = False
         
-        
     emp_registration_id = response['registration_number']
-    
-   
     user_edit_status = False
     if User.objects.filter(username=username).exists():
         user_edit_status = True
-
-
-    
-
-        
-        
-
-        
-        
-        
-        
-
-
     data = {
         "employee_branch" :employee_branch,
         "employee_dpt":employee_dpt,
@@ -1537,13 +1496,14 @@ def user_add_action(request):
                     multi_company_name = request.POST.getlist("multi_company_name[]")
                     multiple_branch = request.POST.getlist("multiple_branch[]")
                     multiple_branch_id = request.POST.getlist("multiple_branch_id[]")
+                    multi_company_employee_id = request.POST.getlist("multi_company_employee_id[]")
                     role_length = len(multi_company_id)
                     for i in range(0,role_length):
                         multiple_branch_name =str(multiple_branch[i][0:-1])
                         branch_List = multiple_branch_name.split(',')
                         branch_List_length = len(branch_List)
                         if i == 0:
-                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True)
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True,odoo_id=int(multi_company_employee_id[i]))
                             for j in range(0,branch_List_length):
                                 if j == 0:
                                     l1 = str(branch_List[j])
@@ -1556,7 +1516,7 @@ def user_add_action(request):
                                     save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
                                     save_multiple_company_based_branch_instance.save()
                         else:
-                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False)
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False,odoo_id=int(multi_company_employee_id[i]))
                             for j in range(0,branch_List_length):
                                 l1 = str(branch_List[j])
                                 branch_list = str(l1).split('&')
@@ -1674,13 +1634,14 @@ def user_add_action(request):
                     multi_company_name = request.POST.getlist("multi_company_name[]")
                     multiple_branch = request.POST.getlist("multiple_branch[]")
                     multiple_branch_id = request.POST.getlist("multiple_branch_id[]")
+                    multi_company_employee_id = request.POST.getlist("multi_company_employee_id[]")
                     role_length = len(multi_company_id)
                     for i in range(0,role_length):
                         multiple_branch_name =str(multiple_branch[i][0:-1])
                         branch_List = multiple_branch_name.split(',')
                         branch_List_length = len(branch_List)
                         if i == 0:
-                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True)
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=True,odoo_id=int(multi_company_employee_id[i]))
                             for j in range(0,branch_List_length):
                                 if j == 0:
                                     l1 = str(branch_List[j])
@@ -1693,7 +1654,7 @@ def user_add_action(request):
                                     save_multiple_company_based_branch_instance = User_company_based_branch_details(company_id_id=save_multiple_company_instance.id,branch_name=str(branch_list[0]),branch_id=int(branch_list[1]),status=False)
                                     save_multiple_company_based_branch_instance.save()
                         else:
-                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False)
+                            save_multiple_company_instance = User_company_details.objects.create(auth_user_id=user,user_id_id=save_user_data.id,company_name=str(multi_company_name[i]),company_id=int(multi_company_id[i]),status=False,odoo_id=int(multi_company_employee_id[i]))
                             for j in range(0,branch_List_length):
                                 l1 = str(branch_List[j])
                                 branch_list = str(l1).split('&')
@@ -4985,6 +4946,11 @@ def update_active_company_action(request):
 
             update_company = User_company_details.objects.filter(id=company).update(status=True)
             update_branch1 = User_company_based_branch_details.objects.filter(id=branch).update(status=True)
+
+
+            company_data = User_company_details.objects.get(id=company)
+            branch_data = User_company_based_branch_details.objects.get(id=branch)
+            updated_user = User_Management.objects.filter(auth_user=request.user).update(employee_company_id=company_data.company_id,company_name=company_data.company_name,employee_branch=branch_data.branch_name,employee_branch_id=branch_data.branch_id)
             return redirect(request.META['HTTP_REFERER'])
         else:
              messages.warning(request,str("The selected company and branch are incompatible in the equal to operator"))

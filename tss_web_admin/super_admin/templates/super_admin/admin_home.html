@@ -240,6 +240,10 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
         <li class="hide-phone app-search">
+
+            {% if request.user|get_branch_department == '' %}
+
+            {% else %}
             <h1 class="comapny_switch_btn" style="    line-height: 7px;
             font-size: 13px;
             font-weight: bold;
@@ -249,6 +253,7 @@
             color: white;">
               {{request.user|get_branch_department}}
             </h1>
+            {% endif %}
             <!-- <form>
                 <input type="text" placeholder="Search..." class="form-control">
                 <button type="submit"><i class="fa fa-search"></i></button>

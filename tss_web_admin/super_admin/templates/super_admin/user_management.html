@@ -869,6 +869,7 @@ $(".appnd_user_btn").click(function() {
               for (const key in multiple_company) {
 
                 company_name = multiple_company[key]['company_name']
+                employeee_id = multiple_company[key]['employee_id']
                
                 console.log(typeof(company_name))
               
@@ -881,6 +882,7 @@ $(".appnd_user_btn").click(function() {
 
                         <input type="hidden" name='multi_company_id[]' value=`+multiple_company[key]['id']+` />
                         <input type="hidden" name='multi_company_name[]' value='`+company_name+`' />
+                        <input type="hidden" name='multi_company_employee_id[]' value='`+employeee_id+`' />
                        
                     </div>
                     <div class="col-md-12">

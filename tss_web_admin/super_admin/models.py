@@ -299,6 +299,7 @@ class User_company_details(models.Model):
     company_id = models.IntegerField(null=True)
     dt = models.DateField(auto_now_add=True)
     tm = models.TimeField(auto_now_add=True)
+    odoo_id = models.IntegerField(null=True)
     status = models.CharField(null=True,max_length=255)
 
 class User_company_based_branch_details(models.Model):
