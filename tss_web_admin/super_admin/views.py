@@ -2834,14 +2834,18 @@ def view_leave_more_details(request):
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
         odoo_token = odoo_token_data.token
         employee_data_url =api_domain+"api/get_employees"
-        user_data = User_Management.objects.all()
+        user_data = User_company_details.objects.all()
         list_data = list(user_data.values_list('odoo_id',flat=True))
-        print("list_data:::",str(list_data))
+        print("listaaaa_data:::",str(list_data))
+
+        user_data1 = User_Management.objects.get(auth_user=request.user)
+        print("user_data1:::",str(user_data1.employee_company_id))
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
                  "reassign" : "True",
-            "employee_ids": list_data
+            "employee_ids": list_data,
+            'company_id':user_data1.employee_company_id
             }
         })
         headers = {
@@ -3631,7 +3635,7 @@ def leave_reassign_action(request):
             data_update_requested_user_status = odoo_notification.objects.filter(mapping_id=leave_id,notification_type="leave_type").update(status=leave__result_status,read_status=0)
             next_approve_user_data = ""
             try:
-                next_approve_user_data = User_Management.objects.get(odoo_id=int(selected_employee_id))
+                next_approve_user_data = User_company_details.objects.get(odoo_id=int(selected_employee_id))
             except:
                 pass
             try:
@@ -3648,7 +3652,7 @@ def leave_reassign_action(request):
                     requested_to_dt = leave_data.requested_to_dt,
                     read_status = 0,
                     status = "Pending",
-                    auth_user_id_id = next_approve_user_data.auth_user.id,
+                    auth_user_id_id = next_approve_user_data.auth_user_id.id,
                     leave_type_name = leave_data.leave_type_name,
                     leave_apply_user_name = leave_data.leave_apply_user_name,
                     description = "null",
@@ -3659,7 +3663,7 @@ def leave_reassign_action(request):
             except:
                 pass 
             try:
-                leave_status_update = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Reassigning",note=next_approve_user_data.employee_name)
+                leave_status_update = Leave_Status_details.objects.filter(auth_user=request.user).update(status="Reassigning",note=next_approve_user_data.user_id.employee_name)
             except:
                 pass
             from datetime import date
@@ -3667,8 +3671,8 @@ def leave_reassign_action(request):
             try:
                 add_leave_status = Leave_Status_details.objects.create(
                     leave_mapping_id = int(leave_id),
-                    user_name = next_approve_user_data.employee_name,
-                    auth_user = next_approve_user_data.auth_user,
+                    user_name = next_approve_user_data.user_id.employee_name,
+                    auth_user = next_approve_user_data.user_id.auth_user,
                     dt = today,
                     status = "Pending"
                 )
