@@ -2141,6 +2141,7 @@ def leave_management(request):
         emp_id = odoo_data.employee_id
     except:
         pass
+    print("odoo_id112222::::",str(odoo_id))
     leave_history_response = ""
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
     new_api_integration =  asyncio.run(odoo_new_leave_api(request,odoo_id,odoo_token_data.token))
@@ -2564,6 +2565,7 @@ def user_leave_apply_action(request):
         response1 = requests.request("POST", leave_apply_url, headers=headers, data=payload)
         print("result::::",str(response1))
         response12 = response1.json()['result']
+        print("response12::::",str(response12))
         l1 = response12['result']
         responsible_for_approval = ""
         try:
@@ -2616,16 +2618,18 @@ def user_leave_apply_action(request):
                 auth_user = request.user
             )
             submit_status.save()
+            print("nextapproval::::::",str(responsible_for_approval))
+            
             try:
-                check_data = User_Management.objects.get(odoo_id=int(responsible_for_approval))
-                user__id = check_data.auth_user
+                check_data = User_company_details.objects.get(odoo_id=int(responsible_for_approval))
+                user__id = check_data.auth_user_id
                 message = "one leave request from " +employee_name1
                 try:
                     send_push_notification(user__id,employee_name1)
                 except:
                     pass
-                print("check_data::::",str(check_data.auth_user.id))
-                second_user_id = check_data.auth_user.id
+                print("check_data::::",str(check_data.auth_user_id.id))
+                second_user_id = check_data.auth_user_id.id
                
                 approval_notification =  odoo_notification(
                     notification_type="leave_approve_request",
@@ -2635,7 +2639,7 @@ def user_leave_apply_action(request):
                     requested_to_dt = employee_leave_to_date,
                     read_status = 0,
                     status = leave_state,
-                    auth_user_id = check_data.auth_user,
+                    auth_user_id = check_data.auth_user_id,
                     leave_type_name=leave_type_nm,
                     leave_apply_user_name = employee_name1,
                     description =employee_leave_reason,
@@ -4950,7 +4954,7 @@ def update_active_company_action(request):
 
             company_data = User_company_details.objects.get(id=company)
             branch_data = User_company_based_branch_details.objects.get(id=branch)
-            updated_user = User_Management.objects.filter(auth_user=request.user).update(employee_company_id=company_data.company_id,company_name=company_data.company_name,employee_branch=branch_data.branch_name,employee_branch_id=branch_data.branch_id)
+            updated_user = User_Management.objects.filter(auth_user=request.user).update(employee_company_id=company_data.company_id,company_name=company_data.company_name,employee_branch=branch_data.branch_name,employee_branch_id=branch_data.branch_id,odoo_id=company_data.odoo_id)
             return redirect(request.META['HTTP_REFERER'])
         else:
              messages.warning(request,str("The selected company and branch are incompatible in the equal to operator"))

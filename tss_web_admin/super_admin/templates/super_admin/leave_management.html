@@ -1720,13 +1720,15 @@ $("#emp_name_action").change(function(){
         processData: false,
         contentType: false,
         success: function (data) {  
+            
+           
 
             if(data['submit_message'] == "success"){
                 window.location.href = "leave_management"
             }
             else{
                 $("#kl2").hide();
-               
+              
                 swal('',data['message'], "error");
 
             }
