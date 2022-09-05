@@ -3479,7 +3479,7 @@ def leave_approve_action(request):
             else:
             
                 try:
-                    next_approve_user_data = User_Management.objects.get(odoo_id=responsible_for_approval)
+                    next_approve_user_data = User_company_details.objects.get(odoo_id=responsible_for_approval)
                     try:
                         leave_data = odoo_notification.objects.get(mapping_id=leave_id,notification_type="leave_type")
                     except:
@@ -3494,7 +3494,7 @@ def leave_approve_action(request):
                         requested_to_dt = leave_data.requested_to_dt,
                         read_status = 0,
                         status = "Pending",
-                        auth_user_id_id = next_approve_user_data.auth_user.id,
+                        auth_user_id_id = next_approve_user_data.auth_user_id.id,
                         leave_type_name = leave_data.leave_type_name,
                         leave_apply_user_name = leave_data.leave_apply_user_name,
                         description = "null",
@@ -3517,7 +3517,7 @@ def leave_approve_action(request):
                             "status":str(leave__result_status),
                             "requested_date_from":str(send_request.requested_from_dt),
                             "requested_date_to":str(send_request.requested_to_dt),
-                            "send_user_id":next_approve_user_data.auth_user.id,
+                            "send_user_id":next_approve_user_data.auth_user_id.id,
                             "category":"activities"
                         }
                     }
