@@ -176,6 +176,9 @@ urlpatterns = [
 
 
     path('test_post_api',views.test_post_api,name='test_post_api'),
+
+    path('test_petty_cash',views.test_petty_cash,name='test_petty_cash'),
+    
     
     
 

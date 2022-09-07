@@ -1,0 +1,807 @@
+{% extends "super_admin/menu.html" %}
+
+{% load static %}
+
+{% block content %}
+<style>
+    .confirm-box {
+        width: 280px;
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    z-index: 10;
+    color: rgba(0,0,0,0.7);
+    font-family: Helvetica;
+    font-size: 15px;
+    font-weight: bold;
+    background: #DDD;
+    border-radius: 0.4em;
+    border: 1px solid rgba(0,0,0,0.6);
+    box-shadow: 0 0 10px rgb(0 0 0 / 40%); 
+  
+  &:after {
+   	content:"";
+    display:table;
+    clear:both;
+  }
+
+}
+
+.confirm-box h1 {
+ 	text-align:center; 
+  padding:10px 30px;
+  line-height:1.2em;
+  border-radius:0.4em 0.4em 0 0;
+  text-shadow:0 1px 0 rgba(255,255,255,0.1);
+	border-bottom:1px solid rgba(0,0,0,0.3);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 30px 30px rgba(255,255,255,0.2);
+  margin-bottom:15px;
+  background:#0088CC;
+}
+
+
+.confirm-box a {
+ 	display:block;
+  position:relative;
+  
+  padding:7px 40px;
+  width:130px;
+  margin:0 auto;
+  margin-bottom:15px;
+  
+  text-decoration:none;
+  text-align:center;
+  font-size:13px;
+
+  border:1px solid rgba(0,0,0,0.7);
+  border-radius:0.2em;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 20px 20px rgba(255,255,255,0.2),
+    1px 2px 1px rgba(0,0,0,0.2),
+    0 0 2px 8px rgba(50,50,50,0.1);
+  transition:all 0.3s ease-out;
+  background:#d02211;
+  z-index:100;
+  
+  font-weight:bold;
+  color:rgba(0,0,0,0.6);
+  text-shadow:0 1px 0 rgba(255,255,255,0.2);
+  -webkit-font-smoothing: subpixel-antialiased;
+
+  
+  &:hover {
+   	 box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 -20px 20px rgba(200,200,200,0.1),
+      1px 2px 1px rgba(0,0,0,0.2),
+      0 0 2px 8px rgba(100,100,100,0.1);
+  }
+  
+  &:active {
+   	top:1px; 
+  }
+
+}
+
+#progress-bar {
+ 	width:90%;
+  margin:0 auto;
+  margin-bottom:15px;
+	height:28px;
+  border:1px solid rgba(0,0,0,0.8);
+  background:#232323;
+  border-radius:1em;
+  box-shadow:inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+#inner-pb {
+	position:relative;
+  border:1px solid rgba(0,0,0,0.8);
+  width:0;
+  
+  
+  height:22px;
+  margin-left:5px;
+  margin-top:2px;
+  background: repeating-linear-gradient(-45deg, #625e74, #5d5970 20px, #5f5b72 20px, #57536b 40px);
+  border-radius:0.8em;
+  animation: roll 5s linear infinite;
+  box-shadow: 
+    inset 0 10px 10px rgba(255,255,255,0.2), 
+    inset 0 1px 0 rgba(255,255,255,0.3), 
+    inset 0 -5px 3px rgba(0,0,0,0.2),
+    0 3px 2px rgba(0,0,0,0.3);
+}
+
+@-moz-keyframes roll {
+	0% { width:0; }
+  100% { width:95%; }
+}
+
+@-webkit-keyframes roll {
+	0% { width:0; }
+  100% { width:95%; }
+}
+</style>
+
+
+  
+<div class="content ">
+    <div class="confirm-box" id="kl" style="display: none">
+        <h1>Change TagClouds.</h1>
+        <div id="progress-bar">
+            <div id="inner-pb"></div>
+        </div>
+      </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="box_header">
+                    <div class="row">
+                        <div class="col-md-7 col-12">
+                            <div class="mainiconbox"><i class="fa fa-user"></i>
+                            </div>
+                            <h4 class="m-t-0 header-title">
+                                <div class="breadcrumbs ng-scope">
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a>Settings</a></li>
+                                        <li><a>User Settings</a></li>
+                                    </ul>
+                                    <div>User Settings</div>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="col-md-5 col-12">
+                            
+                            <div class="pull-right p-t-10">
+                                <a  class="btn btn-info " href="user_login_log"> <i class="mdi  mdi-history"></i> Login Log
+                                </a>
+                              
+
+                                <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newuser"> <i class="mdi mdi-plus-circle-outline"></i> New
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-box ">
+                    <div class="table_rspnsv" id="tableview">
+                        <div class="row2 tbl_stngs commen_table">
+
+                            <table id="datatable" class="table table-bordered dt-responsive nowrap table-hover" style="width: 100%;">
+
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Employee ID</th>
+                                    <th>Branch</th>
+                                    <th >Department</th>
+                                    <th>Employee Name</th>
+                                 
+                                    <th>Created At</th>
+                                    
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in all_user_data %}
+                                <tr>
+                                    <td><a class="label-default" href="#/">{{user.username}}</a></td>
+                                    <td>
+                                        {% if user.employee_id == '' %}
+                                     
+                                        {% else %}
+                                        {{user.employee_id}}
+                                        {% endif %}
+                                        
+                                      
+
+
+
+                                    </td>
+                                    <td>
+                                        {% if user.employee_branch == '' %}
+                                     
+
+                                        {% elif user.employee_branch == 'false' %}
+                                     
+                                        {% else %}
+                                        {{user.employee_branch|title}}
+                                        {% endif %}
+                                        
+                                      
+                                    
+                                    
+                                    </td>
+                                    <td>
+                                        {% if user.employee_department == '' %}
+                                      
+
+                                        {% elif user.employee_department == 'false'  %}
+                                      
+                                        {% else %}
+                                        {{user.employee_department|title}}
+                                        {% endif %}
+                                        
+                                        
+                                        
+                                    
+                                    
+                                    </td>
+                                    <td>
+                                        {% if user.employee_name == '' %}
+                                       
+                                        {% else %}
+                                        {{user.employee_name}}
+                                        {% endif %}
+                                        
+                                        
+                                      
+
+
+
+                                    </td>
+                                  
+                                    <td>{{user.dt}}<br>{{user.tm}}</td>
+                                    <td>
+                                        {% if edit == True %}
+                                        <a class="label-default edit_user_action" data-id="{{user.id}}" href="#"> <i class="fa fa-pencil"></i> </a>
+                                        {% endif %}
+
+                                        {% if read == True %}
+                                        <a class="label-default" href="view_user_more_details?id={{user.id}}"> <i class="fa fa-eye"></i> </a>
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                           
+                       
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- container -->
+</div>
+</div>
+</div>
+<style>
+
+
+    /* Important part */
+    .modal-dialog{
+        overflow-y: initial !important
+    }
+    .modal-body{
+        height: 80vh;
+        overflow-y: auto;
+    }
+    </style>
+
+<div class="modal modal-right fade" id="newuser"  role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-full" >
+<!-- <div id="newuser" class="modal fade" role="dialog" data-backdrop="static">
+<div class="modal-dialog modal_large"> -->
+<!-- Modal content-->
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Petty Cash Form</h4>
+        <div class="pull-right"> <a class="btn enlarge_modal" data-toggle="tooltip" data-original-title="Fullscreen"><i
+                        class="mdi mdi-crop-free" aria-hidden="true"></i> </a>
+            <a class="btn dslarge_modal" data-toggle="tooltip" data-original-title="Back"><i
+                        class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
+        </div>
+    </div>
+
+    <div class="confirm-box" id="kl2" style="display: none">
+        <h1 style="    font-size: 14px;
+        color: white;    background: #423d58;">Please wait...</h1>
+        <div id="progress-bar">
+            <div id="inner-pb"></div>
+        </div>
+      </div>
+    <form action="" enctype="multipart/form-data" method="POST" name="frmUser">
+
+
+        
+        {% csrf_token %}
+
+       
+        
+    <div class="modal-body">
+        <input type="hidden" name="image_1920" id="image_1920">
+
+            <div class="col-md-12">
+                <div class="row m-t-15">
+                    <div class="col-md-6 colp_r_15">
+                        <div class="row">
+                            <div class="col-md-12 pad5 ">
+                             
+                            </div>
+
+                        
+                          
+                            <!-- <div class="col-md-6 pad5">
+                                <div class="form-group">
+                                    <div class="form-group bmd-form-group required_item">
+                                        <input type="text" class="input form-control">
+                                        <label class="inputText openselect2">Re-type Password</label>
+                                    </div>
+                                </div>
+                            </div> -->
+                        
+                        </div>
+                    </div>
+              
+                </div>
+            </div>
+            <div class="multiple_cmpy_data">
+               
+            </div>
+            <div class="row expirationbox mt-4">
+                <div class="col-12">
+                    <div class="row">
+                        <h4 class="modal_sub_hdng">Expense</h4>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <div class="form-group">  <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                       {% for role in  role_data %}
+                            <option value="{{role.id}}">{{role.role_name}}</option>
+                       {% endfor %}
+                    </select> </div>
+                </div> -->
+                <div class="col-12 ">
+                    <div class="container-fluid">
+                     
+                        <table class="table scrolbaletable" border="2" style="border: 1px solid #ccc;">
+                            <tr>
+                                <th class="th_btnpand">
+                                    <div class="appnd_user_btn append_btn">+</div>
+                                </th>
+                                <th class="th_user_role">Expense Date</th>
+                                <th class="">Product</th>
+                                <th class="th_user_decrptn">Description</th>
+                                <th>Partner</th>
+                                <th>Attachment</th>
+                                <th>Unit Price</th>
+                                <th>Taxes</th>
+                                <th>Totla In Currency</th>
+                                <th>Total</th>
+                           
+                            </tr>
+                            <tbody class="apenduser">
+
+                            <tr>
+                                <td class="th_btnpand">
+                                    <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                                </td>
+                                <td class="th_user_role">
+                                   <input type="date" class="form-control" name="date">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <input type="text" class="form-control">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <input  name="role_description[]" class="form-control">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <select class="form-control">
+                                        <option>Demo 1</option>
+                                        <option>Demo 2</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="file" id="filesnew" data-count=0  name="files[]" multiple="multiple">
+                                </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                
+                               </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+               
+            </div>
+            <input type="text" id="attachment_image_value" value="0" name="attachment_image_value">
+            <div id="displayimage">
+                                    
+            </div>
+    </div>
+ 
+
+    <input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
+    <input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info" >Save</button>
+    </div>
+    </form>
+</div>
+</div>
+</div>
+
+
+
+<script src="{% static 'adminnew/js/custome.js' %}"></script>
+<script src="{% static 'adminnew/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'adminnew/js/metisMenu.min.js' %}"></script>
+<script src="{% static 'adminnew/js/jquery.slimscroll.js' %}"></script>
+<script src="{% static 'adminnew/js/moment.js' %}"></script>
+<script src="{% static 'adminnew/js/bootstrap-timepicker.js' %}"></script>
+<script src="{% static 'adminnew/js/bootstrap-datetimepicker.min.js' %}"></script>
+<!--<script src="js/moment.js"></script>-->
+
+<script src="{% static 'adminnew/js/jquery.core.js' %}"></script>
+<script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
+
+
+<script>
+$(window).scroll(function () {
+var scroll = $(window).scrollTop();
+if (scroll >= 0) {
+    $("html").addClass("modal-open2");
+}
+});
+</script>
+<script>
+$(document).ready(function() {
+// Check if body height is higher than window height :)
+if ($("body").height() > $(window).height()) {
+    // alert('asda')
+    $('html').addClass('modal-open2');
+}
+});
+</script>
+
+
+
+<script>
+let eleBtnStart = document.querySelector("#btnStart");
+let eleBtnStop = document.querySelector("#btnStop");
+let eleTimer = document.querySelector("#divTimer");
+
+let timeTicker = (() => {
+var hours = minutes = seconds = 0;
+var timerTick;
+return {
+    start : () => {
+        if(!timerTick) {
+            timerTick = setInterval(() => {
+                seconds++;
+                if(seconds == 60) {
+                    minutes += 1;
+                    seconds = 0;
+                    if(minutes == 60) {
+                        hours += 1;
+                        minutes = 0;
+                    }
+                }
+                eleTimer.innerHTML = `
+${hours.toString().length == 1 ? "0" + hours : hours}
+: ${minutes.toString().length == 1 ? "0" + minutes:minutes} Hrs`;
+            },25);
+        }
+    },
+    stop : () => {
+        if(timerTick) {
+            clearInterval(timerTick);
+            timerTick = false;
+        }
+    },
+    reset : () => {
+        seconds = minutes = hours = 0;
+        clearInterval(timerTick);
+        timerTick = false;
+        eleTimer.innerHTML = `0${hours}:0${minutes}  Hrs`;
+    }
+}
+})();
+eleBtnStart.addEventListener('click', () => {
+timeTicker.start();
+});
+eleBtnStop.addEventListener('click', () => {
+timeTicker.stop();
+});
+
+$('#btnStart').click(function (){
+$(this).closest('.timer').addClass('timer_actv')
+});
+$('#btnStop').click(function (){
+$(this).closest('.timer').removeClass('timer_actv')
+});
+
+$('.timerbtn_start').click(function (){
+$(this).addClass('disnone_timer')
+$(this).siblings('.timerbtn').addClass('timerbtn_stop');
+$(this).parent().siblings('.divTimer').addClass('divTimer_dsplay')
+
+});
+$('.timerbtn_stop').click(function (){
+$(this).removeClass('timerbtn_stop')
+$(this).siblings('.timerbtn').removeClass('disnone_timer');
+$(this).parent().siblings('.divTimer').removeClass('divTimer_dsplay')
+});
+
+
+</script>
+<script>
+$(document).ready(function () {
+$(window).click(function() {
+    var scroll = $(window).scrollTop();
+    if (scroll >= 0) {
+        $("#wrapper").addClass("modal-open2");
+    }
+});
+});
+</script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="{% static 'adminnew/js/jquery.min.js' %}"></script>
+
+<script src="{% static 'adminnew/js/jquery.core.js'  %}"></script>
+<script src="{% static 'adminnew/js/jquery.app.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+<script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
+
+
+<script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'adminnew/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+// Default Datatable
+$('#datatable').DataTable();
+$('#responsive-datatable').DataTable();
+
+$('#datetimepickereffcet-start').datetimepicker({
+    format: 'DD-MM-YYYY'
+});
+$('#datetimepickereffcet-end').datetimepicker({
+    format: 'DD-MM-YYYY',
+    useCurrent: false //Important! See issue #1075
+});
+$("#datetimepickereffcet-start").on("dp.change", function(e) {
+    $('#datetimepickereffcet-end').data("DateTimePicker").minDate(e.date);
+});
+$("#datetimepickereffcet-end").on("dp.change", function(e) {
+    $('#datetimepickereffcet-start').data("DateTimePicker").maxDate(e.date);
+});
+
+$('#datetimepicker-role-start').datetimepicker({
+    format: 'DD-MM-YYYY'
+});
+$('#datetimepicker-role-end').datetimepicker({
+    format: 'DD-MM-YYYY',
+    useCurrent: false //Important! See issue #1075
+});
+$("#datetimepicker-role-start").on("dp.change", function(e) {
+    $('#datetimepicker-role-end').data("DateTimePicker").minDate(e.date);
+});
+$("#datetimepicker-role-end").on("dp.change", function(e) {
+    $('#datetimepicker-role-start').data("DateTimePicker").maxDate(e.date);
+});
+
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    count = 0
+$(".appnd_user_btn").click(function() {
+    count = count+1
+
+
+    $(".apenduser").append(` <tr>
+                                <td class="th_btnpand">
+                                    <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                                </td>
+                                <td class="th_user_role">
+                                   <input type="date" class="form-control" name="date">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <input type="text" class="form-control">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <input id="abcv`+count+`" data-count=`+count+`  name="role_description[]" class="form-control">
+                                </td>
+                                <td class="th_user_decrptn">
+                                    <select class="form-control">
+                                        <option>Demo 1</option>
+                                        <option>Demo 2</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="file" id="filesnew`+count+`" data-count=`+count+`  name="files[]" multiple="multiple">
+                                </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                               <td>
+                                <input type="text" class="form-control">
+                               </td>
+                            </tr>`);
+
+
+    $("#attachment_image_value").val(count)
+
+
+    $(".appnd_user_minus_btn").click(function() {
+        $(this).parent().parent().remove();
+    });
+    $("#abcv"+count).change(function(e){   
+        
+        alert($(this).attr("data-count"))
+        var value = $( this ).val();
+        alert(value)
+});
+
+document.getElementById('filesnew'+count).addEventListener('change', handleFileSelect, false);
+
+});
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+var message = `{{message}}`
+
+
+
+if(message == "added"){
+
+    Swal.fire({
+  icon: 'success',
+  title: 'add...',
+  text: 'create new user data successfully',
+ 
+})
+}
+
+else if(message == "already_exists"){
+    Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'User  already exists!',
+ 
+})
+}
+
+</script>
+
+
+
+
+{% if messages %}
+   <script>
+    {% for message in messages %}
+        message1 = "{{message}}"
+    
+       
+        if(message1 == "error"){
+
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: "{{ message }}",
+ 
+})
+
+
+
+        }
+        else{
+
+Swal.fire(
+      '',
+      '{{ message }}',
+      '{{message.tags}}'
+    )
+
+
+      
+        }
+    {% endfor %}
+   </script>
+{% endif %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+   
+
+    document.getElementById('filesnew').addEventListener('change', handleFileSelect, false);
+
+    function handleFileSelect(evt) {
+
+        count_data = $(this).attr("data-count")
+
+       
+
+var files = evt.target.files; // FileList object
+alert("jhhh")
+upload(files,count_data);
+}
+
+function upload(files,count_data) {
+  var formData = new FormData(); // we initialise a new form that will be send to php
+  for (var i = 0; i < files.length; i++) {  // if we have more that one file
+      if (files.length > 10) {
+          alert("file exceeds limit");
+      }
+      else {
+          
+          previewImg(files[i],count_data); // function to preview images
+      }
+     
+      formData.append('file' + i, files[i]);
+  }
+  
+
+}
+
+function previewImg(file,count_data) {
+
+ alert(count_data)
+
+var reader = new FileReader();
+reader.onload = (function (theFile) {
+    return function (e) {
+        // Render thumbnail.
+        alert(e.target.result)
+        
+        var div = document.createElement('div');
+        div.innerHTML = ['<input type="hidden" name="mainimage" value="' + file.name + '"/><img  class="thumb" src="', e.target.result,
+              '" title="', escape(theFile.name), '"/><input type="hidden" class="caption" name="values_list'+count_data+'[]"" value="', e.target.result,'" placeholder="Image Caption Here"/><br/> />'].join('');
+          document.getElementById('displayimage').insertBefore(div, null);
+    };
+})(file);
+reader.readAsDataURL(file);
+}
+</script>
+
+{% endblock %}

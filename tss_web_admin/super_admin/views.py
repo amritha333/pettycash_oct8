@@ -4964,3 +4964,22 @@ def update_active_company_action(request):
              messages.warning(request,str("The selected company and branch are incompatible in the equal to operator"))
              return redirect(request.META['HTTP_REFERER'])
 
+
+
+
+
+def test_petty_cash(request):
+    if request.method == "POST":
+        attachment_image_value = request.POST.get("attachment_image_value")
+        print("count:::",str(attachment_image_value))
+        for i in range(0,int(attachment_image_value)):
+
+            data_value = request.POST.getlist("values_list"+str(i)+"[]")
+            print("------------start_path-------------------  ")
+            print(data_value)         
+            
+            print("----------endpath---------------")
+        
+        pass
+    else:
+        return render(request,'super_admin/test_petty_cash.html')
