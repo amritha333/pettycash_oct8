@@ -123,6 +123,9 @@ urlpatterns = [
     path('odoo_leave_reassign_api',views.odoo_leave_reassign_api.as_view(),name='odoo_leave_reassign_api'),
     path('user_switch_company_and_branch',views.user_switch_company_and_branch,name='user_switch_company_and_branch'),
     path('update_active_company_action',views.update_active_company_action,name='update_active_company_action'),
+
+    path('odoo_update_petty_cash_status_api',views.odoo_update_petty_cash_status_api.as_view(),name='odoo_update_petty_cash_status_api'),
+    
     
     
     

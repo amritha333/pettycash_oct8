@@ -5067,3 +5067,16 @@ class user_company_update_api(APIView):
             'message': "success"
         }
         return JsonResponse(data_json, safe=False)
+
+
+class odoo_update_petty_cash_status_api(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request, format=None):
+        data = request.data
+        print("data::",str(data))
+        mapping_id = data['petty_cash_id']
+        state = data['state']
+        data_update = odoo_notification.objects.filter(mapping_id=mapping_id,notification_type="petty_cash_type").update(status=state)
+        return JsonResponse({"message":"success"})
+
+    
