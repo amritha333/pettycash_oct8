@@ -163,6 +163,7 @@ class odoo_api_request_token(models.Model):
 notification_type_data = (
     ("leave_type","leave_type"),
     ("leave_approve_request","leave_approve_request"),
+    ("petty_cash_type","petty_cash_type")
    
 
 )
@@ -189,6 +190,10 @@ class odoo_notification(models.Model):
     description = models.TextField(null=True)
     current_leave_status = models.CharField(max_length=255,null=True)
     category = models.CharField(max_length=255,null=True,choices=notification_category_data)
+    petty_cash_apply_username = models.CharField(max_length=255,null=True)
+    total_amount_with_currency = models.CharField(max_length=255,null=True)
+    
+
 
 
 

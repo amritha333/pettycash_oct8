@@ -1684,10 +1684,12 @@ def view_user_more_details(request):
     data = User_Management.objects.get(id=id)
 
     user_role_details = user_role_mapping.objects.filter(user_id_id=id)
+    data_company = User_company_details.objects.filter(user_id_id=id)
 
     context = {
         'data':data,
-        'user_role_details':user_role_details
+        'user_role_details':user_role_details,
+        'data_company':data_company
     }
     return render(request,'super_admin/view_user_more_details.html',context)
 
@@ -4972,14 +4974,96 @@ def test_petty_cash(request):
     if request.method == "POST":
         attachment_image_value = request.POST.get("attachment_image_value")
         print("count:::",str(attachment_image_value))
-        for i in range(0,int(attachment_image_value)):
+        for i in range(0,int(attachment_image_value)+1):
 
             data_value = request.POST.getlist("values_list"+str(i)+"[]")
             print("------------start_path-------------------  ")
             print(data_value)         
+            print("----dddd")
             
             print("----------endpath---------------")
         
         pass
     else:
         return render(request,'super_admin/test_petty_cash.html')
+
+    
+
+
+from django.contrib.auth.forms import UserCreationForm
+
+from .form import createUserForm
+from django.contrib import messages
+def user_creation_form(request):
+
+    if request.method == "POST":
+        print("-------post")
+        form = createUserForm(request.POST)
+        print("-------form post")
+        if form.is_valid():
+            print("-----valid form")
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request,'Account was created for '+user)
+            return
+        else:
+            print("not valid form")
+        context = {
+            'form':form
+        }
+        return render(request,'super_admin/user_creation_form.html',context)    
+        pass
+    form = createUserForm
+    context = {
+        'form':form
+    }
+    return render(request,'super_admin/user_creation_form.html',context)
+
+
+
+
+class user_company_update_api(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request, format=None):
+        data = request.data
+        existing_employee_id = data["existing_employee_id"]
+        employee_id = data["employee_id"]
+        company_id = data["company_id"]
+        company_name = data["company_name"]
+        branch_id = data["branches"][0]['id']
+        branch_name = data["branches"][0]['name']
+        deleted = data["deleted"]
+
+        try:
+            existing_user = User_company_details.objects.get(odoo_id=int(existing_employee_id))
+            existing_auth_user = existing_user.auth_user_id
+
+            if (User_company_details.objects.filter(auth_user_id=existing_auth_user,company_id=company_id).exists()):
+                company_data_existance = User_company_details.objects.filter(auth_user_id=existing_auth_user,company_id=company_id)
+                company_data = company_data_existance[0]
+                if(User_company_based_branch_details.objects.filter(company_id=company_data,branch_id=branch_id).exists()):
+                    pass
+                else:
+                    branch_data = User_company_based_branch_details(company_id=company_data, branch_name=branch_name,
+                                                                    branch_id=branch_id)
+                    branch_data.save()
+            else:
+
+                company_data = User_company_details.objects.create(auth_user_id=existing_auth_user, user_id_id=existing_user.user_id.id,
+                                                                   company_name=company_name, company_id=company_id,
+                                                                   odoo_id=employee_id,status=deleted)
+                
+                branch_data = User_company_based_branch_details(company_id_id=company_data.id, branch_name=branch_name,
+                                                                               branch_id=branch_id)
+                branch_data.save()
+        except:
+            if(deleted == True):
+                data_delete = User_company_details.objects.filter(odoo_id=employee_id,company_id=company_id)
+                data_delete_object = data_delete[0]
+                data_delete_object.delete()
+            else:
+                pass
+        data_json = {
+            'message': "success"
+        }
+        return JsonResponse(data_json, safe=False)

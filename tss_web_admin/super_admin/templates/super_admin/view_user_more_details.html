@@ -252,6 +252,58 @@
                                 </div>
                             </div>
                           
+                            <h4 data-toggle="collapse" href="#work" class="sub_hdng_edit"><i class="fa fa-chevron-down"></i>Company & Branch </h4>
+                            <div id="work" class="panel-collapse collapse show ">
+                                <div class="m-t-30 m-b-15 col-12">
+                                    <table id="educationdatatable"
+                                    class="table table-bordered dt-responsive nowrap table-hover"
+                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                 <thead>
+                                 <tr>
+
+                                     <th>Company Name</th>
+                                     <th>Branch</th>
+                                    
+                                    
+                                  
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                {% for company in data_company %}
+
+                                <tr>
+                                    <td style="color: red;    font-weight: bold;">
+                                        {{company.company_name}}
+                                    </td>
+                                    <td>
+                                        {% for j in company.User_company_details_company_id.all %}
+                                        <span  style="background: #02c0ce;
+                                        padding: 1px 11px;
+                                        color: white;
+                                        border-radius: 3px;">{{j.branch_name}}</span><br><br>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                 
+                                 {% endfor %}
+                              
+                              
+                           
+                               
+
+                         
+                            
+                               
+                          
+                         
+                         
+                    
+                                 </tbody>
+                             </table>
+                                </div>
+                            </div>
+
+                           
                    
                             <!--*****************************************************-->
                

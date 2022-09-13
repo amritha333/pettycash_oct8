@@ -178,6 +178,8 @@ urlpatterns = [
     path('test_post_api',views.test_post_api,name='test_post_api'),
 
     path('test_petty_cash',views.test_petty_cash,name='test_petty_cash'),
+    path('user_creation_form',views.user_creation_form,name='user_creation_form'),
+    
     
     
     
