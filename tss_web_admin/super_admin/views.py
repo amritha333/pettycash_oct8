@@ -2281,55 +2281,115 @@ async def new_jobno_api(request,list_data,odoo_token):
     pass
 
 
-async def petty_cash_details_api_request(request,employee_id,odoo_token):
-    url = api_domain+""
-    payload = json.dumps({ "jsonrpc": "2.0","params": { "employee_ids": employee_id}})
+async def petty_cash_details_api_request(request,company_id,odoo_id,odoo_token):
+    url = api_domain+"api/get_petty_cash_form_data"
+    payload = json.dumps({ "jsonrpc": "2.0","params": {"company_id":company_id,"employee_id":odoo_id}})
     headers ={'api_key': odoo_token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, data=payload) as res:
             response1 = await res.json()
-            response_result = response1['result']
+            response_result = response1['result']['result']
             return response_result
+
+
+async def pettycash_getchilds_api(request,odoo_id,token):
+
+    token_url =  api_domain+"api/get_childs"
+
+    payload = json.dumps({ "jsonrpc": "2.0","params": { "employee_id" : int(odoo_id), "exclud_parent": "false"}})
+
+
+
+    headers ={'api_key': token,'Content-Type': 'application/json','Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'}
+
+    async with aiohttp.ClientSession() as session:
+
+        async with session.get(token_url, headers=headers, data=payload) as res:
+
+            response1 = await res.json()
+
+            response12 =response1['result']
+
+            # print("response1ooo::::",str(response12))
+
+            return response12
+
+    pass
+
 
 
 
 @test_w1('Petty Cash')
 def petty_cash_management(request):
     employee_id = ''
+    emp_name = ''
     try:
         odoo_data = User_Management.objects.get(auth_user=request.user)
-        employee_id = odoo_data.odoo_id
+        company_id = odoo_data.employee_company_id
+        odoo_id = odoo_data.odoo_id
+        emp_name = odoo_data.employee_name
+     
     except:
         pass
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
+
     new_api_integration = ''
     try:
-        new_api_integration =  asyncio.run(petty_cash_details_api_request(request,employee_id,odoo_token_data.token))
+        new_api_integration =  asyncio.run(petty_cash_details_api_request(request,company_id,odoo_id,odoo_token_data.token))
     except:
         pass
     select_supplier_api = ''
-    select_job_no = ''
     view_petty_cash_details =''
     existing_amount = ''
+    select_tax = ''
+    select_product = ''
+    amount_balance = ''
+    currencyid = ''
+    currency_value = ''
+    manager_id = ''
+    petty_cash_history = ''
     try:
-        select_supplier_api = new_api_integration['select_supplier_api']
-        select_job_no= new_api_integration['select_job_no']
-        view_petty_cash_details = new_api_integration['view_petty_cash_details']
-        existing_amount = new_api_integration['existing_amount']
+        select_supplier_api = new_api_integration['suppliers']
+        select_product= new_api_integration['product_list']
+        select_tax= new_api_integration['tax_list']
+        amount_balance = new_api_integration['amount_balance']
+        manager = new_api_integration['manager']
+        manager_id = manager[0] if manager != False else False
+        currency_id = new_api_integration['currency_id']
+        currencyid = currency_id[0]
+        currency_value = currency_id[1]
+        petty_cash_history = new_api_integration['petty_cash_history']
+        
+
+
     except:
         pass
-    
-    
-
-
-
-
-
+    new_api_integration2 =  asyncio.run(pettycash_getchilds_api(request,odoo_id,odoo_token_data.token))
+    child_response = ""
+    child_response_name = ""
+    try:
+        child_response = new_api_integration2['result']
+        child_response_name = child_response[0]['name']
+       
+    except:
+        pass
+   
     context = {
         'select_supplier_api':select_supplier_api,
-        'select_job_no':select_job_no
+        'select_product':select_product,
+        'select_tax':select_tax,
+        'child_response':child_response,
+        'emp_name':emp_name,
+        'company_id':company_id,
+        'amount_balance':amount_balance,
+        'currencyid':currencyid,
+        'currency_value' : currency_value,
+        'manager_id':manager_id,
+        'child_response_name':child_response_name,
+        'petty_cash_history':petty_cash_history
     }
     return render(request,'super_admin/petty_cash_management.html',context)
+
 
 
 
@@ -2791,6 +2851,7 @@ def test_r2(request):
 
 @login_required(login_url='/index')
 def view_leave_more_details(request):
+    list_id = []
     id = request.GET.get("id",False)
     leave_more_details_url = api_domain+"api/get_leave_details"
     payload = json.dumps({
@@ -2838,16 +2899,19 @@ def view_leave_more_details(request):
         employee_data_url =api_domain+"api/get_employees"
         user_data = User_company_details.objects.all()
         list_data = list(user_data.values_list('odoo_id',flat=True))
-        print("listaaaa_data:::",str(list_data))
 
         user_data1 = User_Management.objects.get(auth_user=request.user)
-        print("user_data1:::",str(user_data1.employee_company_id))
+        list_data.remove(int(user_data1.odoo_id))
+        list_data.remove(r1['employee_id'][0])
+        list_id.append(int(user_data1.odoo_id))
+        list_id.append(r1['employee_id'][0])
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
                  "reassign" : "True",
-            "employee_ids": list_data,
-            'company_id':user_data1.employee_company_id
+                 "employee_ids": list_data,
+                 'company_id':user_data1.employee_company_id,
+                 "related_employee_ids":list_id
             }
         })
         headers = {
@@ -2874,6 +2938,8 @@ def view_leave_more_details(request):
         'name':name
     }
     return render(request,'super_admin/view_leave_more_details.html',context)
+
+
 
 
 def get_selected_employee_entitlement_balance(request):
@@ -4794,6 +4860,66 @@ def notification_card_view(request):
     return render(request,'super_admin/notification_card_view.html',{'notifictaion':notifictaion})
 
 
+def petty_cash_draft_method(data,login_user_id):
+    print("login_user_id",login_user_id)
+    selected_employee_name = data.get("selected_employee_name",False)
+    total_amount_data = data.get("total_amount_data",False)
+    currency_data = data.get("currency_data",False)
+    currencyid = data.get("currencyid",False)
+    manager_id = data.get("manager_id",False)
+    if manager_id == "False":
+        manager_id = False
+    expense_name = data.get("expense_name",False)
+    employee_name = data.get("employee_name",False)
+    payment_type = data.get("payment_type",False)
+    supplier = data.get("supplier",False)
+    if supplier == "Select Supplier":
+        supplier_id = False
+    else:
+        supplier_split = supplier.split(',')
+        supplier_id = supplier_split[0]
+    expense_date = data.getlist("expense_date",False)
+    product = data.getlist("product[]",False)
+    description = data.getlist("description",False)
+    partner = data.getlist("partner",False)
+    reference = data.getlist("reference",False)
+    unit_price = data.getlist("unit_price",False)
+    quantity = data.getlist("quantity",False)
+    taxes = data.getlist("taxes[]",False)
+    total_currency = data.getlist("total_currency",False)
+    total = data.getlist("total",False)
+    data_user = User_Management.objects.get(auth_user=login_user_id)
+    data_save = petty_cash_draft_history.objects.create(
+        auth_user_id = login_user_id,
+        user_id_id = data_user.id,
+        employee_name = employee_name,
+        expense_name =  expense_name,
+        payment_type = payment_type,
+        supplier = supplier_id
+
+    )
+
+    expense_save = petty_cash_expense_draft_history.objects.create(
+        auth_user_id = login_user_id,
+        user_id_id = data_user.id,
+        petty_cash_id_id = data_save.id,
+        expense_date = expense_date,
+        product = product,
+        description = description,
+        partner = partner,
+        reference = reference,
+        unit_price = unit_price,
+        quantity = quantity,
+        tax = taxes,
+        total_currency = total_currency,
+        total = total
+
+    )
+    
+    return True
+    
+   
+
 
 
 
@@ -4802,47 +4928,129 @@ def notification_card_view(request):
 def pettycash_action(request):
 
     if request.method == "POST":
-        amount_requested = request.POST.get("amount_requested",False)
-        job_no = request.POST.get("job_no",False)
-        purpose = request.POST.get("purpose",False)
-        iban_no = request.POST.get("iban_no",False)
+        draft_button_status = request.POST.get("draft_button_status",False)
+        print("draft_button_status:::::",str(draft_button_status))
+        if draft_button_status == "true":
+            login_user_id = request.user
+            data = petty_cash_draft_method(request.POST,login_user_id)
+            print("data::::::",str(data))
+            if data == True:
+                return redirect("petty_cash_management")
+            
+            return
+        selected_employee_name = request.POST.get("selected_employee_name",False)
+        total_amount_data = request.POST.get("total_amount_data",False)
+        currency_data = request.POST.get("currency_data",False)
+        currencyid = request.POST.get("currencyid",False)
+        manager_id = request.POST.get("manager_id",False)
+        if manager_id == "False":
+            manager_id = False
+        expense_name = request.POST.get("expense_name",False)
+        employee_name = request.POST.get("employee_name",False)
         payment_type = request.POST.get("payment_type",False)
-        supplier_data = request.POST.get("supplier_data",False)
-        employee_attached_file = None
-        try:
-            employee_attached_file = request.FILES['employee_attached_file']
-        except:
-            pass
+        supplier = request.POST.get("supplier",False)
+        print("supplier:",supplier)
+        if supplier == "Select Supplier":
+            supplier_id = False
+        else:
+            supplier_split = supplier.split(',')
+            supplier_id = supplier_split[0]
+        expense_date = request.POST.getlist("expense_date",False)
+        product = request.POST.getlist("product[]",False)
+        description = request.POST.getlist("description",False)
+        partner = request.POST.getlist("partner",False)
+        reference = request.POST.getlist("reference",False)
+        unit_price = request.POST.getlist("unit_price",False)
+        quantity = request.POST.getlist("quantity",False)
+        taxes = request.POST.getlist("taxes[]",False)
+        total_currency = request.POST.getlist("total_currency",False)
+        total = request.POST.getlist("total",False)
+        expnse_list = []
+        expen_len = len(expense_date)
+        for i in range(0,expen_len):
+            tax_value_data = ''
+            if taxes[i] == "Select Tax":
+                tax_value_data = []
+            else:
+                tax_value = taxes[i].split("&")
+                tax_value_data = [int(tax_value[2])]
+            image_name = request.POST.getlist("image_name"+str(i)+"[]")
+            image_value = request.POST.getlist("base64_image"+str(i)+"[]")
+            # image_value = image_value1.split(',')[1]
+            image_name_new = ''
+            image_value_new = ''
+            if image_name == []:
+                attachment_data = []
+            else:
+                remove_image_name = str(image_name)
+                image_name_new = str(remove_image_name[1:-1])
+                remove_image_value = str(image_value)
+                image_value_new = str(remove_image_value[1:-1])
+                attachment_data = [{"attachment_name": image_name_new, "data": image_value_new}]          
+            product_id = product[i]
+           
+            product_list = product_id.split("&")
+            expnse_list.append(
+                {
+                    "date":expense_date[i],
+                    "product_id": product_list[0],
+                    "name":description[i],
+                    "reference": reference[i],
+                    "vz_partner_id": supplier_id,
+                    "unit_amount": unit_price[i],
+                    "currency_id": currencyid,
+                    "tax_list": tax_value_data,
+                    "quantity" : quantity[i],
+                    "attachments":attachment_data
+                }
+            )
         user_data = User_Management.objects.get(auth_user=request.user)
-        print("user_data.id::::;;",user_data.id)
         odoo_id = user_data.odoo_id
-        pettycash_url = api_domain+"api/post_pettycash"
+        company_id = user_data.company_name
+        pettycash_url = api_domain+"api/save_petty_cash"
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
-                "odoo_id": odoo_id,
-                "amount_requested": amount_requested,
-                "job_no": job_no,
-                "purpose": purpose,
-                "iban_no": iban_no,
+                "name":expense_name,
+                "employee_id":expense_name,
+                "user_id": manager_id,
+                "expense_lines": expnse_list
             }
         })
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
-
         headers = {
         'api_key': odoo_token_data.token,
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
-        print("responsee///////")
-        response1 = requests.request("POST", pettycash_url, headers=headers, data=payload)
-        response2 = response1.json()['result']
-        print("respose2:::::;;",response2)
+        print("-----------------resssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+        response_pcash1 = requests.request("POST", pettycash_url, headers=headers, data=payload).json()
+
+        print("---------------nnnnnnnnnnnnnnnnresult---------")
+        response2 = response_pcash1['result']
         l1 = response2['result']
-
-        return JsonResponse(data,safe=False)
-        return redirect("petty_cash_management")
-
+        # print("list:::::::",str(response2['message']))
+        if response2['message'] == "success":
+            petty_cash_mapping_id1 = response2['result']
+            petty_cash_mapping_id = petty_cash_mapping_id1['petty_id']
+            total_amount_with_currency = str(total_amount_data) + str(currency_data)
+            save_notification = odoo_notification(
+                notification_type = "petty_cash_type",
+                message ="Petty cash Request",
+                mapping_id = petty_cash_mapping_id,
+                read_status = 0,
+                status = "pending",
+                auth_user_id = request.user,
+                petty_cash_apply_username = selected_employee_name,
+                total_amount_with_currency = total_amount_with_currency,
+                category = "notification"
+            )
+            save_notification.save()
+            messages.success(request,"success")
+            return redirect("petty_cash_management")
+        else:
+            messages.warning(request,"api error ")
+            return redirect("petty_cash_management")
 
 
 
@@ -5024,6 +5232,7 @@ def user_creation_form(request):
 
 class user_company_update_api(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request, format=None):
         data = request.data
         existing_employee_id = data["existing_employee_id"]
@@ -5033,32 +5242,32 @@ class user_company_update_api(APIView):
         branch_id = data["branches"][0]['id']
         branch_name = data["branches"][0]['name']
         deleted = data["deleted"]
-
         try:
             existing_user = User_company_details.objects.get(odoo_id=int(existing_employee_id))
             existing_auth_user = existing_user.auth_user_id
-
-            if (User_company_details.objects.filter(auth_user_id=existing_auth_user,company_id=company_id).exists()):
-                company_data_existance = User_company_details.objects.filter(auth_user_id=existing_auth_user,company_id=company_id)
+            if (User_company_details.objects.filter(auth_user_id=existing_auth_user, company_id=company_id).exists()):
+                company_data_existance = User_company_details.objects.filter(auth_user_id=existing_auth_user,
+                                                                             company_id=company_id)
                 company_data = company_data_existance[0]
-                if(User_company_based_branch_details.objects.filter(company_id=company_data,branch_id=branch_id).exists()):
+                if (User_company_based_branch_details.objects.filter(company_id=company_data,
+                                                                     branch_id=branch_id).exists()):
                     pass
                 else:
                     branch_data = User_company_based_branch_details(company_id=company_data, branch_name=branch_name,
                                                                     branch_id=branch_id)
                     branch_data.save()
             else:
-
-                company_data = User_company_details.objects.create(auth_user_id=existing_auth_user, user_id_id=existing_user.user_id.id,
+                company_data = User_company_details.objects.create(auth_user_id=existing_auth_user,
+                                                                   user_id_id=existing_user.user_id.id,
                                                                    company_name=company_name, company_id=company_id,
-                                                                   odoo_id=employee_id,status=deleted)
-                
+                                                                   odoo_id=employee_id, status=deleted)
+
                 branch_data = User_company_based_branch_details(company_id_id=company_data.id, branch_name=branch_name,
-                                                                               branch_id=branch_id)
+                                                                branch_id=branch_id)
                 branch_data.save()
         except:
-            if(deleted == True):
-                data_delete = User_company_details.objects.filter(odoo_id=employee_id,company_id=company_id)
+            if (deleted == True):
+                data_delete = User_company_details.objects.filter(odoo_id=employee_id, company_id=company_id)
                 data_delete_object = data_delete[0]
                 data_delete_object.delete()
             else:
@@ -5076,7 +5285,72 @@ class odoo_update_petty_cash_status_api(APIView):
         print("data::",str(data))
         mapping_id = data['petty_cash_id']
         state = data['state']
-        data_update = odoo_notification.objects.filter(mapping_id=mapping_id,notification_type="petty_cash_type").update(status=state)
+        data_update = odoo_notification.objects.filter(mapping_id=mapping_id,notification_type="petty_cash_type").update(status=state,read_status=0)
         return JsonResponse({"message":"success"})
 
-    
+
+
+def get_selected_employee_details(request):
+    odoo_id = request.GET.get("odoo_id",False)
+    company_id = request.GET.get("company_id",False)
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    new_api_integration = ''
+    try:
+        new_api_integration =  asyncio.run(petty_cash_details_api_request(request,company_id,odoo_id,odoo_token_data.token))
+    except:
+        pass
+    amount_balance = ''
+    try:
+        amount_balance = new_api_integration['amount_balance']
+        print("amount_balance:::::;",amount_balance)
+    except:
+        pass
+    data = []
+    data = {
+        'amount_balance':amount_balance
+    }
+    return JsonResponse(data,safe=False)
+
+
+def view_petty_cash_more_details(request):
+    id = request.GET.get("id",False)
+    petty_cash_more_details_url = api_domain+"api/get_petty_cash_form_data"
+    payload = json.dumps({
+        "jsonrpc": "2.0",
+        "params": {
+            "petty_cash_id":id
+        }
+    }) 
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    headers = {
+        'api_key': odoo_token_data.token,
+        'Content-Type': 'application/json',
+        'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
+    }
+    response_more_details = requests.request("GET", petty_cash_more_details_url, headers=headers, data=payload).json()
+    response2 = response_more_details['result']['result']
+    employee_name = ''
+    expense_name = ''
+    state = ''
+    expense_lines = ''
+    employee_name = response2[0]['employee_id']
+    expense_name = response2[0]['name']
+    state = response2[0]['state']
+    supplier = response2[0]['supplier']
+    payment_type = response2[0]['payment_type']
+    expense_lines = response2[0]['expense_lines']
+    total_in_currency = response2[0]['total_in_currency']
+
+
+    context = {
+        "employee_name": employee_name,
+        "expense_name": expense_name,
+        "state":state,
+        "expense_lines":expense_lines,
+        "total_in_currency":total_in_currency,
+        "supplier":supplier,
+        "payment_type":payment_type
+
+
+    }
+    return render(request,'super_admin/view_petty_cash_more_details.html',context)

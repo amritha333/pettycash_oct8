@@ -314,3 +314,63 @@ class User_company_based_branch_details(models.Model):
     dt = models.DateField(auto_now_add=True)
     tm = models.TimeField(auto_now_add=True)
     status = models.CharField(null=True,max_length=255)
+
+
+
+payment_type = (
+    ("Expense","Expense"),
+    ("Supplier","Supplier"),
+)
+
+
+class common(models.Model):  # COMM0N
+    dt = models.DateField(auto_now=True)
+    tm = models.TimeField(auto_now=True)
+    updated = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=255, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class petty_cash_draft_history(common):
+    auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="User_petty_cash_draft_history_user_login",
+                                     null=True)
+    user_id = models.ForeignKey(User_Management, on_delete=models.CASCADE,
+                                related_name="User_petty_cash_draft_history_user_id", null=True)
+    employee_name = models.CharField(max_length=255, null=True)
+    expense_name = models.CharField(max_length=255, null=True)
+    payment_type = models.CharField(max_length=255, choices=payment_type, null=True)
+    supplier = models.CharField(max_length=255, null=True)
+    employee_id = models.IntegerField(null=True)
+    supplier_id = models.IntegerField(null=True)
+    total_amount = models.FloatField(null=True)
+    job_number = models.CharField(max_length=255,null=True)
+
+
+
+
+class petty_cash_expense_draft_history(common):
+    auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="User_expense_patty_cash_draft_history_user_id",
+                                     null=True)
+    user_id = models.ForeignKey(User_Management, on_delete=models.CASCADE, related_name="User_expense_patty_cash_draft_history_id",
+                                null=True)
+    petty_cash_id = models.ForeignKey(petty_cash_draft_history,related_name="User_expense_patty_cash_draft_history_petty_cash_id",on_delete=models.CASCADE,null=True)
+    expense_date = models.CharField(max_length=255,null=True)
+    product = models.CharField(max_length=255,null=True)
+    description = models.CharField(max_length=255,null=True)
+    partner = models.CharField(max_length=255,null=True)
+    reference= models.CharField(max_length=255,null=True)
+    unit_price = models.CharField(max_length=255,null=True)
+    quantity = models.CharField(max_length=255, null=True)
+    tax = models.CharField(max_length=255,null=True)
+    total_currency = models.CharField(max_length=255,null=True)
+    total = models.CharField(max_length=255,null=True)
+    product_id = models.CharField(max_length=255, null=True)
+    tax_id = models.CharField(max_length=255, null=True)
+
+
+class petty_cash_attachments(common):
+    expense_petty_cash_id = models.ForeignKey(petty_cash_expense_draft_history, on_delete=models.CASCADE,related_name="petty_cash_attachments")
+    image_name = models.CharField(max_length=255, null=True)
+    image_value = models.TextField(null=True)

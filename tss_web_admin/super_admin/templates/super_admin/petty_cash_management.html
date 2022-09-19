@@ -8,6 +8,50 @@
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/responsive.dataTables.min.css' %}">
 
 
+<style>
+#files::-webkit-file-upload-button {
+visibility: hidden;
+user-select: none;
+}
+.file-input1{
+    display: none;
+    user-select: none;
+}
+#files{
+    display: none;
+}
+
+.modal-dialog{
+        overflow-y: initial !important
+    }
+    .modal-body{
+        height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .select2-search--dropdown {
+    display: block;
+    margin-top: -26px !important;
+    padding-left: 0;
+    }
+
+    .th_product .clearbtnn::after {
+    content: "\f0dd";
+    font-family: fontawesome;
+    font-size: 13px;
+    position: absolute;
+    top: -2px;
+    }
+
+    .th_taxes .clearbtnn::after {
+    content: "\f0dd";
+    font-family: fontawesome;
+    font-size: 13px;
+    position: absolute;
+    top: -2px;
+    }
+                    
+</style>
 
 <div class="content ">
     <div class="container-fluid">
@@ -46,99 +90,48 @@
 
                                 <thead>
                                 <tr>
-                                    <th>Amount Requested</th>
-                                    <th>IBAN NO</th>
-                                    <th>Job No</th>
-                                    <th>Purpose</th>
+                                    <th>Employee name</th>
+                                    <th>Expense name</th>
+                                    <th>Payment Type</th>
+                                    <th>Total in currency</th>
+                                    <th>Total</th>
                                     <th>Status</th>
                                     <th>Created At</th>
+                                    <th>Action</th>
                                     
                                 </tr>
                                 </thead>
-
                                 <tbody>
+                                    {% for p_cash in petty_cash_history %}
                                 <tr>
-                                    <td><a class="label-default" href="#/">5000</a></td>
+                                    <td>{{p_cash.employee_id}}</td>
                                    <td>
-                                   9768589
+                                    {{p_cash.name}}
                                    </td>
                                    <td>
-                                    J-5678
+                                    {{p_cash.payment_type}}
                                    </td>
                                    <td>
-                                    Petrol cash
-                                   </td>
-                                   <td><span class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</span></td>
-                                   <td>
-                                    17/08/2022
-                                   </td>
-                                </tr>
-
-                                <tr>
-                                    <td><a class="label-default" href="#/">3000</a></td>
-                                   <td>
-                                   9768589
-                                   </td>
-                                   <td>
-                                    J-5689
-                                   </td>
-                                   <td>
-                                    Hospital
-                                   </td>
-                                   <td><span class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Pending</span></td>
-                                   <td>
-                                    22/08/2022
-                                   </td>
-                                </tr>
-
-                                <tr>
-                                    <td><a class="label-default" href="#/">8000</a></td>
-                                   <td>
-                                   9768589
-                                   </td>
-                                   <td>
-                                    J-5645
-                                   </td>
-                                   <td>
-                                   Food
-                                   </td>
-                                   <td><span class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Pending</span></td>
-                                   <td>
-                                    19/08/2022
-                                   </td>
-                                </tr>
-                                </tbody>
-
-
-
-
-                                <!-- <tbody>
-                                    {% for history in leave_history_response %}
-                                <tr>
-                                    <td><a class="label-default" href="#/">{{history.holiday_status_id.1}}</a></td>
-                                   <td>
-                                    {{history.date_from}}
-                                   </td>
-                                   <td>
-                                    {{history.date_to}}
-                                   </td>
-                                   <td>
-                                    {{history.number_of_days}}
+                                    {{p_cash.total_in_currency}}
                                    </td>
                                    <td>
                                    
-                                    {{history.name}}
+                                    {{p_cash.total_amount}}
                                    </td>
                                    <td>
-                                    {{history.create_date}}
+                                    {{p_cash.state}}
                                    </td>
-
+                                   <td>
+                                    {{p_cash.create_date}}
+                                   </td>
+                                   <td>
+                                    <a href="view_petty_cash_more_details?id={{p_cash.id}}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                   </td>
                                 </tr>
                                 {% endfor %}
-                           
-                       
-
-                                </tbody> -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -158,36 +151,78 @@
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Petty Cash Application Form 
-            <br>    <span style="color: #f5f5f5;
-                    font-size: 16px;
-                    font-weight: bold;
-                    ">Existsting Amount : 2500</span>
-
+        <h4 class="modal-title">
+              <span style="color: #f5f5f5;font-size: 16px;  font-weight: bold;"> Petty Cash Application Form</span>
+                   <br> <span  style="font-size: 13px;">Existsting Amount :</span>     
+                    <input id="amount_balance1" type="text" value="{{amount_balance}}" class="form_control" style="color: #ffffff;
+                    width: 100px;
+                    background: #ff000000;
+                    border: none;
+                    font-weight: bold;" readonly >
         </h4>
+      
         <div class="pull-right"> <a class="btn enlarge_modal" data-toggle="tooltip" data-original-title="Fullscreen"><i
                         class="mdi mdi-crop-free" aria-hidden="true"></i> </a>
             <a class="btn dslarge_modal" data-toggle="tooltip" data-original-title="Back"><i
                         class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
         </div>
     </div>
-    <form action="pettycash_action" method="POST"  enctype="multipart/form-data">
+    <form class="petty_cash_form_submit" action="pettycash_action" method="POST" name="form_name" enctype="multipart/form-data">
         
         {% csrf_token %}
-    <div class="modal-body">
+    <div class="modal-body" style="padding: 15px 0px 0px;">
        
 
-            <div class="col-md-12">
-                <div class="row m-t-15">
+            <div class="col-md-12 px-3">
+                <div class="row">
                     <div class="col-md-6 colp_r_15">
                         <div class="row">
+                            <input type="hidden" value="{{company_id}}" id="company_id">
+                            <input type="hidden" name="currencyid" value="{{currencyid}}" id="currencyid">
+                            <input type="hidden" name="currency_value" value="{{currency_value}}" id="currency_value">
+                            <input type="hidden" name="manager_id" value="{{manager_id}}" id="manager_id">
 
-                            <div class="col-md-6 colp_r_15 mt-4">
-                                <div class="user_daterangpickrbox expirationbox">
+                            <div class="col-md-12 colp_r_15 mt-4">
+                            <input type="hidden" id="selected_employee_name" value="{{child_response_name}}" name="selected_employee_name">
+                                    
+                                    <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Employee name</label> 
+                                        <select name="employee_name" onchange="employee_function(this)" class="form-control select2" id="emp_name_action2">
+                                       
+                                            {% for i in child_response %}
+                                            <option value="{{i.id}}" data-name="{{i.name}}">{{i.name}}</option>
+    
+                                            {% endfor %}
+                                        </select>
+                                    </div> 
+                            </div>
+
+                                    <!-- <select name="employee_name" class="form-control select2 select2-hidden-accessible" id="emp_name_action">
+                                        {% for i in child_response %}
+                                        <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
+
+                                        {% endfor %}
+                                    </select>
+                                    <input required autocomplete="off" value="{{request.user}}" name="employee_name" type="text" id="" class="input form-control">
+                                    <label class="inputText">Employee name</label> -->
+                                
+
+                            <div class="col-md-12 colp_r_15">
+                                <div class="form-group bmd-form-group required_item">
+                                    <input required autocomplete="off" name="expense_name" type="text" id="" class="input form-control">
+                                    <label class="inputText">Expense Name</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 colp_r_15">
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <div class="user_daterangpickrbox">
                                     <div class="">
                                         <h3 class="big_title2">Payment Type</h3>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group mb-0">
                                         <div class="radio">
                                             <input name="payment_type" value="Expense" type="radio" id="expense_id" checked="">
                                             <label for="expense_id" id="expense">Expense</label> <span>
@@ -201,95 +236,182 @@
                                     </div>
                                 </div>
                             </div>
-
-
-                            <div class="col-md-6 colp_r_15 mt-4" id="select_supplier" style="display: none">
-                                <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Supplier</label> 
+                            <div class="col-md-8 mt-4" id="select_supplier" style="display:none">
+                                <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label> 
                                         
-                                    <select name="supplier_data" class="form-control select2 select2-hidden-accessible" id="" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                    <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="">Select Supplier</option>
 
-                                    {% for employee in select_supplier_api %}
-                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
+                                    {% for supplier in select_supplier_api %}
+                                    <option  value="{{supplier.id}},{{supplier.name}}">{{supplier.name}}</option>
                                     {% endfor %}
                                 </select> </div> 
                             </div>
-
-                            <div id="add_file1" style="width:500px;">
-                                    <div class="col-md-8 pad5 mt-4">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 resumeFileField">
-                                            <div class="form-group">
-                                                <div class="file-upload">
-        
-                                                    <div class="image-upload-wrap">
-                                                        <input class="file-upload-input" id="f123" name="employee_attached_file" type='file' onchange="readURL(this);" accept="image/*,application/pdf" />
-                                                        <div class="drag-text">
-                                                            <h3>Drag and drop a file or select File</h3>
-                                                        </div>
-                                                    </div>
-                                                    <div class="file-upload-content">
-                                                        <img class="file-upload-image" src="#" alt="your image" />
-                                                        <div class="image-title-wrap">
-                                                            <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </div>
-                            </div>
                             <div></div>
-
                             <br>
                         </div>
-                    </div>
-                    <div class="col-md-6 colp_l_15">
-                        <div class="row">
-                            <div class="col-md-8 pad5 mt-4" >
-                                <div class="form-group">
-                                    <div class="form-group bmd-form-group required_item">
-                                        <input  required type="number"  id="amount_requested" class="form-control" name="amount_requested" placeholder="2500">
-                                        <label class="inputText openselect2">Amount Requested</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-8 pad5">
-                                <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Job No</label> 
-                                        
-                                    <select name="job_no" class="form-control select2 select2-hidden-accessible" id="" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                    <option selected="">Select Job No</option>
-
-                                    {% for employee in select_job_no %}
-                                    <option value="{{employee.id}}" >{{employee.name}} {{employee.registration_number}}</option>
-                                    {% endfor %}
-                                    </select> </div> 
-                            </div>
-
-                            <div class="col-md-8 pad5">
-                                <div class="form-group">
-                                    <div class="form-group bmd-form-group required_item">
-                                        <input  required type="number"  class="form-control" name="iban_no">
-                                        <label class="inputText openselect2">IBAN NO</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 pad5 mt-4">
-                                <div class="form-group bmd-form-group required_item">
-                                    <textarea name="purpose" rows="1" class="form-control tstarea"></textarea>
-                                    <label class="bmd-label-floating inputText">Purpose</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div>  
                 </div>
+            </div>
+
+
+<div class="row expirationbox">
+    <div class="col-12">
+        <div class="row">
+            <h5 class="modal_sub_hdng">Expense</h5>
+        </div>
     </div>
-    <div class="modal-footer" style="margin: 15px 15px;
-    color: red;
-    border-top: 2px solid #423d58;">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <div class="col-12 mt-2">
+        <div class="container-fluid">
+         
+            <table class="table scrolbaletable" border="2" style="border: 1px solid #ccc;">
+                <tr>
+                    <th class="th_btnpand">
+                        <div class="appnd_user_btn append_btn">+</div>
+                    </th>
+                    <th class="th_exp_date">Expense Date</th>
+                    <th class="th_product">Product</th>
+                    <th class="th_description">Description</th>
+                    <th class="th_partner">Partner</th>
+                    <th class="th_attachment">Attachment</th>
+                    <th class="th_description">Reference</th>
+                    <th class="th_unit_price">Unit Price</th>
+                    <th class="th_unit_price">Quantity</th>
+                    <th class="th_taxes">Taxes</th>
+                    <th class="th_total_currency">Total in currency</th>
+                    <th class="th_total">Total</th>
+                </tr>
+                
+
+                <tbody class="apenduser">
+
+                <tr>
+                    <td class="th_btnpand">
+                        <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                    </td>
+                    <td class="th_exp_date">
+                        <input required type="date" name="expense_date" id="ami"  class="form-control">
+                    </td>
+                    <td class="th_product">
+                        <select name="product[]" data-v1=0 onchange="f3(this,0)" class="form-control select2 select2-hidden-accessible product_select_data" id="product0" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Product</option>
+                            {% for pro in  select_product %}
+                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            {% endfor %}
+                        </select>  
+                    </td>
+                    <td class="th_description">
+                        <input name="description"  class="form-control">
+                    </td>
+                    <td class="th_partner">
+                        <input name="partner"  autocomplete="off" class="form-control s_partner" readonly>
+                    </td>
+                    <td class="th_attachment" style="cursor: pointer;">
+                        <div id="selected_image0">
+                            <label for="files">
+                                <img  height="23px"  width="23px" style="margin-left:25px; cursor: pointer;"   src="{% static 'file_image1.png' %}">
+                            </label> 
+                                <input class="file-input1" data-count=0 id="files"  name="employee_attached_file" type="file"  accept="application/pdf,image/*" multiple /> 
+                        </div>
+                        <div id="delete_selected_image0" style="display: none">
+                            <span onclick="delete_selected_image(0)"><i style="color: red;
+                                margin-left: 32px;
+                                font-weight: bold;
+                                font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                        </div>
+                    </td>
+                    <td class="th_description">
+                        <input name="reference"  class="form-control">
+                    </td>
+                    <td class="th_unit_price">
+                        
+                        <input required type="number"  name="unit_price" data-v1=0 onchange="f4(this,0)" id="unit_price0" autocomplete="off" class="form-control">
+                    </td>
+                    <td class="th_unit_price" id="td_quantity0">
+                        <input type="number" name="quantity" data-v1=0 onchange="quantityfn(this,0)" id="quantity0" autocomplete="off" class="form-control">
+                    </td>
+                    <td class="th_taxes">
+                        <!-- <select name="taxes" data-v1=0 onchange="f2(this,0)" class="form-control taxes" id="taxes"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Tax</option>
+                            
+                            <option value="15.0 , percent">vat 15</option>
+                           
+                        </select> -->
+                        <select name="taxes[]"  data-v1=0 onchange="f2(this,0)"  class="form-control select2 select2-hidden-accessible" id="taxes0"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Tax</option>
+                            {% for tax in  select_tax %}
+                        <option  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                            {% endfor %}
+                        </select>
+                       
+                    </td>
+                    <td class="th_total_currency">
+                
+                        <label style="position: relative;
+                        display: block;
+                        padding-right: 76px;
+                        width: 174px;
+                        box-sizing: border-box;" data-domain="domain.com">
+                            <input style=" position: relative;
+                            display: block;
+                            padding-right: 76px;
+                            width: 174px;
+                            box-sizing: border-box;  border-right-style: hidden;border: none;" type="text" name="total_currency"  id="totalcurrency0"  class="form-control" readonly> 
+                    
+                    
+                    <label style=" 
+                      position: absolute;
+                      top: 4px;
+                      left: 118px;
+                      font-family: arial, helvetica, sans-serif;
+                      font-size: 12px;
+                      display: block;
+                      color: rgb(227 0 0);
+                      font-weight: bold;">{{currency_value}}</label> 
+                       
+                    </td>
+                    <td class="th_total">
+                        <input name="total" id="totalrupees0" class="form-control add_line_amount" readonly>
+                    </td>
+                   
+                </tr>
+                </tbody>
+            </table>
+
+         <div style="float: right;">
+            <label  >Total Amount:</label>    
+           
+            <input id="Total_amount" name="total_amount_data" type="text"  class="form_control" style="text-align: right;color: #060c3d; border: none;
+            font-weight: bold;" readonly > <span style="font-weight: bold;
+    color: #951c1cbd;">{{currency_value}}</span>
+
+    <input type="hidden" name="currency_data" value="{{currency_value}}">
+         </div>
+        </div>
+    </div>
+</div>
+
+    <div id="displayimage" style="display:none;">  
+    </div>
+
+</div>
+
+
+<input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
+<input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
+
+<input type="hidden" value="false" name="draft_button_status" id="draft_button_status">
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <a href="#" class="btn  petty_draft_action" style="    background: #14bcd7;
+    color: white;">Draft</a>
+    <button type="submit" class="btn btn-info" >Save</button>
+</div>
+
+
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-info" >Save</button>
-    </div>
+    </div> -->
     </form>
 </div>
 </div>
@@ -331,6 +453,9 @@ if (scroll >= 0) {
 <script src="{% static 'adminnew/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'adminnew/js/dataTables.bootstrap4.min.js' %}"></script>
 
+
+
+
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -340,12 +465,132 @@ $('#responsive-datatable').DataTable();
 });
 </script>
 
+<script>
+
+    var supplier_name = ''
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+        append_count = 0
+    $(".appnd_user_btn").click(function() {
+        append_count = append_count+1
+              
+        $(".apenduser").append(`<tr>
+                    <td class="th_btnpand">
+                        <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                    </td>
+                    <td class="th_exp_date">
+                        <input required name="expense_date" type="date"  class="form-control">
+                    </td>
+                    <td class="th_product">
+                        <select name="product[]" data-v1=`+append_count+` onchange="f3(this,`+append_count+`)"  class='myselect form-control product_select_data'   id="product`+append_count+`">
+                            <option selected="">Select Product</option>
+                            {% for pro in select_product %}
+                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="th_description">
+                        <input name="description" id="" data-count=`+append_count+`  class="form-control">
+                    </td>
+                    <td class="th_partner">
+                        <input name="partner" value="`+supplier_name+`" autocomplete="off" class="form-control s_partner"  readonly>
+                    </td>
+                    <td class="th_attachment">
+
+                        <div id="selected_image`+append_count+ `">
+                        <label for="files`+append_count+`">
+                            <img height="23px"  width="23px" style="margin-left:25px"   src="{% static 'file_image1.png' %}">
+                        </label> 
+
+                            <input class="file-input1" data-count=`+append_count+`  id="files`+append_count+`" onchange="filenew(this,`+append_count+`)" name="employee_attached_file" type="file" accept="application/pdf,image/*" multiple /> 
+                   </div>
+
+                   <div id="delete_selected_image`+append_count+`" style="display: none">
+                            <span onclick="delete_selected_image(`+append_count+`)"><i style="color: red;
+                                margin-left: 32px;
+                                font-weight: bold;
+                                font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                        </div>
+                   
+                            </td>
+                    <td class="th_description">
+                        <input name="reference"  class="form-control">
+                    </td>
+                    <td class="th_unit_price">
+                        <input required type="number" name="unit_price" data-v1=`+append_count+` onchange="f4(this,`+append_count+`)" id="unit_price`+append_count+`" class="form-control">
+                    </td>
+                    <td class="th_unit_price" id="td_quantity`+append_count+`">
+                        <input type="number" name="quantity" data-v1=`+append_count+` onchange="quantityfn(this,`+append_count+`)" id="quantity`+append_count+`" class="form-control">
+                    </td>
+                    <td class="th_taxes">
+                        <select name="taxes[]"  data-v1=`+append_count+` onchange="f2(this,`+append_count+`)"  class='myselect form-control' id="taxes`+append_count+`"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Tax</option>
+                            {% for tax in  select_tax %}
+                        <option  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                            {% endfor %}
+                        </select>    
+                    </td>
+                    <td class="th_total_currency">
+                        <label style="position: relative;
+                        display: block;
+                        padding-right: 76px;
+                        width: 174px;
+                        box-sizing: border-box;" data-domain="domain.com">
+                        <input style=" position: relative;
+                            display: block;
+                            padding-right: 76px;
+                            width: 174px;
+                            box-sizing: border-box;  border-right-style: hidden;border: none;" type="text"  name="total_currency" id="totalcurrency`+append_count+`" class="form-control" readonly>
+                   
+                            <label style=" 
+                      position: absolute;
+                      top: 4px;
+                      left: 118px;
+                      font-family: arial, helvetica, sans-serif;
+                      font-size: 12px;
+                      display: block;
+                      color: rgb(227 0 0);
+                      font-weight: bold;">{{currency_value}}</label> 
+                            </td>
+                    <td class="th_total">
+                        <input name="total" id="totalrupees`+append_count+`" class="form-control add_line_amount" readonly>
+                    </td>
+                </tr>`);
+                $('#product'+append_count).select2()
+                $('#taxes'+append_count).select2()
+                
+        $(".appnd_user_minus_btn").click(function() {
+            $(this).parent().parent().remove();
+        });  
+       
+document.getElementById('files'+append_count).addEventListener('change', handleFileSelect, false);
+});
+});  
+
+
+function sel_supplier(sup){
+            supplier = sup.value
+            
+            const myArray = supplier.split(",");
+            supplier_name1 = myArray[1];
+            $(".s_partner").val(supplier_name1)
+            supplier_name = supplier_name1
+        }
+ </script>
+
+
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 
-    $("#supplier").click(function(){
+    $("#supplier_id").click(function(){
        
         $("#select_supplier").show();
     })
@@ -354,43 +599,7 @@ $('#responsive-datatable').DataTable();
     })
 </script>
 
-<script>
-    function readURL(input) {
-        if (input.files && input.files[0]) {
 
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('.image-upload-wrap').hide();
-
-                $('.file-upload-image').attr('src', e.target.result);
-                $('.file-upload-content').show();
-
-                $('.image-title').html(input.files[0].name);
-            };
-
-
-            // alert(document.getElementById("f123").value)
-            $("#f12").val(document.getElementById("f123").value)
-            reader.readAsDataURL(input.files[0]);
-
-        } else {
-            removeUpload();
-        }
-    }
-
-    function removeUpload() {
-        $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-        $('.file-upload-content').hide();
-        $('.image-upload-wrap').show();
-    }
-    $('.image-upload-wrap').bind('dragover', function() {
-        $('.image-upload-wrap').addClass('image-dropping');
-    });
-    $('.image-upload-wrap').bind('dragleave', function() {
-        $('.image-upload-wrap').removeClass('image-dropping');
-    });
-</script>
 
 
 
@@ -404,15 +613,617 @@ $('#responsive-datatable').DataTable();
     function myFunction() {
      amt = $("#amount_requested").val()
      
-     if(amt > 2500){
-        Swal.fire({
+        if(amt > 2500){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Requested Amount cannot be dispersed !',
+                })   
+            }
+        }
+</script>
+
+
+
+
+
+
+<script>
+
+    
+    
+  
+var currency_value = document.getElementById("currency_value").value;
+$("#currency").val(currency_value)
+   
+
+        var arr = []
+        
+        function quantityfn(sel,count){
+            
+            var unit_price = document.getElementById("unit_price"+count).value;
+            var tax_perc = document.getElementById("taxes"+count).value;
+            var quantity = sel.value
+            result = unit_price * quantity
+            var amount_blnce = document.getElementById("amount_balance1").value;
+            if(result > amount_blnce){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Requested Amount exceeds the limit !',
+                })   
+            }
+            else{
+                $("#totalcurrency"+count).val(result)
+            $("#totalrupees"+count).val(result)
+            var totalrupees = document.getElementById("totalrupees"+count).value;
+            var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+            const myArray = tax_perc.split("&");
+            tax_value = myArray[0];
+            amnt_type = myArray[1];
+            if(amnt_type == 'percent') {
+                tax = ((unit_price * quantity) * tax_value)/100
+                total_price = unit_price * quantity
+                total = parseInt(total_price) + parseInt(tax)
+                if(total > amount_blnce){
+                Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Requested Amount cannot be dispersed !',
+                    text: 'Requested Amount exceeds the limit !',
+                    })  
+                    clearFields();
+                return false; 
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+            }
+            else if(amnt_type == 'fixed') { 
+              
+                var unit_price = $(this).val();
+                total = parseInt(unit_price) + parseInt(tax_value)
+                if(total > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
                     })   
-     }
-     
-    }
-    </script>
+                    clearFields();
+                return false;
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+               
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+               
+            }
+            }
+           
+        }
+        
+        function f2(sel,count){
+            tax_perc = sel.value
+            alert(tax_perc)
+            var unit_price = document.getElementById("unit_price"+count).value;
+            var quantity = document.getElementById("quantity"+count).value;
+            if (quantity == ''){
+                quantity = 1
+            }
+            const myArray = tax_perc.split("&");
+            tax_value = myArray[0];
+            amnt_type = myArray[1];
+         
+            if(amnt_type == 'percent') {
+                tax = ((unit_price * quantity) * tax_value)/100
+                total_price = unit_price * quantity
+                total = parseInt(total_price) + parseInt(tax)
+                var amount_blnce = document.getElementById("amount_balance1").value;
+                if(total > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
+                    })   
+                    clearFields();
+                return false;
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
 
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+               
+               
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+
+            }
+            else if(amnt_type == 'fixed') { 
+              
+             
+              total = parseInt(unit_price) * quantity + parseInt(tax_value)
+              if(total > amount_blnce){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Requested Amount exceeds the limit !',
+                  })   
+                  clearFields();
+                  return false;
+                  $("#totalcurrency"+count).val(total)
+                  $("#totalrupees"+count).val(total)
+          
+                  var totalrupees = document.getElementById("totalrupees"+count).value;
+    
+                  }
+              }
+            else{ 
+                alert("kkkk")
+                
+               
+                total = parseInt(unit_price) * quantity + parseInt(tax_value)
+                if(total > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
+                    })   
+                    clearFields();
+                return false;
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+               
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+               
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+            } 
+        }
+        function f3(sel,count){
+            
+            
+            product_list = sel.value
+            const myArray = product_list.split("&");
+            st_price = myArray[1];
+            if(st_price == 0.0)
+            {
+               
+                $("#quantity"+count).val(1)
+                document.getElementById("quantity"+count).readOnly = true; 
+                const input = document.getElementById("quantity"+count);
+                input.style.backgroundColor = '#2b2c422b';
+                var unit_price = document.getElementById("unit_price"+count).value;
+                total_price = unit_price * 1
+                var tax_val  = $("#taxes"+count).val()
+                if(tax_val == 'Select Tax'){
+                   $("#totalcurrency"+count).val(total_price)
+                $("#totalrupees"+count).val(total_price)
+                   
+                }
+                else{
+                    const tax_array = tax_val.split("&");
+                    if(tax_array[1] == "percent"){
+                      
+                        per_value = parseInt( tax_array[0]);
+                      
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#totalcurrency"+count).val(total_amount1)
+                        $("#totalrupees"+count).val(total_amount1)
+                       
+
+                    }
+                    else if(amnt_type == 'fixed') { 
+              
+                    var unit_price = $(this).val();
+                    total = parseInt(unit_price) + parseInt(tax_value)
+                    if(total > amount_blnce){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Requested Amount exceeds the limit !',
+                        })   
+                        clearFields();
+                        return false;
+                        $("#totalcurrency"+count).val(total)
+                        $("#totalrupees"+count).val(total)
+                
+                        var totalrupees = document.getElementById("totalrupees"+count).value;
+          
+                        }
+                    }
+                // total = unit_price * 1
+                // $("#totalcurrency"+count).val(total)
+                // $("#totalrupees"+count).val(total)
+
+                // var totalrupees = document.getElementById("totalrupees"+count).value;
+
+
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                  
+                    var b = parseInt( $(this).val());
+                    if (Number.isNaN(b) || b == "" || b === null) {
+                    b=0
+                }
+                    amount1 = amount + b
+                    amount = amount1
+                })
+                $("#Total_amount").val(amount)
+
+
+                
+                // var td_inner = $('#td_quantity'+count);
+                // td_inner.empty().append(`<input name="quantity" style="background: #2b2c422b; color: black;" value="1" id="quantity`+count+`" readonly class="form-control">`);
+            }
+        }
+            else{
+               
+                document.getElementById("quantity"+count).readOnly = false; 
+                const input = document.getElementById("quantity"+count);
+                input.style.backgroundColor = '#ffff';
+                var unit_price = document.getElementById("unit_price"+count).value;
+                var quantity = document.getElementById("quantity"+count).value;
+                total_price = unit_price * quantity
+                var tax_val  = $("#taxes"+count).val()
+                if(tax_val == 'Select Tax'){
+                   $("#totalcurrency"+count).val(total_price)
+                $("#totalrupees"+count).val(total_price)
+                   
+                }
+                else{
+                    const tax_array = tax_val.split("&");
+                    if(tax_array[1] == "percent"){
+                        per_value = parseInt( tax_array[0]);
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#totalcurrency"+count).val(total_amount1)
+                $("#totalrupees"+count).val(total_amount1)
+                       
+
+                    }
+                }
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                 
+                    if (Number.isNaN(b) || b == "" || b === null) {
+                b=0
+       
+                }
+                    amount1 = amount + b
+                    amount = amount1
+                    
+                })
+                $("#Total_amount").val(amount)
+                
+            }
+            
+        }
+        
+
+        function f4(sel,count){
+           
+            var unit_price = sel.value
+           
+            var quantity = document.getElementById("quantity"+count).value;
+            var tax_perc = document.getElementById("taxes"+count).value;
+            if(quantity==''){
+                quantity = 1
+            }
+            result = unit_price * quantity
+         
+            var amount_blnce = document.getElementById("amount_balance1").value;
+            if(result > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
+                    })  
+                    clearFields();
+                    return false; 
+                }
+            
+            $("#totalcurrency"+count).val(result)
+            $("#totalrupees"+count).val(result)
+
+            var totalrupees = document.getElementById("totalrupees"+count).value;
+            var amount = 0
+                $(".add_line_amount").each(function(){
+                  
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+
+            const myArray = tax_perc.split("&");
+            tax_value = myArray[0];
+            amnt_type = myArray[1];
+         
+            if(amnt_type == 'percent') {
+                tax = (result * tax_value)/100
+                total = result  + parseInt(tax)
+                if(total > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
+                    })  
+                    clearFields();
+                return false; 
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                  
+                    var b = parseInt( $(this).val());
+                   
+
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+            }
+            else if(amnt_type == 'fixed') { 
+              
+                var unit_price = $(this).val();
+                total = parseInt(unit_price) + parseInt(tax_value)
+                if(total > amount_blnce){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Requested Amount exceeds the limit !',
+                    })   
+                    clearFields();
+                return false;
+                }
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+               
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                  
+                    var b = parseInt( $(this).val());
+                   
+
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount)
+               
+            }
+         
+            
+            }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function employee_function(event){
+        var emp_name = event.selectedOptions[0].getAttribute('data-name');
+        
+
+        $("#selected_employee_name").val(emp_name)
+        var selected_employee_id = $('#emp_name_action2').val();
+    
+        company_id = $("#company_id").val()
+        $.ajax({
+                url: 'get_selected_employee_details',
+                data: {
+                    'odoo_id': selected_employee_id,
+                    'company_id' :  company_id      
+                },
+                type: 'GET',
+                success: function (data) { 
+                    amount_balance1 = data['amount_balance']
+                    $("#amount_balance1").val(amount_balance1)  
+                }
+            });
+    }
+</script>
+
+
+
+<script>
+   
+
+    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+    function handleFileSelect(evt) {
+        count_data = $(this).attr("data-count")
+        var files = evt.target.files; // FileList object
+        upload(files,count_data);
+}
+
+function upload(files,count_data) {
+  var formData = new FormData(); // we initialise a new form that will be send to php
+  for (var i = 0; i < files.length; i++) {  // if we have more that one file
+      if (files.length > 10) {
+        alert("file exceeds limit");
+      }
+      else { 
+        previewImg(files[i],count_data); // function to preview images
+      }
+      formData.append('file' + i, files[i]);
+    }
+    document.getElementById("selected_image"+count_data).style.display = "none";
+    document.getElementById("delete_selected_image"+count_data).style.display = "block";
+}
+
+function previewImg(file,count_data) {
+
+var reader = new FileReader();
+reader.onload = (function (theFile) {
+    return function (e) {
+        // Render thumbnail.
+        // alert(e.target.result)
+        var div = document.createElement('div');
+       
+       
+        const myArray = e.target.result.split(",");
+        console.log(myArray[1])
+        alert(myArray[1])
+      
+        div.innerHTML = ['<input type="text" class="append_image_value'+count_data+'" name="image_name'+count_data+'[]"" value="' + file.name + '"/><img  class="append_image_value'+count_data+'" src="', e.target.result,
+              '" title="', escape(theFile.name), '"/><input type="text" class="append_image_value'+count_data+'" name="base64_image'+count_data+'[]"" value="', myArray[1],'" placeholder="Image Caption Here"/><br/> />'].join('');
+          document.getElementById('displayimage').insertBefore(div, null);
+    };
+})(file);
+reader.readAsDataURL(file);
+}
+</script>
+
+<script>
+    $("#expense_id").click(function(){
+        $(".s_partner").val('')
+            supplier_name = ''
+          
+
+        var select_supplier_option = $('#supplier_idnew');
+        select_supplier_option.empty();
+        supllier_option_value = ''
+        supllier_option_value = supllier_option_value+'<option >Select Supplier</option>';
+        {{ select_supplier_api|safe }}.forEach(item => {
+            var sup_value = item['id']+","+item['name']
+            supllier_option_value= supllier_option_value+'<option value="'+sup_value+'">'+item['name']+'</option>';
+
+        })
+        $('#supplier_idnew')
+
+    .find('option')
+    .empty()
+    .end()
+    .append(supllier_option_value)
+    .val(0)
+;
+$('span#select2-supplier_idnew-container').html("Select Supplier");
+    })
+</script>
+
+<script>
+    function delete_selected_image(count){
+
+        document.querySelectorAll(".append_image_value"+count).forEach(el => el.remove());
+        document.getElementById("selected_image"+count).style.display = "block";
+    document.getElementById("delete_selected_image"+count).style.display = "none";
+   }
+</script>
+{% if messages %}
+   <script>
+    {% for message in messages %}
+        message1 = "{{message}}"
+       
+
+      
+       
+        if(message1 == "error"){
+
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: "{{ message }}",
+ 
+})
+
+
+
+        }
+        else{
+
+            Swal.fire(
+				  '',
+				  '{{ message }}',
+				  '{{message.tags}}'
+				)
+      
+        }
+    {% endfor %}
+   </script>
+{% endif %}
+
+
+
+<script>
+    $(".petty_cash_form_submit").submit(function(){
+        event.preventDefault()
+        var product_select_status = false
+        $(".product_select_data").each(function(){
+            var select_value = $(this).val()
+            if(select_value == 'Select Product'){
+                product_select_status = true   
+            }
+            else{
+                if(product_select_status == true){
+                    product_select_status = true
+                }
+                else{
+                    product_select_status = false
+                }
+            }
+        })
+        if(product_select_status == true){
+            alert("select product ")
+        }
+        else{
+            
+            document.forms["form_name"].submit();
+        }
+    })
+</script>
+
+
+
+<script>
+    $(".petty_draft_action").click(function(){
+        alert("helloooooo")
+        $("#draft_button_status").val(true)
+        document.forms["form_name"].submit();
+    })
+</script>
 {% endblock %}

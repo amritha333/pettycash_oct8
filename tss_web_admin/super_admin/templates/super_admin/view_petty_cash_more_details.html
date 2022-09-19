@@ -1,0 +1,254 @@
+{% extends "super_admin/menu.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="content ">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="box_header">
+                    <div class="row">
+                        <div class="col-md-7 col-12">
+                            <div class="mainiconbox"><i class="fa fa-user"></i>
+                            </div>
+                            <h4 class="m-t-0 header-title">
+                                <div class="breadcrumbs ng-scope">
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a>Petty More Details </a></li>
+                                        <!-- <li><a>User  Settings</a></li> -->
+                                    </ul>
+                                    <div>Petty Cash Settings</div>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="col-md-5 col-12">
+                           
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+            <div class="col-12">
+
+                <div class="box_header">
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <a  style="    float: right;
+                            background: #15beff;
+                            padding: 2px 4px;
+                            color: white;
+                            border-radius: 4px;
+                            font-size: 12px;" href="#">{{state}}</a>
+                            <div class="row">
+                                <div class="col-md-6 colp_r_15">
+                                    <div class="row">
+                                       
+            
+                                        <div class="col-md-12 colp_r_15 mt-4">
+
+                                                
+                                                <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Employee name</label> 
+                                                 <input  readonly type="text" value="{{employee_name}}" class="form-control">
+
+                                                </div> 
+                                        </div>
+            
+                                                <!-- <select name="employee_name" class="form-control select2 select2-hidden-accessible" id="emp_name_action">
+                                                    {% for i in child_response %}
+                                                    <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
+            
+                                                    {% endfor %}
+                                                </select>
+                                                <input required autocomplete="off" value="{{request.user}}" name="employee_name" type="text" id="" class="input form-control">
+                                                <label class="inputText">Employee name</label> -->
+                                            
+            
+                                        <div class="col-md-12 colp_r_15">
+                                            <div class="form-group bmd-form-group required_item">
+                                                <input readonly  autocomplete="off" name="expense_name" value="{{expense_name}}" type="text" id="" class="input form-control">
+                                                <label class="inputText">Expense Name</label>
+                                            </div>
+                                        </div>
+            
+                                    </div>
+                                </div>
+                                <div class="col-md-6 colp_r_15">
+                                    <div class="row">
+                                        <div class="col-md-4 mt-4">
+                                            <div class="user_daterangpickrbox">
+                                                <div class="">
+                                                    <h3 class="big_title2">Payment Type</h3>
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <div class="radio">
+                                                        
+                                                      
+                                                        <input onclick="this.checked = false;"  {% if payment_type == 'Expense' %} checked {% else %} {% endif %}  name="payment_type" value="Expense" type="radio" id="expense_id" >
+                                                        <label for="expense_id" id="expense">Expense</label> <span>
+                                                     
+                                                    </div>
+                                                  
+                                                    <div class="radio">
+                                                        <input onclick="this.checked = false;"  {% if payment_type == 'Supplier' %} checked {% else %} {% endif %} name="payment_type" type="radio" value="Supplier" id="supplier_id" >
+                                                        <label for="supplier_id" id="supplier">Supplier</label>
+                                                     
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% if supplier == False %}
+                                        {% else %}
+                                        <div class="col-md-8 mt-4" id="select_supplier" style="display:block">
+                                            <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label> 
+                                                    
+                                                <input type="text" readonly class="form-control" value="{{supplier}}">
+                                             </div> 
+                                        </div>
+                                        {% endif %}
+                                        <div></div>
+                                        <br>
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>
+                       
+                            <div class="col-12">
+                                <div class="row">
+                                    <h5 class="modal_sub_hdng">Expense</h5>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="container-fluid">
+                                 
+                                    <table class="table scrolbaletable" border="2" style="border: 1px solid #ccc;">
+                                        <tr>
+                                            <th class="th_btnpand">
+                                                S/No
+                                            </th>
+                                            <th class="th_exp_date">Expense Date</th>
+                                            <th class="th_product">Product</th>
+                                            <th class="th_description">Description</th>
+                                            <th class="th_partner">Partner</th>
+                                            <th class="th_attachment">Attachment</th>
+                                            <th class="th_description">Reference</th>
+                                            <th class="th_unit_price">Unit Price</th>
+                                            <th class="th_unit_price">Quantity</th>
+                                            <th class="th_taxes">Taxes</th>
+                                            <th class="th_total_currency">Total in currency</th>
+                                            <th class="th_total">Total</th>
+                                        </tr>
+                                        
+                        
+                                        <tbody class="apenduser">
+                                            {% for exp_lines in expense_lines %}
+                        
+                                        <tr>
+                                            <td class="th_btnpand">
+                                               {{forloop.counter}}
+                                            </td>
+                                            <td class="">
+                                               <span>{{exp_lines.date}}</span>
+                                            </td>
+                                            <td class="">
+                                               <span>{{exp_lines.product_name}}</span>
+                                            </td>
+                                            <td class="th_description">
+                                               <span>{{exp_lines.name}}</span>
+                                            </td>
+                                            <td class="th_partner">
+                                               <span>
+
+                                                {% if exp_lines.vz_partner_id == False %}
+                                                {% else %}
+                                                {{exp_lines.vz_partner_id}}
+                                                {% endif %}
+                                               </span>
+                                            </td>
+                                            <td class="th_attachment" style="cursor: pointer;">
+                                               {% if exp_lines.attachments %}
+                                                <span>{% for j in exp_lines.attachments %}
+
+                                                    <span> 
+                                                        <a href="data:{{j.mimetype}};base64,{{j.datas}}" target="_blank"><i style="color: #100101;
+                                                        margin-left: 31px;
+                                                        font-weight: bold;
+                                                        font-size: 17px;" class="fa fa-eye" aria-hidden="true"></i>
+                                                    </span>
+                                                    {% endfor %}
+                                                </span>
+
+                                                {% else %}
+                                                <span>  <i style="color: red;
+                                                    margin-left: 32px;
+                                                    font-weight: bold;
+                                                    font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                                                {% endif %}
+                                               
+                                                    <br>
+
+                                                   
+                                            </td>
+                                            <td class="th_description">
+                                              <span>{{exp_lines.reference}}</span>
+                                            </td>
+                                            <td class="th_unit_price">
+                                                
+                                             <span>{{exp_lines.unit_amount}}</span>
+                                            </td>
+                                            <td class="th_unit_price" id="td_quantity0">
+                                              <span>{{exp_lines.quantity}}</span>
+                                            </td>
+                                            <td class="th_taxes">
+                                                <!-- <select name="taxes" data-v1=0 onchange="f2(this,0)" class="form-control taxes" id="taxes"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                    <option selected="">Select Tax</option>
+                                                    
+                                                    <option value="15.0 , percent">vat 15</option>
+                                                   
+                                                </select> -->
+                                               
+                                              <span>{{exp_lines.taxes.0}}</span>
+                                               
+                                            </td>
+                                            <td class="th_total_currency">
+                                        <sapn> {{exp_lines.total_amount}} <span style="font-weight: bold;
+                                            color: red;
+                                            ">{{exp_lines.currency}}</span></sapn>
+                                               
+                                            </td>
+                                            <td class="th_total">
+                                              <span>{{exp_lines.total_amount}}</span>
+                                            </td>
+                                           
+                                        </tr>
+                                       
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                        
+                                 <div style="float: right;">
+                                    <label  >Total Amount:</label>    
+                                   
+                                    <input id="Total_amount" value="{{total_in_currency}}" name="total_amount_data" type="text"  class="form_control" style="text-align: right;color: #060c3d; border: none;
+                                    font-weight: bold;" readonly > <span style="font-weight: bold;
+                            color: #951c1cbd;"></span>
+                        
+                            <input type="hidden" name="currency_data" value="{{currency_value}}">
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- container -->
+</div>
+
+
+{% endblock %}

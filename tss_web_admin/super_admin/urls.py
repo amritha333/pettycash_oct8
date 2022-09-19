@@ -125,6 +125,9 @@ urlpatterns = [
     path('update_active_company_action',views.update_active_company_action,name='update_active_company_action'),
 
     path('odoo_update_petty_cash_status_api',views.odoo_update_petty_cash_status_api.as_view(),name='odoo_update_petty_cash_status_api'),
+    path("user_company_update_api",views.user_company_update_api.as_view(),name='user_company_update_api'),
+    path('get_selected_employee_details',views.get_selected_employee_details,name='get_selected_employee_details'),
+    path('view_petty_cash_more_details',views.view_petty_cash_more_details,name='view_petty_cash_more_details'),
     
     
     
