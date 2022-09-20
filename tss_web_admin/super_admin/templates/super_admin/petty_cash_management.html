@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/responsive.dataTables.min.css' %}">
 
 
+
 <style>
 #files::-webkit-file-upload-button {
 visibility: hidden;
@@ -115,7 +116,6 @@ user-select: none;
                                     {{p_cash.total_in_currency}}
                                    </td>
                                    <td>
-                                   
                                     {{p_cash.total_amount}}
                                    </td>
                                    <td>
@@ -145,11 +145,12 @@ user-select: none;
 </div>
 </div>
 
-<div id="newuser" class="modal modal-right fade" role="dialog" data-backdrop="static"  >
+<div id="newuser" class="modal modal-right" role="dialog" data-backdrop="static"  >
 <div class="modal-dialog modal-full">
 <!-- Modal content-->
 <div class="modal-content">
     <div class="modal-header">
+
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">
               <span style="color: #f5f5f5;font-size: 16px;  font-weight: bold;"> Petty Cash Application Form</span>
@@ -236,10 +237,13 @@ user-select: none;
                                     </div>
                                 </div>
                             </div>
+
+                          
+
                             <div class="col-md-8 mt-4" id="select_supplier" style="display:none">
                                 <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label> 
                                         
-                                    <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                    <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option selected="">Select Supplier</option>
 
                                     {% for supplier in select_supplier_api %}
@@ -247,6 +251,9 @@ user-select: none;
                                     {% endfor %}
                                 </select> </div> 
                             </div>
+                           
+
+
                             <div></div>
                             <br>
                         </div>
@@ -271,6 +278,7 @@ user-select: none;
                     </th>
                     <th class="th_exp_date">Expense Date</th>
                     <th class="th_product">Product</th>
+                    <th class="th_job_no">Job No</th>
                     <th class="th_description">Description</th>
                     <th class="th_partner">Partner</th>
                     <th class="th_attachment">Attachment</th>
@@ -290,13 +298,24 @@ user-select: none;
                         <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
                     </td>
                     <td class="th_exp_date">
-                        <input required type="date" name="expense_date" id="ami"  class="form-control">
+                       
+                        <input required type="date" name="expense_date" max="{{today_date}}"  class="form-control">
                     </td>
                     <td class="th_product">
                         <select name="product[]" data-v1=0 onchange="f3(this,0)" class="form-control select2 select2-hidden-accessible product_select_data" id="product0" style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option selected="">Select Product</option>
                             {% for pro in  select_product %}
-                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            <option value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
+                            {% endfor %}
+                        </select>  
+
+                        <input type="hidden" name="exp_type" id="exp_type0" class="exp_type">
+                    </td>
+                    <td class="th_job_no">
+                        <select name="job_no" data-v1=0 onchange="click_job_no_action(this,0)"  class="form-control select2 select2-hidden-accessible job_no_select" id="job_no0" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Jobnumber</option>
+                            {% for job in  select_job_no %}
+                            <option value="{{job.id}}">{{job.number}}</option>
                             {% endfor %}
                         </select>  
                     </td>
@@ -327,7 +346,7 @@ user-select: none;
                         
                         <input required type="number"  name="unit_price" data-v1=0 onchange="f4(this,0)" id="unit_price0" autocomplete="off" class="form-control">
                     </td>
-                    <td class="th_unit_price" id="td_quantity0">
+                    <td class="th_quantity" id="td_quantity0">
                         <input type="number" name="quantity" data-v1=0 onchange="quantityfn(this,0)" id="quantity0" autocomplete="off" class="form-control">
                     </td>
                     <td class="th_taxes">
@@ -350,12 +369,12 @@ user-select: none;
                         <label style="position: relative;
                         display: block;
                         padding-right: 76px;
-                        width: 174px;
+                        width: 164px;
                         box-sizing: border-box;" data-domain="domain.com">
                             <input style=" position: relative;
                             display: block;
                             padding-right: 76px;
-                            width: 174px;
+                            width: 165px;
                             box-sizing: border-box;  border-right-style: hidden;border: none;" type="text" name="total_currency"  id="totalcurrency0"  class="form-control" readonly> 
                     
                     
@@ -400,11 +419,8 @@ user-select: none;
 <input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
 <input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
 
-<input type="hidden" value="false" name="draft_button_status" id="draft_button_status">
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <a href="#" class="btn  petty_draft_action" style="    background: #14bcd7;
-    color: white;">Draft</a>
     <button type="submit" class="btn btn-info" >Save</button>
 </div>
 
@@ -441,6 +457,10 @@ if (scroll >= 0) {
 }
 });
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
 
 
 <script src="{% static 'adminnew/js/jquery.core.js'  %}"></script>
@@ -482,15 +502,24 @@ $('#responsive-datatable').DataTable();
                         <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
                     </td>
                     <td class="th_exp_date">
-                        <input required name="expense_date" type="date"  class="form-control">
+                        <input type="date" required name="expense_date" max="{{today_date}}"  class="form-control">
                     </td>
                     <td class="th_product">
                         <select name="product[]" data-v1=`+append_count+` onchange="f3(this,`+append_count+`)"  class='myselect form-control product_select_data'   id="product`+append_count+`">
                             <option selected="">Select Product</option>
                             {% for pro in select_product %}
-                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            <option value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" name="exp_type" id="exp_type`+append_count+`" class="exp_type">
+                    </td>
+                    <td class="th_job_no">
+                        <select name="job_no" data-v1=`+append_count+` onchange="click_job_no_action(this,`+append_count+`)" class="myselect form-control job_no_select" id="job_no`+append_count+`" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Jobnumber</option>
+                            {% for job in  select_job_no %}
+                            <option value="{{job.id}}">{{job.number}}</option>
+                            {% endfor %}
+                        </select>  
                     </td>
                     <td class="th_description">
                         <input name="description" id="" data-count=`+append_count+`  class="form-control">
@@ -561,6 +590,9 @@ $('#responsive-datatable').DataTable();
                 </tr>`);
                 $('#product'+append_count).select2()
                 $('#taxes'+append_count).select2()
+                $('#job_no'+append_count).select2()
+               
+
                 
         $(".appnd_user_minus_btn").click(function() {
             $(this).parent().parent().remove();
@@ -607,7 +639,7 @@ function sel_supplier(sup){
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<script>
+<!-- <script>
     document.getElementById("amount_requested").onchange = function() {myFunction()};
     
     function myFunction() {
@@ -621,7 +653,7 @@ function sel_supplier(sup){
                 })   
             }
         }
-</script>
+</script> -->
 
 
 
@@ -629,10 +661,6 @@ function sel_supplier(sup){
 
 
 <script>
-
-    
-    
-  
 var currency_value = document.getElementById("currency_value").value;
 $("#currency").val(currency_value)
    
@@ -646,14 +674,8 @@ $("#currency").val(currency_value)
             var quantity = sel.value
             result = unit_price * quantity
             var amount_blnce = document.getElementById("amount_balance1").value;
-            if(result > amount_blnce){
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Requested Amount exceeds the limit !',
-                })   
-            }
-            else{
+   
+          
                 $("#totalcurrency"+count).val(result)
             $("#totalrupees"+count).val(result)
             var totalrupees = document.getElementById("totalrupees"+count).value;
@@ -663,7 +685,7 @@ $("#currency").val(currency_value)
                     amount1 = amount + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
             const myArray = tax_perc.split("&");
             tax_value = myArray[0];
             amnt_type = myArray[1];
@@ -671,39 +693,23 @@ $("#currency").val(currency_value)
                 tax = ((unit_price * quantity) * tax_value)/100
                 total_price = unit_price * quantity
                 total = parseInt(total_price) + parseInt(tax)
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })  
-                    clearFields();
-                return false; 
-                }
+               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 var totalrupees = document.getElementById("totalrupees"+count).value;
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b = parseInt( $(this).val());
+                    var b =  $(this).val();
                     amount1 = amount + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
             }
             else if(amnt_type == 'fixed') { 
               
                 var unit_price = $(this).val();
                 total = parseInt(unit_price) + parseInt(tax_value)
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })   
-                    clearFields();
-                return false;
-                }
+               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 
@@ -711,43 +717,67 @@ $("#currency").val(currency_value)
                
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b = parseInt( $(this).val());
+                    var b =  $(this).val();
                     amount1 = amount + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
                
             }
+            else if (amnt_type == "group"){ 
+                
+               
+                total1 = ((unit_price * quantity) * tax_value)/100
+                total = ((unit_price * quantity) + total1)
+                
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+               
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+               
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b =  $(this).val();
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount.toFixed(2))
             }
+            
+            
+            
+  
+            
            
         }
         
         function f2(sel,count){
             tax_perc = sel.value
-            alert(tax_perc)
             var unit_price = document.getElementById("unit_price"+count).value;
             var quantity = document.getElementById("quantity"+count).value;
             if (quantity == ''){
                 quantity = 1
             }
+
             const myArray = tax_perc.split("&");
             tax_value = myArray[0];
             amnt_type = myArray[1];
          
             if(amnt_type == 'percent') {
+                if(tax_value == 0){
+                    total_price = unit_price * quantity
+                    total = total_price
+                }
+                else{
+                
                 tax = ((unit_price * quantity) * tax_value)/100
                 total_price = unit_price * quantity
-                total = parseInt(total_price) + parseInt(tax)
-                var amount_blnce = document.getElementById("amount_balance1").value;
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })   
-                    clearFields();
-                return false;
+                total1 = (total_price * tax_value)/100
+                total = total_price + total1
+               
                 }
+                var amount_blnce = document.getElementById("amount_balance1").value;
+               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
 
@@ -756,46 +786,26 @@ $("#currency").val(currency_value)
                
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b = parseInt( $(this).val());
-                    amount1 = amount + b
+                    var b =  parseFloat($(this).val());
+                   
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
 
             }
             else if(amnt_type == 'fixed') { 
               
              
               total = parseInt(unit_price) * quantity + parseInt(tax_value)
-              if(total > amount_blnce){
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: 'Requested Amount exceeds the limit !',
-                  })   
-                  clearFields();
-                  return false;
-                  $("#totalcurrency"+count).val(total)
-                  $("#totalrupees"+count).val(total)
-          
-                  var totalrupees = document.getElementById("totalrupees"+count).value;
-    
-                  }
+        
               }
             else{ 
-                alert("kkkk")
                 
                
-                total = parseInt(unit_price) * quantity + parseInt(tax_value)
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })   
-                    clearFields();
-                return false;
-                }
+                total1 = ((unit_price * quantity) * tax_value)/100
+                total = parseInt(unit_price) * quantity + total1
+             
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                
@@ -803,11 +813,11 @@ $("#currency").val(currency_value)
                
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b = parseInt( $(this).val());
-                    amount1 = amount + b
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
             } 
         }
         function f3(sel,count){
@@ -816,6 +826,16 @@ $("#currency").val(currency_value)
             product_list = sel.value
             const myArray = product_list.split("&");
             st_price = myArray[1];
+            expense_type = myArray[2];
+          
+            
+            // exp_type0
+            if(expense_type == "project"){
+                $("#exp_type"+count).val(true)
+            }
+            else{
+                $("#exp_type"+count).val(false)
+            }
             if(st_price == 0.0)
             {
                
@@ -848,44 +868,21 @@ $("#currency").val(currency_value)
               
                     var unit_price = $(this).val();
                     total = parseInt(unit_price) + parseInt(tax_value)
-                    if(total > amount_blnce){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Requested Amount exceeds the limit !',
-                        })   
-                        clearFields();
-                        return false;
-                        $("#totalcurrency"+count).val(total)
-                        $("#totalrupees"+count).val(total)
-                
-                        var totalrupees = document.getElementById("totalrupees"+count).value;
-          
-                        }
+                   
                     }
-                // total = unit_price * 1
-                // $("#totalcurrency"+count).val(total)
-                // $("#totalrupees"+count).val(total)
-
-                // var totalrupees = document.getElementById("totalrupees"+count).value;
-
+                
 
                 var amount = 0
                 $(".add_line_amount").each(function(){
                   
-                    var b = parseInt( $(this).val());
+                    var b = parseFloat( $(this).val());
                     if (Number.isNaN(b) || b == "" || b === null) {
-                    b=0
+                    b=parseFloat(0)
                 }
-                    amount1 = amount + b
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-                $("#Total_amount").val(amount)
-
-
-                
-                // var td_inner = $('#td_quantity'+count);
-                // td_inner.empty().append(`<input name="quantity" style="background: #2b2c422b; color: black;" value="1" id="quantity`+count+`" readonly class="form-control">`);
+                $("#Total_amount").val(amount.toFixed(2))
             }
         }
             else{
@@ -916,17 +913,17 @@ $("#currency").val(currency_value)
                 }
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b = parseInt( $(this).val());
+                    var b = parseFloat( $(this).val());
                  
                     if (Number.isNaN(b) || b == "" || b === null) {
-                b=0
+                b=parseFloat(0)
        
                 }
-                    amount1 = amount + b
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                     
                 })
-                $("#Total_amount").val(amount)
+                $("#Total_amount").val(amount.toFixed(2))
                 
             }
             
@@ -939,21 +936,14 @@ $("#currency").val(currency_value)
            
             var quantity = document.getElementById("quantity"+count).value;
             var tax_perc = document.getElementById("taxes"+count).value;
+          
             if(quantity==''){
                 quantity = 1
             }
             result = unit_price * quantity
          
             var amount_blnce = document.getElementById("amount_balance1").value;
-            if(result > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })  
-                    clearFields();
-                    return false; 
-                }
+         
             
             $("#totalcurrency"+count).val(result)
             $("#totalrupees"+count).val(result)
@@ -962,11 +952,11 @@ $("#currency").val(currency_value)
             var amount = 0
                 $(".add_line_amount").each(function(){
                   
-                    var b = parseInt( $(this).val());
-                    amount1 = amount + b
+                    var b = parseFloat( $(this).val());
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
 
             const myArray = tax_perc.split("&");
             tax_value = myArray[0];
@@ -974,59 +964,51 @@ $("#currency").val(currency_value)
          
             if(amnt_type == 'percent') {
                 tax = (result * tax_value)/100
-                total = result  + parseInt(tax)
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })  
-                    clearFields();
-                return false; 
-                }
+                total = result  + tax
+               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 var totalrupees = document.getElementById("totalrupees"+count).value;
                 var amount = 0
                 $(".add_line_amount").each(function(){
                   
-                    var b = parseInt( $(this).val());
+                    var b = parseFloat( $(this).val());
                    
 
-                    amount1 = amount + b
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
             }
             else if(amnt_type == 'fixed') { 
               
                 var unit_price = $(this).val();
                 total = parseInt(unit_price) + parseInt(tax_value)
-                if(total > amount_blnce){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Requested Amount exceeds the limit !',
-                    })   
-                    clearFields();
-                return false;
-                }
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
-                
                 var totalrupees = document.getElementById("totalrupees"+count).value;
-               
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                  
-                    var b = parseInt( $(this).val());
-                   
-
-                    amount1 = amount + b
+                    var b = parseFloat( $(this).val());
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
-               $("#Total_amount").val(amount)
+               $("#Total_amount").val(amount.toFixed(2))
                
+            }
+            else if (amnt_type == "group"){ 
+                total1 = ((unit_price * quantity) * tax_value)/100
+                total = ((unit_price * quantity) + total1)
+                $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount.toFixed(2))
             }
          
             
@@ -1035,23 +1017,11 @@ $("#currency").val(currency_value)
 
 
 
-
-
-
-
-
-
-
-
-
 <script>
     function employee_function(event){
         var emp_name = event.selectedOptions[0].getAttribute('data-name');
-        
-
         $("#selected_employee_name").val(emp_name)
         var selected_employee_id = $('#emp_name_action2').val();
-    
         company_id = $("#company_id").val()
         $.ajax({
                 url: 'get_selected_employee_details',
@@ -1101,14 +1071,10 @@ function previewImg(file,count_data) {
 var reader = new FileReader();
 reader.onload = (function (theFile) {
     return function (e) {
-        // Render thumbnail.
-        // alert(e.target.result)
+       
         var div = document.createElement('div');
        
-       
         const myArray = e.target.result.split(",");
-        console.log(myArray[1])
-        alert(myArray[1])
       
         div.innerHTML = ['<input type="text" class="append_image_value'+count_data+'" name="image_name'+count_data+'[]"" value="' + file.name + '"/><img  class="append_image_value'+count_data+'" src="', e.target.result,
               '" title="', escape(theFile.name), '"/><input type="text" class="append_image_value'+count_data+'" name="base64_image'+count_data+'[]"" value="', myArray[1],'" placeholder="Image Caption Here"/><br/> />'].join('');
@@ -1123,8 +1089,6 @@ reader.readAsDataURL(file);
     $("#expense_id").click(function(){
         $(".s_partner").val('')
             supplier_name = ''
-          
-
         var select_supplier_option = $('#supplier_idnew');
         select_supplier_option.empty();
         supllier_option_value = ''
@@ -1151,37 +1115,27 @@ $('span#select2-supplier_idnew-container').html("Select Supplier");
 
         document.querySelectorAll(".append_image_value"+count).forEach(el => el.remove());
         document.getElementById("selected_image"+count).style.display = "block";
-    document.getElementById("delete_selected_image"+count).style.display = "none";
+        document.getElementById("delete_selected_image"+count).style.display = "none";
    }
 </script>
 {% if messages %}
    <script>
     {% for message in messages %}
         message1 = "{{message}}"
-       
-
-      
-       
         if(message1 == "error"){
-
             Swal.fire({
   icon: 'error',
   title: 'Oops...',
   text: "{{ message }}",
  
 })
-
-
-
         }
         else{
-
             Swal.fire(
 				  '',
 				  '{{ message }}',
 				  '{{message.tags}}'
 				)
-      
         }
     {% endfor %}
    </script>
@@ -1207,23 +1161,43 @@ $('span#select2-supplier_idnew-container').html("Select Supplier");
                 }
             }
         })
+        var exp_type = false
+        $(".exp_type").each(function(){
+            var data = $(this).val()
+            if(exp_type == true){
+                exp_type = true
+                }
+                else if(data == 'false'){
+                  
+                    exp_type = false
+                }
+                else{
+                    exp_type = true
+                }
+        })
         if(product_select_status == true){
             alert("select product ")
         }
-        else{
-            
-            document.forms["form_name"].submit();
+        else if(exp_type == true){
+            alert("Select job number")
         }
+        else{
+            document.forms["form_name"].submit();
+        }  
     })
 </script>
-
-
 
 <script>
-    $(".petty_draft_action").click(function(){
-        alert("helloooooo")
-        $("#draft_button_status").val(true)
-        document.forms["form_name"].submit();
-    })
+     function click_job_no_action(sel,count){
+            
+            
+            value = sel.value
+            
+            $("#exp_type"+count).val(false)
+
+
+     }
 </script>
+
+
 {% endblock %}

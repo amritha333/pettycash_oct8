@@ -192,6 +192,7 @@ class odoo_notification(models.Model):
     category = models.CharField(max_length=255,null=True,choices=notification_category_data)
     petty_cash_apply_username = models.CharField(max_length=255,null=True)
     total_amount_with_currency = models.CharField(max_length=255,null=True)
+    expense_name = models.CharField(max_length=255,null=True)
     
 
 

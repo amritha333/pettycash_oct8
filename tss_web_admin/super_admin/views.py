@@ -2321,6 +2321,8 @@ async def pettycash_getchilds_api(request,odoo_id,token):
 
 @test_w1('Petty Cash')
 def petty_cash_management(request):
+    from datetime import datetime
+    today_date = datetime.today().strftime('%Y-%m-%d')
     employee_id = ''
     emp_name = ''
     try:
@@ -2328,11 +2330,9 @@ def petty_cash_management(request):
         company_id = odoo_data.employee_company_id
         odoo_id = odoo_data.odoo_id
         emp_name = odoo_data.employee_name
-     
     except:
         pass
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
-
     new_api_integration = ''
     try:
         new_api_integration =  asyncio.run(petty_cash_details_api_request(request,company_id,odoo_id,odoo_token_data.token))
@@ -2348,6 +2348,7 @@ def petty_cash_management(request):
     currency_value = ''
     manager_id = ''
     petty_cash_history = ''
+    select_job_no = ''
     try:
         select_supplier_api = new_api_integration['suppliers']
         select_product= new_api_integration['product_list']
@@ -2359,7 +2360,7 @@ def petty_cash_management(request):
         currencyid = currency_id[0]
         currency_value = currency_id[1]
         petty_cash_history = new_api_integration['petty_cash_history']
-        
+        select_job_no = new_api_integration['job_numbers']
 
 
     except:
@@ -2386,10 +2387,11 @@ def petty_cash_management(request):
         'currency_value' : currency_value,
         'manager_id':manager_id,
         'child_response_name':child_response_name,
-        'petty_cash_history':petty_cash_history
+        'petty_cash_history':petty_cash_history,
+        'select_job_no':select_job_no,
+        'today_date':today_date
     }
     return render(request,'super_admin/petty_cash_management.html',context)
-
 
 
 
@@ -4926,22 +4928,14 @@ def petty_cash_draft_method(data,login_user_id):
 
 
 def pettycash_action(request):
-
     if request.method == "POST":
-        draft_button_status = request.POST.get("draft_button_status",False)
-        print("draft_button_status:::::",str(draft_button_status))
-        if draft_button_status == "true":
-            login_user_id = request.user
-            data = petty_cash_draft_method(request.POST,login_user_id)
-            print("data::::::",str(data))
-            if data == True:
-                return redirect("petty_cash_management")
-            
-            return
         selected_employee_name = request.POST.get("selected_employee_name",False)
         total_amount_data = request.POST.get("total_amount_data",False)
         currency_data = request.POST.get("currency_data",False)
         currencyid = request.POST.get("currencyid",False)
+        job_no = request.POST.get("job_no",False)
+        if job_no == "Select Jobnumber":
+            job_no = False
         manager_id = request.POST.get("manager_id",False)
         if manager_id == "False":
             manager_id = False
@@ -4949,7 +4943,6 @@ def pettycash_action(request):
         employee_name = request.POST.get("employee_name",False)
         payment_type = request.POST.get("payment_type",False)
         supplier = request.POST.get("supplier",False)
-        print("supplier:",supplier)
         if supplier == "Select Supplier":
             supplier_id = False
         else:
@@ -4976,19 +4969,14 @@ def pettycash_action(request):
                 tax_value_data = [int(tax_value[2])]
             image_name = request.POST.getlist("image_name"+str(i)+"[]")
             image_value = request.POST.getlist("base64_image"+str(i)+"[]")
-            # image_value = image_value1.split(',')[1]
             image_name_new = ''
             image_value_new = ''
             if image_name == []:
                 attachment_data = []
             else:
-                remove_image_name = str(image_name)
-                image_name_new = str(remove_image_name[1:-1])
-                remove_image_value = str(image_value)
-                image_value_new = str(remove_image_value[1:-1])
-                attachment_data = [{"attachment_name": image_name_new, "data": image_value_new}]          
+               
+                attachment_data = [ { 'attachment_name': image_name[i],'data': image_value[i]} for i in range(len(image_value))]  
             product_id = product[i]
-           
             product_list = product_id.split("&")
             expnse_list.append(
                 {
@@ -5001,6 +4989,7 @@ def pettycash_action(request):
                     "currency_id": currencyid,
                     "tax_list": tax_value_data,
                     "quantity" : quantity[i],
+                    "job_number": job_no,
                     "attachments":attachment_data
                 }
             )
@@ -5012,7 +5001,7 @@ def pettycash_action(request):
             "jsonrpc": "2.0",
             "params": {
                 "name":expense_name,
-                "employee_id":expense_name,
+                "employee_id":employee_name,
                 "user_id": manager_id,
                 "expense_lines": expnse_list
             }
@@ -5023,13 +5012,9 @@ def pettycash_action(request):
         'Content-Type': 'application/json',
         'Cookie': 'session_id=b53105332e1286dbd1609c81628966b3fd82110b'
         }
-        print("-----------------resssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
         response_pcash1 = requests.request("POST", pettycash_url, headers=headers, data=payload).json()
-
-        print("---------------nnnnnnnnnnnnnnnnresult---------")
         response2 = response_pcash1['result']
         l1 = response2['result']
-        # print("list:::::::",str(response2['message']))
         if response2['message'] == "success":
             petty_cash_mapping_id1 = response2['result']
             petty_cash_mapping_id = petty_cash_mapping_id1['petty_id']
@@ -5043,7 +5028,8 @@ def pettycash_action(request):
                 auth_user_id = request.user,
                 petty_cash_apply_username = selected_employee_name,
                 total_amount_with_currency = total_amount_with_currency,
-                category = "notification"
+                category = "notification",
+                expense_name = expense_name
             )
             save_notification.save()
             messages.success(request,"success")
@@ -5051,6 +5037,7 @@ def pettycash_action(request):
         else:
             messages.warning(request,"api error ")
             return redirect("petty_cash_management")
+
 
 
 
@@ -5279,13 +5266,19 @@ class user_company_update_api(APIView):
 
 
 class odoo_update_petty_cash_status_api(APIView):
+
     permission_classes = (IsAuthenticated,)
+
     def post(self, request, format=None):
+
         data = request.data
-        print("data::",str(data))
-        mapping_id = data['petty_cash_id']
+
+        mapping_id = data['mapping_id']
+
         state = data['state']
+
         data_update = odoo_notification.objects.filter(mapping_id=mapping_id,notification_type="petty_cash_type").update(status=state,read_status=0)
+
         return JsonResponse({"message":"success"})
 
 
