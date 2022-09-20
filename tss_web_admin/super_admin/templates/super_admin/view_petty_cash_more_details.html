@@ -131,6 +131,7 @@
                                             </th>
                                             <th class="th_exp_date">Expense Date</th>
                                             <th class="th_product">Product</th>
+                                            <th class="th_job_no">Job No</th>
                                             <th class="th_description">Description</th>
                                             <th class="th_partner">Partner</th>
                                             <th class="th_attachment">Attachment</th>
@@ -156,6 +157,12 @@
                                             <td class="">
                                                <span>{{exp_lines.product_name}}</span>
                                             </td>
+                                            <td class="">
+                                                {% if exp_lines.job_number == False %}
+                                                {% else %}
+                                                <span>{{exp_lines.job_number}}</span>
+                                                {% endif %}
+                                             </td>
                                             <td class="th_description">
                                                <span>{{exp_lines.name}}</span>
                                             </td>
