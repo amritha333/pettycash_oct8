@@ -188,7 +188,7 @@ urlpatterns = [
     
     
     
-    
+    path('petty_cash_draft',views.petty_cash_draft,name='petty_cash_draft'),
 
 
     

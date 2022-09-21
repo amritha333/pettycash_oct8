@@ -235,7 +235,7 @@
                                                    
                                                     <h3 class="profile-name mb-3">{{i.petty_cash_apply_username}}<span
                                                         class="badge badge-soft-info ml-2">Petty cash </span>
-                                                    <h5> {{i.expense_name}}</h5>      
+                                                       
 
                                                     {{i.total_amount_with_currency}}
                                                  
@@ -249,10 +249,12 @@
                                                     <small class="text-muted float-end font-13 dys">{{  i.dt|get_notifications_date_ago}} day ago</small>
                                                     {% endif %}
                                                     </h3>
+                                                   
 
                                                     {% if i.notification_type == "petty_cash_type" %}
                                                     <span class="text-muted mr-1">
                                                         <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.dt}}
+                                                        <p>{{i.expense_name}}</p>
                                                     {% else %}
                                                     <span class="text-muted mr-1">
                                                         <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_from_dt}}
@@ -261,7 +263,7 @@
                                                         <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_to_dt}}
                                                     {% endif %}
                                                         
-                                                    </span><br>
+                                                    </span>
                                                     {% if i.notification_type == "leave_approve_request" %}
 
                                                         {% if i.status == "Pending" %}

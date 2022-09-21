@@ -133,7 +133,7 @@ def login_page1(request):
 
 
 
-api_domain = "http://10.10.10.126:8069/"
+api_domain = "http://erp1.veuz.in:8069/"
 
 
 
@@ -2375,6 +2375,8 @@ def petty_cash_management(request):
     except:
         pass
    
+    petty_cash_draft_details = petty_cash_draft_history.objects.filter(auth_user_id=request.user, status="draft")
+
     context = {
         'select_supplier_api':select_supplier_api,
         'select_product':select_product,
@@ -2389,7 +2391,8 @@ def petty_cash_management(request):
         'child_response_name':child_response_name,
         'petty_cash_history':petty_cash_history,
         'select_job_no':select_job_no,
-        'today_date':today_date
+        'today_date':today_date,
+        'petty_cash_draft_details':petty_cash_draft_details
     }
     return render(request,'super_admin/petty_cash_management.html',context)
 
@@ -4862,63 +4865,151 @@ def notification_card_view(request):
     return render(request,'super_admin/notification_card_view.html',{'notifictaion':notifictaion})
 
 
-def petty_cash_draft_method(data,login_user_id):
-    print("login_user_id",login_user_id)
-    selected_employee_name = data.get("selected_employee_name",False)
-    total_amount_data = data.get("total_amount_data",False)
-    currency_data = data.get("currency_data",False)
-    currencyid = data.get("currencyid",False)
-    manager_id = data.get("manager_id",False)
+def petty_cash_draft_method(data, login_user_id):
+    
+    print("login_user_id", login_user_id)
+    selected_employee_name = data.get("selected_employee_name", False)
+    total_amount_data = data.get("total_amount_data", False)
+    if total_amount_data == '':
+        total_amount_data = None
+    currency_data = data.get("currency_data", False)
+    currencyid = data.get("currencyid", False)
+    manager_id = data.get("manager_id", False)
     if manager_id == "False":
         manager_id = False
-    expense_name = data.get("expense_name",False)
-    employee_name = data.get("employee_name",False)
-    payment_type = data.get("payment_type",False)
-    supplier = data.get("supplier",False)
-    if supplier == "Select Supplier":
-        supplier_id = False
+    expense_name = data.get("expense_name", False)
+    employee_id = data.get("employee_name", False)
+    payment_type = data.get("payment_type", False)
+    supplier = data.get("selected_supplier_name", False)
+    supplier_id = data.get("supplier", False)
+    if supplier_id == "Select Supplier":
+        supplier_id = None
     else:
-        supplier_split = supplier.split(',')
+        supplier_split = supplier_id.split(',')
         supplier_id = supplier_split[0]
-    expense_date = data.getlist("expense_date",False)
-    product = data.getlist("product[]",False)
-    description = data.getlist("description",False)
-    partner = data.getlist("partner",False)
-    reference = data.getlist("reference",False)
-    unit_price = data.getlist("unit_price",False)
-    quantity = data.getlist("quantity",False)
-    taxes = data.getlist("taxes[]",False)
-    total_currency = data.getlist("total_currency",False)
-    total = data.getlist("total",False)
+    expense_date = data.getlist("expense_date", False)
+    product = data.getlist('selected_product_name',False)
+    product_id = data.getlist("product[]", False)
+    
+    job_no = data.getlist('selected_job_name',False)
+    job_id = data.getlist("job_no", False)
+    description = data.getlist("description", False)
+    partner = data.getlist("partner", False)
+    reference = data.getlist("reference", False)
+    unit_price = data.getlist("unit_price", False)
+    quantity = data.getlist("quantity", False)
+    taxes = data.getlist('selected_tax_name')
+    tax_id = data.getlist("taxes[]", False)
+    total_currency = data.getlist("total_currency", False)
+    total = data.getlist("total", False)
     data_user = User_Management.objects.get(auth_user=login_user_id)
     data_save = petty_cash_draft_history.objects.create(
-        auth_user_id = login_user_id,
-        user_id_id = data_user.id,
-        employee_name = employee_name,
-        expense_name =  expense_name,
-        payment_type = payment_type,
-        supplier = supplier_id
+        auth_user_id=login_user_id,
+        user_id_id=data_user.id,
+        employee_name=selected_employee_name,
+        employee_id=employee_id,
+        expense_name=expense_name,
+        payment_type=payment_type,
+        supplier=supplier,
+        supplier_id=supplier_id,
+        total_amount=total_amount_data,
+        status="draft"
 
     )
+    file_len = len(expense_date)
+    for i in range(0, file_len):
+        print("job_no[i]:::::",str(job_no[i]))
+        
+        if product_id[i] == 'Select Product':
+            product_id1 = None
+        else:
+            product_id1 = product_id[i]
 
-    expense_save = petty_cash_expense_draft_history.objects.create(
-        auth_user_id = login_user_id,
-        user_id_id = data_user.id,
-        petty_cash_id_id = data_save.id,
-        expense_date = expense_date,
-        product = product,
-        description = description,
-        partner = partner,
-        reference = reference,
-        unit_price = unit_price,
-        quantity = quantity,
-        tax = taxes,
-        total_currency = total_currency,
-        total = total
+        if job_id[i] == 'Select Jobnumber':
+            job_id1 = None
+        else:
+            job_id1 = job_id[i]
 
-    )
-    
+        if tax_id[i] == "Select Tax":
+            tax_id1 = None
+        else:
+            tax_id1 = tax_id[i]
+
+        expense_save = petty_cash_expense_draft_history.objects.create(
+            auth_user_id=login_user_id,
+            user_id_id=data_user.id,
+            petty_cash_id_id=data_save.id,
+            expense_date=expense_date[i],
+            product=product[i],
+            product_id=product_id1,
+            job_no = job_no[i],
+            job_id = job_id1,
+            description=description[i],
+            partner=partner[i],
+            reference=reference[i],
+            unit_price=unit_price[i],
+            quantity=quantity[i],
+            tax=taxes[i],
+            tax_id=tax_id1,
+            total_currency=total_currency[i],
+            total=total[i]
+
+        )
+
+        image_name = data.getlist("image_name" + str(i) + "[]")
+        image_value = data.getlist("base64_image" + str(i) + "[]")
+        file_len = len(image_name)
+        for j in range(0, file_len):
+            petty_cash_attachments.objects.create(
+                petty_cash_id_id=data_save.id,
+                expense_petty_cash_id_id=expense_save.id,
+                image_name=image_name[j],
+                image_value=image_value[j],
+            )
+
     return True
+
+
+
+def petty_cash_draft(request):
+    import json 
+    chil_response = request.POST.get("child_response",False)
+    childs = json.loads(chil_response)
+    select_supplier_api = request.POST.get("select_supplier_api",False)
+    suppliers = json.loads(select_supplier_api)
+    select_product = request.POST.get("select_product",False)
+    products = json.loads(select_product)
+    select_tax = request.POST.get("select_tax",False)
+    taxes = json.loads(select_tax)
+    select_job_no = request.POST.get("select_job_no",False)
+    jobs = json.loads(select_job_no)
+    id = request.POST.get("id", False)
+    print("id:::::::::::::::::")
+    data = petty_cash_draft_history.objects.get(id=id)
+    data_expense = petty_cash_expense_draft_history.objects.filter(petty_cash_id_id=id)
+    data_attachment = petty_cash_attachments.objects.filter(petty_cash_id_id=id)
+    emp_name = ''
+    try:
+        odoo_data = User_Management.objects.get(auth_user=request.user)
+        company_id = odoo_data.employee_company_id
+        odoo_id = odoo_data.odoo_id
+        emp_name = odoo_data.employee_name
+    except:
+        pass
+    odoo_token_data = odoo_api_request_token.objects.get(status="True")
+    context = {
+        'data': data,
+        'data_expense': data_expense,
+        'data_attachment':data_attachment,
+        'emp_name':emp_name,
+        'company_id':company_id,
+        'childs':childs,
+        'suppliers':suppliers,
+        'products':products,
+        'taxes':taxes,
+        'jobs':jobs
+    }
+    return render(request, 'super_admin/petty_cash_draft.html', context)
     
    
 
@@ -4929,6 +5020,13 @@ def petty_cash_draft_method(data,login_user_id):
 
 def pettycash_action(request):
     if request.method == "POST":
+        draft_button_status = request.POST.get("draft_button_status", False)
+        if draft_button_status == "true":
+            login_user_id = request.user
+            data = petty_cash_draft_method(request.POST, login_user_id)
+            if data == True:
+                return redirect("petty_cash_management")
+            return
         selected_employee_name = request.POST.get("selected_employee_name",False)
         total_amount_data = request.POST.get("total_amount_data",False)
         currency_data = request.POST.get("currency_data",False)

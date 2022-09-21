@@ -1,0 +1,548 @@
+{% load static %}
+
+<div id="edit_draft_modal" class="modal modal-right fade" role="dialog" data-backdrop="static"  >
+<div class="modal-dialog modal-full">
+ 
+<!-- Modal content-->
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">
+              <span style="color: #f5f5f5;font-size: 16px;  font-weight: bold;"> Petty Cash Application Form</span>
+                   <br> <span  style="font-size: 13px;">Existsting Amount :</span>
+                    <input id="amount_balance_new" type="text" value="{{amount_balance}}" class="form_control" style="color: #ffffff;
+                    width: 100px;
+                    background: #ff000000;
+                    border: none;
+                    font-weight: bold;" readonly >
+        </h4>
+
+        <div class="pull-right"> <a class="btn enlarge_modal" data-toggle="tooltip" data-original-title="Fullscreen"><i
+                        class="mdi mdi-crop-free" aria-hidden="true"></i> </a>
+            <a class="btn dslarge_modal" data-toggle="tooltip" data-original-title="Back"><i
+                        class="mdi mdi-arrow-expand-all" aria-hidden="true"></i> </a>
+        </div>
+    </div>
+    <form class="petty_cash_form_submit" action="pettycash_action" method="POST" name="form_name" enctype="multipart/form-data">
+       
+        {% csrf_token %}
+    <div class="modal-body" style="padding: 15px 0px 0px;">
+
+
+            <div class="col-md-12 px-3">
+                <div class="row">
+                    <div class="col-md-6 colp_r_15">
+                        <div class="row">
+                            <input type="hidden" value="{{company_id}}" id="company_id">
+                            <input type="hidden" name="currencyid" value="{{currencyid}}" id="currencyid">
+                            <input type="hidden" name="currency_value" value="{{currency_value}}" id="currency_value">
+                            <input type="hidden" name="manager_id" value="{{manager_id}}" id="manager_id">
+
+                            <div class="col-md-12 colp_r_15 mt-4">
+<input type="hidden" id="selected_employee_name" value="{{child_response_name}}" name="selected_employee_name">
+
+                                    <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Employee name</label>
+                                        <select name="employee_name" onchange="employee_function(this)" class="form-control select2" id="emp_name_action_new">
+                                            <option value="{{data.employee_id}}">{{data.employee_name}}</option>
+                                            {% for i in childs %}
+                                            <option value="{{i.id}}" data-name="{{i.name}}">{{i.name}}</option>
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                            </div>
+
+                                    <!-- <select name="employee_name" class="form-control select2 select2-hidden-accessible" id="emp_name_action">
+                                        {% for i in child_response %}
+                                        <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
+
+                                        {% endfor %}
+                                    </select>
+                                    <input required autocomplete="off" value="{{request.user}}" name="employee_name" type="text" id="" class="input form-control">
+                                    <label class="inputText">Employee name</label> -->
+
+
+                            <div class="col-md-12 colp_r_15">
+                                <div class="form-group bmd-form-group required_item">
+                                    <input required autocomplete="off" value="{{data.expense_name}}" name="expense_name" type="text" id="" class="input form-control">
+                                    <label class="inputText">Expense Name</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 colp_r_15">
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <div class="user_daterangpickrbox">
+                                    <div class="">
+                                        <h3 class="big_title2">Payment Type</h3>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <div class="">
+                                            <input name="payment_type" value="Expense" type="radio" id="expense_id_draft" {% if data.payment_type == "Expense" %} checked {% else %} {% endif %} >
+                                            <label for="expense_id_draft" id="expense">Expense</label> <span>
+                                            <input type="number" class="password_day_countbox hide "
+                                                   style="max-width: 50px;margin-left: 20px"> </span>
+                                        </div>
+                                        <div class="">
+                                            <input name="payment_type" type="radio" value="Supplier" id="supplier_id_draft" {% if data.payment_type == "Supplier" %} checked {% else %} {% endif %}>
+                                            <label for="supplier_id_draft" id="supplier">Supplier</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 mt-4" id="select_supplier_draft" style="display:none">
+                                <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label>
+                                    <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                        <option value="{{data.supplier_id}}">{{data.supplier}}</option>
+                                        {% for supplier in suppliers %}
+                                            <option  value="{{supplier.id}},{{supplier.name}}">{{supplier.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+<div class="row expirationbox">
+    <div class="col-12">
+        <div class="row">
+            <h5 class="modal_sub_hdng">Expense</h5>
+        </div>
+    </div>
+    <div class="col-12 mt-2">
+        <div class="container-fluid">
+
+            <table class="table scrolbaletable" border="2" style="border: 1px solid #ccc;">
+                <tr>
+                    <th class="th_btnpand">
+                        <div class="appnd_user_btn1 append_btn">+</div>
+                    </th>
+                    <th class="th_exp_date">Expense Date</th>
+                    <th class="th_product">Product</th>
+                    <th class="th_job_no">Job No</th>
+                    <th class="th_description">Description</th>
+                    <th class="th_partner">Partner</th>
+                    <th class="th_attachment">Attachment</th>
+                    <th class="th_description">Reference</th>
+                    <th class="th_unit_price">Unit Price</th>
+                    <th class="th_unit_price">Quantity</th>
+                    <th class="th_taxes">Taxes</th>
+                    <th class="th_total_currency">Total in currency</th>
+                    <th class="th_total">Total</th>
+                </tr>
+
+
+                <tbody class="apenduser1">
+                {% for j in data_expense %}
+                <tr>
+                    <td class="th_btnpand"> 
+                        <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                    </td>
+                    <td class="th_exp_date">
+                        <input required type="date" value="{{j.expense_date|safe}}" name="expense_date" id="ami"  class="form-control expense_date">
+                    </td>
+                    <td class="th_product">
+                        <select name="product" data-v1={{ forloop.counter0 }} onchange="f3(this, {{ forloop.counter0 }})" class="form-control select2 select2-hidden-accessible" id="product{{ forloop.counter0 }}" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option value="{{j.product_id}}">{{j.product}}</option>
+                            {% for pro in  products %}
+                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="th_job_no">
+                        <input type="hidden" id="selected_job_name0" value="{{job_name}}" name="selected_job_name">
+                        <select name="job_no" data-v1= {{ forloop.counter0 }} onchange="click_job_no_action(this, {{ forloop.counter0 }})"  class="form-control select2 select2-hidden-accessible job_no_select" id="job_no{{ forloop.counter0 }}" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option value="{{j.job_id}}">{{j.job_no}}</option>
+                            {% for job in  jobs %}
+                            <option data-name="{{job.number}}" value="{{job.id}}">{{job.number}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="th_description">
+                        <input name="description" value="{{j.description}}" class="form-control">
+                    </td>
+                    <td class="th_partner">
+                        <input name="partner" value="{{j.partner}}" autocomplete="off" class="form-control s_partner" readonly>
+                    </td>
+                    <td class="th_attachment" style="cursor: pointer;">
+                        <div id="selected_image0">
+                            <label for="files">
+                                <img  height="23px"  width="23px" style="margin-left:25px; cursor: pointer;"   src="{% static 'file_image1.png' %}">
+                            </label>
+                                <input class="file-input1" value="{{j.attached_file}}" data-count= {{ forloop.counter0 }} id="files"  name="employee_attached_file" type="file"  accept="application/pdf,image/*" multiple />
+                        </div>
+                        <div id="delete_selected_image0" style="display: none">
+                            <span onclick="delete_selected_image(0)"><i style="color: red;
+                                margin-left: 32px;
+                                font-weight: bold;
+                                font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                        </div>
+                    </td>
+                    <td class="th_description">
+                        <input name="reference" value="{{j.reference}}" class="form-control">
+                    </td>
+                    <td class="th_unit_price">
+
+                        <input required type="number" value="{{j.unit_price}}" name="unit_price" data-v1=0 onchange="f4(this, {{ forloop.counter0 }})" id="dunit_price{{forloop.counter0}}" autocomplete="off" class="form-control">
+                    </td>
+                    <td class="th_unit_price" id="td_quantity0">
+                        <input type="number" value="{{j.quantity}}" name="quantity" data-v1={{forloop.counter0}} onchange="quantityfn(this,{{forloop.counter0}})" id="dquantity{{forloop.counter0}}" autocomplete="off" class="form-control">
+                    </td>
+                    <td class="th_taxes">
+                        <!-- <select name="taxes" data-v1=0 onchange="f2(this,0)" class="form-control taxes" id="taxes"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Tax</option>
+
+                            <option value="15.0 , percent">vat 15</option>
+
+                        </select> -->
+                        <select name="taxes[]"  data-v1=0 onchange="f2(this, {{ forloop.counter0 }})"  class="form-control select2 select2-hidden-accessible" id="dtaxes{{forloop.counter0}}"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option value="{{j.tax_id}}">{{j.tax}}</option>
+                            {% for tax in  taxes %}
+                        <option  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                            {% endfor %}
+                        </select>
+
+                    </td>
+                    <td class="th_total_currency">
+
+                        <label style="position: relative;
+                        display: block;
+                        padding-right: 76px;
+                        width: 174px;
+                        box-sizing: border-box;" data-domain="domain.com">
+                            <input style=" position: relative;
+                            display: block;
+                            padding-right: 76px;
+                            width: 174px;
+                            box-sizing: border-box;  border-right-style: hidden;border: none;" type="text" value="{{j.total_currency}}" name="total_currency"  id="dtotalcurrency{{forloop.counter0}}"  class="form-control" readonly>
+
+
+                    <label style="
+                      position: absolute;
+                      top: 4px;
+                      left: 118px;
+                      font-family: arial, helvetica, sans-serif;
+                      font-size: 12px;
+                      display: block;
+                      color: rgb(227 0 0);
+                      font-weight: bold;">{{currency_value}}</label>
+
+                    </td>
+                    <td class="th_total">
+                        <input name="total" value="{{j.total}}" id="dtotalrupees{{forloop.counter0}}" class="form-control dadd_line_amount" readonly>
+                    </td>
+
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+         <div style="float: right;">
+            <label  >Total Amount:</label>
+
+            <input id="dTotal_amount" value="{{data.total_amount}}" name="total_amount_data" type="text"  class="form_control" style="text-align: right;color: #060c3d; border: none;
+            font-weight: bold;" readonly > <span style="font-weight: bold;
+    color: #951c1cbd;">{{currency_value}}</span>
+
+    <input type="hidden" name="currency_data" value="{{currency_value}}">
+         </div>
+        </div>
+    </div>
+</div>
+
+    <div id="displayimage" style="display:none;">
+    </div>
+
+</div>
+
+
+<input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
+<input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<!--    <button type="submit" class="btn" style="background: #14bcd7;color: white;" formaction="petty_cash_draft_action">Draft</button>-->
+    <button type="submit" class="btn btn-info" >Save</button>
+</div>
+    </form>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        append_count = 0
+    $(".appnd_user_btn1").click(function() {
+        var code = document.getElementsByClassName('expense_date') ;
+        var length = code.length ;
+        
+        append_count = length
+        alert(append_count)
+
+        $(".apenduser1").append(`<tr>
+                    <td class="th_btnpand">
+                        <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
+                    </td>
+                    <td class="th_exp_date">
+                        <input required name="expense_date" type="date"  class="form-control expense_date">
+                    </td>
+                    <td class="th_product">
+                        <input type="hidden" id="selected_product_name`+append_count+`" value="{{product_name}}" name="selected_product_name">
+                        <select name="product[]" data-v1=`+append_count+` onchange="f3(this,`+append_count+`)"  class='myselect form-control product_select_data'   id="product`+append_count+`">
+                            <option selected="">Select Product</option>
+                            {% for pro in products %}
+                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                     <td class="th_job_no">
+                        <input type="hidden" id="selected_job_name`+append_count+`" value="{{job_name}}" name="selected_job_name">
+                        <select name="job_no" data-v1=`+append_count+` onchange="click_job_no_action(this,`+append_count+`)" class="myselect form-control job_no_select" id="job_no`+append_count+`" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Jobnumber</option>
+                            {% for job in  jobs %}
+                            <option data-name="{{job.number}}" value="{{job.id}}">{{job.number}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="th_description">
+                        <input name="description" id="" data-count=`+append_count+`  class="form-control">
+                    </td>
+                    <td class="th_partner">
+                        <input name="partner" value="`+supplier_name+`" autocomplete="off" class="form-control s_partner"  readonly>
+                    </td>
+                    <td class="th_attachment">
+
+                        <div id="selected_image`+append_count+ `">
+                        <label for="files`+append_count+`">
+                            <img height="23px"  width="23px" style="margin-left:25px"   src="{% static 'file_image1.png' %}">
+                        </label>
+
+                            <input class="file-input1" data-count=`+append_count+`  id="files`+append_count+`" onchange="filenew(this,`+append_count+`)" name="employee_attached_file" type="file" accept="application/pdf,image/*" multiple />
+                   </div>
+
+                   <div id="delete_selected_image`+append_count+`" style="display: none">
+                            <span onclick="delete_selected_image(`+append_count+`)"><i style="color: red;
+                                margin-left: 32px;
+                                font-weight: bold;
+                                font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                        </div>
+
+                            </td>
+                    <td class="th_description">
+                        <input name="reference"  class="form-control">
+                    </td>
+                    <td class="th_unit_price">
+                        <input required type="number" name="unit_price" data-v1=`+append_count+` onchange="f4(this,`+append_count+`)" id="dunit_price`+append_count+`" class="form-control">
+                    </td>
+                    <td class="th_unit_price" id="td_quantity`+append_count+`">
+                        <input type="number" name="quantity" data-v1=`+append_count+` onchange="quantityfn(this,`+append_count+`)" id="dquantity`+append_count+`" class="form-control">
+                    </td>
+                    <td class="th_taxes">
+                    <input type="hidden" id="selected_tax_name`+append_count+`" value="{{tax_name}}" name="selected_tax_name">
+                        <select name="taxes[]"  data-v1=`+append_count+` onchange="f2(this,`+append_count+`)"  class='myselect form-control' id="dtaxes`+append_count+`"  style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <option selected="">Select Tax</option>
+                            {% for tax in  taxes %}
+                        <option data-name="{{tax.name}}" value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="th_total_currency">
+                        <label style="position: relative;
+                        display: block;
+                        padding-right: 76px;
+                        width: 174px;
+                        box-sizing: border-box;" data-domain="domain.com">
+                        <input style=" position: relative;
+                            display: block;
+                            padding-right: 76px;
+                            width: 174px;
+                            box-sizing: border-box;  border-right-style: hidden;border: none;" type="text"  name="total_currency" id="dtotalcurrency`+append_count+`" class="form-control" readonly>
+
+                            <label style="
+                      position: absolute;
+                      top: 4px;
+                      left: 118px;
+                      font-family: arial, helvetica, sans-serif;
+                      font-size: 12px;
+                      display: block;
+                      color: rgb(227 0 0);
+                      font-weight: bold;">{{currency_value}}</label>
+                            </td>
+                    <td class="th_total">
+                        <input name="total" id="dtotalrupees`+append_count+`" class="form-control dadd_line_amount" readonly>
+                    </td>
+                </tr>`);
+                $('#product'+append_count).select2()
+                $('#taxes'+append_count).select2()
+
+        $(".appnd_user_minus_btn").click(function() {
+            $(this).parent().parent().remove();
+        });
+
+document.getElementById('files'+append_count).addEventListener('change', handleFileSelect, false);
+});
+});
+
+
+function sel_supplier(sup){
+        var supplier_name = sup.selectedOptions[0].getAttribute('data-name');
+
+
+       $("#selected_supplier_name").val(supplier_name)
+            supplier = sup.value
+
+            const myArray = supplier.split(",");
+            supplier_name1 = myArray[1];
+            $(".s_partner").val(supplier_name1)
+            supplier_name = supplier_name1
+        }
+ </script>
+
+<script src="{% static 'adminnew/js/select2.full.js' %}"></script>
+<script src="{% static 'adminnew/js/select2-custome.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+
+
+<script>
+
+    $("#supplier_id_draft").click(function(){
+        $("#select_supplier_draft").show();
+    })
+    $("#expense_id_draft").click(function(){
+        $("#select_supplier_draft").hide();
+    })
+</script>
+
+<script type=text/javascript>
+    $(document).ready(function(){
+        var remember = document.getElementById('supplier_id_draft');
+        if (remember.checked){
+            $("#select_supplier_draft").show();
+        }
+        else{
+            $("#select_supplier_draft").hide();
+        }
+    });
+</script>
+
+
+
+<script>
+    function employee_function(event){
+    alert("jiyad")
+
+        var selected_employee_id = $('#emp_name_action_new').val();
+        alert(selected_employee_id)
+        company_id = $("#company_id").val()
+        alert(company_id)
+        $.ajax({
+
+                url: 'get_selected_employee_details',
+
+                data: {
+                    'odoo_id': selected_employee_id,
+                    'company_id' :  company_id
+                },
+                type: 'GET',
+                success: function (data) {
+                    amount_balance1 = data['amount_balance']
+                    alert("llll")
+                    alert(amount_balance1)
+                    $("#amount_balance_new").val(amount_balance1)
+                }
+            });
+    }
+</script>
+
+<script>
+     function f4(sel,count){
+
+alert("hheeeeeee")
+alert(count)
+var unit_price = sel.value
+            var quantity = document.getElementById("dquantity"+count).value;
+            alert(count)
+            alert(quantity)
+            if (quantity == ''){
+                }
+            else{
+            var tax_perc = document.getElementById("dtaxes"+count).value;
+            if(quantity==''){
+                quantity = 1
+            }
+            result = unit_price * quantity
+            var amount_blnce = document.getElementById("amount_balance1").value;
+            $("#dtotalcurrency"+count).val(result)
+            $("#dtotalrupees"+count).val(result)
+            var totalrupees = document.getElementById("dtotalrupees"+count).value;
+            var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b = parseFloat( $(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            const myArray = tax_perc.split("&");
+            tax_value = myArray[0];
+            amnt_type = myArray[1];
+            if(amnt_type == 'percent') {
+                tax = (result * tax_value)/100
+                total = result  + tax
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b = parseFloat( $(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            }
+            else if(amnt_type == 'fixed') { 
+                total = result + parseInt(tax_value)
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b = parseFloat( $(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            }
+            else { 
+                if (tax_value == "Select Tax"){
+                    tax_value = 0
+                }
+                else{
+                    tax_value = 0
+                }
+                total1 = ((unit_price * quantity) * tax_value)/100
+                total = ((unit_price * quantity) + total1)
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var totalrupees = document.getElementById("dtotalrupees"+count).value;
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            }
+            }
+     }
+</script>
+
+
+

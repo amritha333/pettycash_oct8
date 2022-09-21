@@ -346,7 +346,6 @@ class petty_cash_draft_history(common):
     employee_id = models.IntegerField(null=True)
     supplier_id = models.IntegerField(null=True)
     total_amount = models.FloatField(null=True)
-    job_number = models.CharField(max_length=255,null=True)
 
 
 
@@ -359,6 +358,7 @@ class petty_cash_expense_draft_history(common):
     petty_cash_id = models.ForeignKey(petty_cash_draft_history,related_name="User_expense_patty_cash_draft_history_petty_cash_id",on_delete=models.CASCADE,null=True)
     expense_date = models.CharField(max_length=255,null=True)
     product = models.CharField(max_length=255,null=True)
+    job_no = models.CharField(max_length=255, null=True)
     description = models.CharField(max_length=255,null=True)
     partner = models.CharField(max_length=255,null=True)
     reference= models.CharField(max_length=255,null=True)
@@ -367,11 +367,15 @@ class petty_cash_expense_draft_history(common):
     tax = models.CharField(max_length=255,null=True)
     total_currency = models.CharField(max_length=255,null=True)
     total = models.CharField(max_length=255,null=True)
-    product_id = models.CharField(max_length=255, null=True)
-    tax_id = models.CharField(max_length=255, null=True)
+    product_id =  models.CharField(max_length=255,null=True)
+    job_id =  models.CharField(max_length=255,null=True)
+    tax_id =  models.CharField(max_length=255,null=True)
 
 
 class petty_cash_attachments(common):
-    expense_petty_cash_id = models.ForeignKey(petty_cash_expense_draft_history, on_delete=models.CASCADE,related_name="petty_cash_attachments")
+    petty_cash_id = models.ForeignKey(petty_cash_draft_history,
+                                      related_name="petty_cash_attachments",
+                                      on_delete=models.CASCADE, null=True)
+    expense_petty_cash_id = models.ForeignKey(petty_cash_expense_draft_history, on_delete=models.CASCADE,related_name="expense_petty_cash_attachments")
     image_name = models.CharField(max_length=255, null=True)
     image_value = models.TextField(null=True)

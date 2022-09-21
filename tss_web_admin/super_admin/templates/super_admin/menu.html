@@ -290,7 +290,15 @@
                                     {% endif %}
                                 </small></small>
                                 
+                                {% if i.notification_type == "petty_cash_type" %}
+
+                                <small style="color: red;">Date : {{i.dt}}</small>
+
+                                {% else %}
+
                                 <small style="color: red;">Date : {{i.requested_from_dt}} to {{i.requested_to_dt}}</small>
+
+                                {%endif %}
                                 </p>
                                     
                               

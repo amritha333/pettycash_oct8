@@ -7,7 +7,130 @@
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/jquery.dataTables.min.css' %}">
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/responsive.dataTables.min.css' %}">
 
+<style>
+    .confirm-box {
+        width: 280px;
+    position: absolute;
+    top: 30%;
+    left: 45%;
+    z-index: 10;
+    color: rgba(0,0,0,0.7);
+    font-family: Helvetica;
+    font-size: 15px;
+    font-weight: bold;
+    background: #DDD;
+    border-radius: 0.4em;
+    border: 1px solid rgba(0,0,0,0.6);
+    box-shadow: 0 0 10px rgb(0 0 0 / 40%); 
+  
+  &:after {
+   	content:"";
+    display:table;
+    clear:both;
+  }
 
+}
+
+.confirm-box h1 {
+ 	text-align:center; 
+  padding:10px 30px;
+  line-height:1.2em;
+  border-radius:0.4em 0.4em 0 0;
+  text-shadow:0 1px 0 rgba(255,255,255,0.1);
+	border-bottom:1px solid rgba(0,0,0,0.3);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 30px 30px rgba(255,255,255,0.2);
+  margin-bottom:15px;
+  background:#0088CC;
+}
+
+
+.confirm-box a {
+ 	display:block;
+  position:relative;
+  
+  padding:7px 40px;
+  width:130px;
+  margin:0 auto;
+  margin-bottom:15px;
+  
+  text-decoration:none;
+  text-align:center;
+  font-size:13px;
+
+  border:1px solid rgba(0,0,0,0.7);
+  border-radius:0.2em;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 20px 20px rgba(255,255,255,0.2),
+    1px 2px 1px rgba(0,0,0,0.2),
+    0 0 2px 8px rgba(50,50,50,0.1);
+  transition:all 0.3s ease-out;
+  background:#d02211;
+  z-index:100;
+  
+  font-weight:bold;
+  color:rgba(0,0,0,0.6);
+  text-shadow:0 1px 0 rgba(255,255,255,0.2);
+  -webkit-font-smoothing: subpixel-antialiased;
+
+  
+  &:hover {
+   	 box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 -20px 20px rgba(200,200,200,0.1),
+      1px 2px 1px rgba(0,0,0,0.2),
+      0 0 2px 8px rgba(100,100,100,0.1);
+  }
+  
+  &:active {
+   	top:1px; 
+  }
+
+}
+
+#progress-bar {
+ 	width:90%;
+  margin:0 auto;
+  margin-bottom:15px;
+	height:28px;
+  border:1px solid rgba(0,0,0,0.8);
+  background:#232323;
+  border-radius:1em;
+  box-shadow:inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+#inner-pb {
+	position:relative;
+  border:1px solid rgba(0,0,0,0.8);
+  width:0;
+  
+  
+  height:22px;
+  margin-left:5px;
+  margin-top:2px;
+  background: repeating-linear-gradient(-45deg, #625e74, #5d5970 20px, #5f5b72 20px, #57536b 40px);
+  border-radius:0.8em;
+  animation: roll 5s linear infinite;
+  box-shadow: 
+    inset 0 10px 10px rgba(255,255,255,0.2), 
+    inset 0 1px 0 rgba(255,255,255,0.3), 
+    inset 0 -5px 3px rgba(0,0,0,0.2),
+    0 3px 2px rgba(0,0,0,0.3);
+}
+
+@-moz-keyframes roll {
+	0% { width:0; }
+  100% { width:95%; }
+}
+
+@-webkit-keyframes roll {
+	0% { width:0; }
+  100% { width:95%; }
+}
+</style>
 
 <style>
 #files::-webkit-file-upload-button {
@@ -83,6 +206,48 @@ user-select: none;
                         </div>
                     </div>
                 </div>
+
+                <div class="card" style="       box-shadow: -2px -1px -1px rgb(0 0 0 / 30%);
+             padding: 1em;
+             border: 1px solid rgba(0,0,0,0.15);
+             display: grid;
+             gap: 1em;
+             background: #fafafa;">
+                    <br>
+                    <table id="datatable1" class="table table-bordered dt-responsive nowrap table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Employee name</th>
+                                <th>Expense name</th>
+                                <th>Payment Type</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in petty_cash_draft_details %}
+                                <tr>
+                                    <td>
+                                        {{i.employee_name}}
+                                    </td>
+                                    <td>
+                                     {{i.expense_name}}
+                                    </td>
+                                    <td>{{i.payment_type}}</td>
+                                    <td>{{i.total_amount}}</td>
+                                    <td>
+                                        <a class="draft_action" data-id="{{i.id}}" href="#">
+                                            <div class="badge badge-success badge-success-alt" style="background-color: #02bfcd;
+                              padding: 7px 30px;">Draft</div>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
                 <div class="card-box ">
                     <div class="table_rspnsv" id="tableview">
                         <div class="row2 tbl_stngs commen_table">
@@ -169,6 +334,14 @@ user-select: none;
         </div>
     </div>
     <form class="petty_cash_form_submit" action="pettycash_action" method="POST" name="form_name" enctype="multipart/form-data">
+
+        <div class="confirm-box" id="kl2" style="display: none">
+            <h1 style="font-size: 14px;
+            color: white;    background: #423d58;">Please wait...</h1>
+            <div id="progress-bar">
+                <div id="inner-pb"></div>
+            </div>
+          </div>
         
         {% csrf_token %}
     <div class="modal-body" style="padding: 15px 0px 0px;">
@@ -242,12 +415,12 @@ user-select: none;
 
                             <div class="col-md-8 mt-4" id="select_supplier" style="display:none">
                                 <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label> 
-                                        
+                                    <input type="hidden" id="selected_supplier_name" name="selected_supplier_name">
                                     <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
                                     <option selected="">Select Supplier</option>
 
                                     {% for supplier in select_supplier_api %}
-                                    <option  value="{{supplier.id}},{{supplier.name}}">{{supplier.name}}</option>
+                                    <option data-name="{{supplier.name}}" value="{{supplier.id}},{{supplier.name}}">{{supplier.name}}</option>
                                     {% endfor %}
                                 </select> </div> 
                             </div>
@@ -302,20 +475,22 @@ user-select: none;
                         <input required type="date" name="expense_date" max="{{today_date}}"  class="form-control">
                     </td>
                     <td class="th_product">
+                        <input type="hidden" id="selected_product_name0" name="selected_product_name">
                         <select name="product[]" data-v1=0 onchange="f3(this,0)" class="form-control select2 select2-hidden-accessible product_select_data" id="product0" style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option selected="">Select Product</option>
                             {% for pro in  select_product %}
-                            <option value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
+                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
                             {% endfor %}
                         </select>  
 
                         <input type="hidden" name="exp_type" id="exp_type0" class="exp_type">
                     </td>
                     <td class="th_job_no">
+                        <input type="hidden" id="selected_job_name0" name="selected_job_name">
                         <select name="job_no" data-v1=0 onchange="click_job_no_action(this,0)"  class="form-control select2 select2-hidden-accessible job_no_select" id="job_no0" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                            <option selected="">Select Jobnumber</option>
+                            <option selected="" value="Select Jobnumber">Select Jobnumber</option>
                             {% for job in  select_job_no %}
-                            <option value="{{job.id}}">{{job.number}}</option>
+                            <option data-name="{{job.number}}" value="{{job.id}}">{{job.number}}</option>
                             {% endfor %}
                         </select>  
                     </td>
@@ -350,6 +525,7 @@ user-select: none;
                         <input type="number" name="quantity" data-v1=0 onchange="quantityfn(this,0)" id="quantity0" autocomplete="off" class="form-control">
                     </td>
                     <td class="th_taxes">
+                        <input type="hidden" id="selected_tax_name0" name="selected_tax_name">
                         <!-- <select name="taxes" data-v1=0 onchange="f2(this,0)" class="form-control taxes" id="taxes"  style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option selected="">Select Tax</option>
                             
@@ -359,7 +535,7 @@ user-select: none;
                         <select name="taxes[]"  data-v1=0 onchange="f2(this,0)"  class="form-control select2 select2-hidden-accessible" id="taxes0"  style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option selected="">Select Tax</option>
                             {% for tax in  select_tax %}
-                        <option  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                        <option  data-name="{{tax.name}}"  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
                             {% endfor %}
                         </select>
                        
@@ -418,9 +594,12 @@ user-select: none;
 
 <input type="hidden" name="odoo_employee_company_id" value=0 id="odoo_employee_company_id">
 <input type="hidden" name="odoo_employee_branch_id" value=0 id="odoo_employee_branch_id">
+<input type="hidden" value="false" name="draft_button_status" id="draft_button_status">
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <a href="#" class="btn  petty_draft_action" style="    background: #14bcd7;
+    color: white;">Draft</a>
     <button type="submit" class="btn btn-info" >Save</button>
 </div>
 
@@ -433,7 +612,7 @@ user-select: none;
 </div>
 </div>
 
-
+<div id="edit_draft"></div>
 
 <script src="{% static 'adminnew/js/jquery.min.js' %}"></script>
 <script src="{% static 'adminnew/js/custome.js' %}"></script>
@@ -505,19 +684,21 @@ $('#responsive-datatable').DataTable();
                         <input type="date" required name="expense_date" max="{{today_date}}"  class="form-control">
                     </td>
                     <td class="th_product">
+                        <input type="hidden" id="selected_product_name`+append_count+`" name="selected_product_name">
                         <select name="product[]" data-v1=`+append_count+` onchange="f3(this,`+append_count+`)"  class='myselect form-control product_select_data'   id="product`+append_count+`">
                             <option selected="">Select Product</option>
                             {% for pro in select_product %}
-                            <option value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
+                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
                             {% endfor %}
                         </select>
                         <input type="hidden" name="exp_type" id="exp_type`+append_count+`" class="exp_type">
                     </td>
                     <td class="th_job_no">
+                        <input type="hidden" id="selected_job_name`+append_count+`" name="selected_job_name">
                         <select name="job_no" data-v1=`+append_count+` onchange="click_job_no_action(this,`+append_count+`)" class="myselect form-control job_no_select" id="job_no`+append_count+`" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                            <option selected="">Select Jobnumber</option>
+                            <option selected="" value='Select Jobnumber'>Select Jobnumber</option>
                             {% for job in  select_job_no %}
-                            <option value="{{job.id}}">{{job.number}}</option>
+                            <option data-name="{{job.number}}" value="{{job.id}}">{{job.number}}</option>
                             {% endfor %}
                         </select>  
                     </td>
@@ -555,10 +736,11 @@ $('#responsive-datatable').DataTable();
                         <input type="number" name="quantity" data-v1=`+append_count+` onchange="quantityfn(this,`+append_count+`)" id="quantity`+append_count+`" class="form-control">
                     </td>
                     <td class="th_taxes">
+                        <input type="hidden" id="selected_tax_name`+append_count+`" name="selected_tax_name">
                         <select name="taxes[]"  data-v1=`+append_count+` onchange="f2(this,`+append_count+`)"  class='myselect form-control' id="taxes`+append_count+`"  style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option selected="">Select Tax</option>
                             {% for tax in  select_tax %}
-                        <option  value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
+                        <option data-name="{{tax.name}}" value="{{tax.amount}}&{{tax.amount_type}}&{{tax.id}}">{{tax.name}}</option>
                             {% endfor %}
                         </select>    
                     </td>
@@ -604,6 +786,8 @@ document.getElementById('files'+append_count).addEventListener('change', handleF
 
 
 function sel_supplier(sup){
+        var supplier_name = sup.selectedOptions[0].getAttribute('data-name');
+        $("#selected_supplier_name").val(supplier_name)
             supplier = sup.value
             
             const myArray = supplier.split(",");
@@ -664,19 +848,14 @@ function sel_supplier(sup){
 var currency_value = document.getElementById("currency_value").value;
 $("#currency").val(currency_value)
    
-
         var arr = []
-        
         function quantityfn(sel,count){
-            
             var unit_price = document.getElementById("unit_price"+count).value;
             var tax_perc = document.getElementById("taxes"+count).value;
             var quantity = sel.value
             result = unit_price * quantity
             var amount_blnce = document.getElementById("amount_balance1").value;
-   
-          
-                $("#totalcurrency"+count).val(result)
+            $("#totalcurrency"+count).val(result)
             $("#totalrupees"+count).val(result)
             var totalrupees = document.getElementById("totalrupees"+count).value;
             var amount = 0
@@ -693,7 +872,6 @@ $("#currency").val(currency_value)
                 tax = ((unit_price * quantity) * tax_value)/100
                 total_price = unit_price * quantity
                 total = parseInt(total_price) + parseInt(tax)
-               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 var totalrupees = document.getElementById("totalrupees"+count).value;
@@ -706,35 +884,23 @@ $("#currency").val(currency_value)
                $("#Total_amount").val(amount.toFixed(2))
             }
             else if(amnt_type == 'fixed') { 
-              
-                var unit_price = $(this).val();
-                total = parseInt(unit_price) + parseInt(tax_value)
-               
+                total = result + parseInt(tax_value)
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
-                
-                var totalrupees = document.getElementById("totalrupees"+count).value;
-               
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                    var b =  $(this).val();
-                    amount1 = amount + b
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
                $("#Total_amount").val(amount.toFixed(2))
-               
             }
             else if (amnt_type == "group"){ 
-                
-               
                 total1 = ((unit_price * quantity) * tax_value)/100
                 total = ((unit_price * quantity) + total1)
-                
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
-               
                 var totalrupees = document.getElementById("totalrupees"+count).value;
-               
                 var amount = 0
                 $(".add_line_amount").each(function(){
                     var b =  $(this).val();
@@ -742,48 +908,37 @@ $("#currency").val(currency_value)
                     amount = amount1
                 })
                $("#Total_amount").val(amount.toFixed(2))
-            }
-            
-            
-            
-  
-            
-           
+            } 
         }
         
         function f2(sel,count){
+            var tax_name = sel.selectedOptions[0].getAttribute('data-name');
+            $("#selected_tax_name"+count).val(tax_name)
             tax_perc = sel.value
             var unit_price = document.getElementById("unit_price"+count).value;
             var quantity = document.getElementById("quantity"+count).value;
             if (quantity == ''){
                 quantity = 1
             }
-
             const myArray = tax_perc.split("&");
             tax_value = myArray[0];
             amnt_type = myArray[1];
-         
             if(amnt_type == 'percent') {
                 if(tax_value == 0){
                     total_price = unit_price * quantity
                     total = total_price
                 }
                 else{
-                
                 tax = ((unit_price * quantity) * tax_value)/100
                 total_price = unit_price * quantity
                 total1 = (total_price * tax_value)/100
                 total = total_price + total1
-               
                 }
                 var amount_blnce = document.getElementById("amount_balance1").value;
                
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
-
                 var totalrupees = document.getElementById("totalrupees"+count).value;
-               
-               
                 var amount = 0
                 $(".add_line_amount").each(function(){
                     var b =  parseFloat($(this).val());
@@ -795,22 +950,30 @@ $("#currency").val(currency_value)
 
             }
             else if(amnt_type == 'fixed') { 
-              
-             
-              total = parseInt(unit_price) * quantity + parseInt(tax_value)
-        
+                if (unit_price == ''){
+                }
+                else{
+                total_price = unit_price * quantity
+              total = total_price + parseInt(tax_value)
+              $("#totalcurrency"+count).val(total)
+                $("#totalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".add_line_amount").each(function(){
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#Total_amount").val(amount.toFixed(2))
               }
+            }
             else{ 
                 
-               
                 total1 = ((unit_price * quantity) * tax_value)/100
                 total = parseInt(unit_price) * quantity + total1
-             
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
-               
                 var totalrupees = document.getElementById("totalrupees"+count).value;
-               
                 var amount = 0
                 $(".add_line_amount").each(function(){
                     var b =  parseFloat($(this).val());
@@ -821,15 +984,12 @@ $("#currency").val(currency_value)
             } 
         }
         function f3(sel,count){
-            
-            
+            var pro_name = sel.selectedOptions[0].getAttribute('data-name');
+            $("#selected_product_name"+count).val(pro_name)
             product_list = sel.value
             const myArray = product_list.split("&");
             st_price = myArray[1];
             expense_type = myArray[2];
-          
-            
-            // exp_type0
             if(expense_type == "project"){
                 $("#exp_type"+count).val(true)
             }
@@ -838,7 +998,6 @@ $("#currency").val(currency_value)
             }
             if(st_price == 0.0)
             {
-               
                 $("#quantity"+count).val(1)
                 document.getElementById("quantity"+count).readOnly = true; 
                 const input = document.getElementById("quantity"+count);
@@ -848,45 +1007,54 @@ $("#currency").val(currency_value)
                 var tax_val  = $("#taxes"+count).val()
                 if(tax_val == 'Select Tax'){
                    $("#totalcurrency"+count).val(total_price)
-                $("#totalrupees"+count).val(total_price)
-                   
+                   $("#totalrupees"+count).val(total_price) 
+                    var amount = 0
+                    $(".add_line_amount").each(function(){
+                        var b = parseFloat( $(this).val());
+                        if (Number.isNaN(b) || b == "" || b === null) {
+                        b=parseFloat(0)
+                    }
+                        amount1 = parseFloat(amount) + b
+                        amount = amount1
+                    })
+                    $("#Total_amount").val(amount.toFixed(2))
                 }
                 else{
                     const tax_array = tax_val.split("&");
                     if(tax_array[1] == "percent"){
-                      
-                        per_value = parseInt( tax_array[0]);
-                      
+                        per_value = parseInt(tax_array[0]);
                         result = (total_price * per_value) / 100
                         total_amount1 = total_price + result
                         $("#totalcurrency"+count).val(total_amount1)
                         $("#totalrupees"+count).val(total_amount1)
-                       
+                    }
+                    else if(tax_array[1] == 'fixed') { 
+                        per_value = parseInt(tax_array[0]);
+                        total_amount1 = total_price + per_value
+                        $("#totalcurrency"+count).val(total_amount1)
+                        $("#totalrupees"+count).val(total_amount1)
+                    }
+                    else{
+                        per_value = parseInt(tax_array[0]);
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#totalcurrency"+count).val(total_amount1)
+                        $("#totalrupees"+count).val(total_amount1)
 
                     }
-                    else if(amnt_type == 'fixed') { 
-              
-                    var unit_price = $(this).val();
-                    total = parseInt(unit_price) + parseInt(tax_value)
-                   
+                    var amount = 0
+                    $(".add_line_amount").each(function(){
+                        var b = parseFloat( $(this).val());
+                        if (Number.isNaN(b) || b == "" || b === null) {
+                        b=parseFloat(0)
                     }
-                
-
-                var amount = 0
-                $(".add_line_amount").each(function(){
-                  
-                    var b = parseFloat( $(this).val());
-                    if (Number.isNaN(b) || b == "" || b === null) {
-                    b=parseFloat(0)
+                        amount1 = parseFloat(amount) + b
+                        amount = amount1
+                    })
+                    $("#Total_amount").val(amount.toFixed(2))
                 }
-                    amount1 = parseFloat(amount) + b
-                    amount = amount1
-                })
-                $("#Total_amount").val(amount.toFixed(2))
             }
-        }
             else{
-               
                 document.getElementById("quantity"+count).readOnly = false; 
                 const input = document.getElementById("quantity"+count);
                 input.style.backgroundColor = '#ffff';
@@ -896,8 +1064,7 @@ $("#currency").val(currency_value)
                 var tax_val  = $("#taxes"+count).val()
                 if(tax_val == 'Select Tax'){
                    $("#totalcurrency"+count).val(total_price)
-                $("#totalrupees"+count).val(total_price)
-                   
+                   $("#totalrupees"+count).val(total_price)
                 }
                 else{
                     const tax_array = tax_val.split("&");
@@ -906,84 +1073,64 @@ $("#currency").val(currency_value)
                         result = (total_price * per_value) / 100
                         total_amount1 = total_price + result
                         $("#totalcurrency"+count).val(total_amount1)
-                $("#totalrupees"+count).val(total_amount1)
-                       
-
+                        $("#totalrupees"+count).val(total_amount1)
                     }
                 }
                 var amount = 0
                 $(".add_line_amount").each(function(){
                     var b = parseFloat( $(this).val());
-                 
                     if (Number.isNaN(b) || b == "" || b === null) {
-                b=parseFloat(0)
-       
+                    b=parseFloat(0)
                 }
                     amount1 = parseFloat(amount) + b
                     amount = amount1
-                    
                 })
                 $("#Total_amount").val(amount.toFixed(2))
-                
-            }
-            
+            }  
         }
         
 
         function f4(sel,count){
-           
             var unit_price = sel.value
-           
             var quantity = document.getElementById("quantity"+count).value;
+            if (quantity == ''){
+                }
+            else{
             var tax_perc = document.getElementById("taxes"+count).value;
-          
             if(quantity==''){
                 quantity = 1
             }
             result = unit_price * quantity
-         
             var amount_blnce = document.getElementById("amount_balance1").value;
-         
-            
             $("#totalcurrency"+count).val(result)
             $("#totalrupees"+count).val(result)
-
             var totalrupees = document.getElementById("totalrupees"+count).value;
             var amount = 0
                 $(".add_line_amount").each(function(){
-                  
                     var b = parseFloat( $(this).val());
                     amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
                $("#Total_amount").val(amount.toFixed(2))
-
             const myArray = tax_perc.split("&");
             tax_value = myArray[0];
             amnt_type = myArray[1];
-         
             if(amnt_type == 'percent') {
                 tax = (result * tax_value)/100
                 total = result  + tax
-               
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 var totalrupees = document.getElementById("totalrupees"+count).value;
                 var amount = 0
                 $(".add_line_amount").each(function(){
-                  
                     var b = parseFloat( $(this).val());
-                   
-
                     amount1 = parseFloat(amount) + b
                     amount = amount1
                 })
                $("#Total_amount").val(amount.toFixed(2))
             }
             else if(amnt_type == 'fixed') { 
-              
-                var unit_price = $(this).val();
-                total = parseInt(unit_price) + parseInt(tax_value)
+                total = result + parseInt(tax_value)
                 $("#totalcurrency"+count).val(total)
                 $("#totalrupees"+count).val(total)
                 var totalrupees = document.getElementById("totalrupees"+count).value;
@@ -994,9 +1141,14 @@ $("#currency").val(currency_value)
                     amount = amount1
                 })
                $("#Total_amount").val(amount.toFixed(2))
-               
             }
-            else if (amnt_type == "group"){ 
+            else { 
+                if (tax_value == "Select Tax"){
+                    tax_value = 0
+                }
+                else{
+                    tax_value = 0
+                }
                 total1 = ((unit_price * quantity) * tax_value)/100
                 total = ((unit_price * quantity) + total1)
                 $("#totalcurrency"+count).val(total)
@@ -1010,9 +1162,8 @@ $("#currency").val(currency_value)
                 })
                $("#Total_amount").val(amount.toFixed(2))
             }
-         
-            
             }
+        }
 </script>
 
 
@@ -1182,6 +1333,7 @@ $('span#select2-supplier_idnew-container').html("Select Supplier");
             alert("Select job number")
         }
         else{
+            $("#kl2").show();
             document.forms["form_name"].submit();
         }  
     })
@@ -1189,15 +1341,54 @@ $('span#select2-supplier_idnew-container').html("Select Supplier");
 
 <script>
      function click_job_no_action(sel,count){
-            
-            
+            var job_no = sel.selectedOptions[0].getAttribute('data-name');
+            $("#selected_job_name"+count).val(job_no)
             value = sel.value
-            
             $("#exp_type"+count).val(false)
-
-
      }
 </script>
+
+<script>
+    $(".petty_draft_action").click(function(){
+        alert("hh")
+        $("#draft_button_status").val(true)
+        document.forms["form_name"].submit();
+    })
+</script>
+<script>
+    $(".draft_action").click(function(){
+        alert("hh")
+        let csrftoken = '{{ csrf_token }}'
+        var child_response = {{ child_response| safe }};
+        var select_supplier_api = {{ select_supplier_api| safe }};
+        var select_product = {{ select_product| safe }};
+        var select_tax = {{ select_tax| safe }};
+        var select_job_no = {{ select_job_no| safe }};
+       
+        var id = $(this).attr("data-id")
+       
+        var url ="petty_cash_draft";
+        $.ajax({
+        type: "POST",
+        headers:{'X-CSRFToken':csrftoken},
+        url: url,
+        data: {
+          'id': id,
+          'child_response':JSON.stringify(child_response),
+          'select_supplier_api':JSON.stringify(select_supplier_api),
+          'select_product':JSON.stringify(select_product),
+          'select_tax':JSON.stringify(select_tax),
+          'select_job_no':JSON.stringify(select_job_no)
+
+        },
+        success: function (data) {
+            $("#edit_draft").html(data);
+            $("#edit_draft_modal").modal("show")
+        }
+      });
+    })
+</script>
+
 
 
 {% endblock %}
