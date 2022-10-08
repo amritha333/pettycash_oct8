@@ -240,7 +240,7 @@
                                     <li><a>Petty Cash Management </a></li>
                                     <!-- <li><a>User  Settings</a></li> -->
                                 </ul>
-                                <div>Petty Cash Settings</div>
+                                <div>Payments</div>
                             </div>
                         </h4>
                     </div>
@@ -271,7 +271,7 @@
                 <div class="tab-content p-0">
                      <div class="pull-right" id="apply_petty" >
                             <a data-toggle="modal" class="btn btn-info newbtn_crete" data-target="#newuser"> <i
-                                    class="mdi mdi-plus-circle-outline"></i> APPLY PETTY CASH
+                                    class="mdi mdi-plus-circle-outline"></i> CREATE
                             </a>
                         </div>
                     <div class="tab-pane fade show active" id="flamingo" role="tabpanel" aria-labelledby="flamingo-tab">
@@ -312,7 +312,7 @@
                                                 {{p_cash.create_date}}
                                             </td>
                                             <td>
-                                                <a href="view_petty_cash_more_details?id={{p_cash.id}}">
+                                                <a href="view_petty_cash_more_details?id={{p_cash.id}}&employee_id={{employee_id}}">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                             </td>
@@ -342,6 +342,7 @@
                                             <th>Tax Excluded</th>
                                             <th>Total</th>
                                             <th>Total in currency</th>
+                                            <th>Payment status</th>
                                             <th>Status</th>
                                             <th>Action</th>
 
@@ -375,6 +376,24 @@
                                             </td>
                                             <td>
                                                 {{bill.amount_total_in_currency_signed}}
+                                            </td>
+                                            <td>
+                                
+                                                {% if bill.payment_state == "not_paid" %}
+                                                Not Paid
+                                                {% elif  bill.payment_state == "in_payment" %}
+                                                In Payment
+                                                {% elif  bill.payment_state == "paid" %}
+                                                Paid
+                                                {% elif  bill.payment_state == "partial" %}
+                                                Partially Paid
+                                                {% elif  bill.payment_state == "reversed" %}
+                                                Reversed
+                                                {% elif  bill.payment_state == "invoicing_legacy" %}
+                                                Invoicing App Legacy
+                                                {%else%}
+                                                {{bill.payment_state}}
+                                                {%endif%}
                                             </td>
                                             
                                             <td>
@@ -558,6 +577,7 @@
                         </div>
                         <div class="col-12 mt-2">
                             <div class="container-fluid">
+                                <input type="checkbox"  id="checkbox10"> Show Currency
 
                                 <table class="table scrolbaletable" border="2" style="border: 1px solid #ccc;">
                                     <tr>
@@ -573,12 +593,13 @@
                                         <th class="th_job_no">Account</th>
                                         <th class="th_attachment">Attachment</th>
                                         <th class="th_unit_price">Unit Price</th>
-                                        <th class="th_partner">Currency</th>
+                                        <th class="th_partner" style="display: none">Currency</th>
                                         <th class="th_unit_price">Quantity</th>
                                         <th class="th_taxes">Taxes</th>
                                         <th class="th_total_currency">Total in currency</th>
                                         <th class="th_total">Total</th>
                                     </tr>
+                                    
 
                                     <style>
                                         .tdf1{
@@ -688,7 +709,7 @@
                                                     onchange="unitpricefn(this,0)" id="unit_price0" autocomplete="off"
                                                     class="form-control">
                                             </td>
-                                            <td class="th_taxes tdf1">
+                                            <td class="th_taxes tdf1 dis_currency" id="" style="display: none">
 
                                                 <input type="hidden" name="currency_id" value="{{currencyid}}" id="cur_id0">
                                                     <select name="currency" data-v1=0 onchange="currencyfn(this,0)"
@@ -961,7 +982,7 @@
                     <input required type="number" name="unit_price" data-v1=` + append_count +
                 ` onchange="unitpricefn(this,` + append_count + `)" id="unit_price` + append_count + `" class="form-control">
                 </td>
-                <td class="th_taxes tdf1" >
+                <td class="th_taxes tdf1 dis_currency"  style="display:none">
                     <input type="hidden" name="currency_id" value="{{currencyid}}" id="cur_id` + append_count + `">
                     <select name="currency" data-v1=` + append_count + ` onchange="currencyfn(this,` + append_count + `)"
                         class="form-control select2 select2-hidden-accessible" id="currency` + append_count + `"
@@ -1910,5 +1931,20 @@
 $('#taxes0').select2()
 </script>
 
+
+<script>
+
+    $("#checkbox10").click(function() {
+        if (!$(this).is(':checked')) {
+            $(".th_partner").hide()
+        $(".dis_currency").hide()
+    }
+    else{
+        $(".th_partner").show()
+        $(".dis_currency").show()
+
+    }
+});
+</script>
 
 {% endblock %}

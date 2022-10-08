@@ -559,7 +559,7 @@
                                         <select name="employee_leave_replacer" id="employee_leave_replacer" class="form-control select2 " >
                                         <option selected="selected" value="0">Select Employee Name</option>
                                         {% for i in replacer_response  %}
-                                       
+                
                                         <option value="{{i.id}}" >{{i.name}} {{i.registration_number}}</option>
                                       
                                         {% endfor %}
@@ -2164,19 +2164,12 @@ select.empty().append('<option value=0>Select Leave Type</option>');
            
                 select.append('<option value='+item['id']+'>'+item['name']+'</option>');
             
- 
-
- 
 })
     })
 </script>
-
 <script>
     $(".entitle_balance_validate").click(function(){
-       
-
         employee_id = $("#emp_name_action").val()
-
         $.ajax({
             url: 'get_employee_validate_entitle_balance',
             // datatype: 'json',
@@ -2185,25 +2178,10 @@ select.empty().append('<option value=0>Select Leave Type</option>');
             },
             type: 'GET',
             success: function (data) {  
-              
-             
-            
-
-            $("#entitlement_data1").html(data);
-
-          
-                
-            }
-            
-        });
-
-
-        
+            $("#entitlement_data1").html(data);    
+            } 
+        });  
     })
-
-
-
-
 </script>
 
 

@@ -133,7 +133,7 @@ def login_page1(request):
 
 
 
-api_domain = "http://erp1.veuz.in:8069/"
+api_domain = "http://10.10.10.126:8069/"
 
 
 
@@ -2415,6 +2415,7 @@ def petty_cash_management(request):
     bill_history = ""
     try:
         bill_history = new_api_integration3['bill_history']
+        print("bill_history::::::;",bill_history)
     except:
         pass
 
@@ -5452,7 +5453,6 @@ def get_selected_employee_details(request):
     amount_balance = ''
     try:
         amount_balance = new_api_integration['amount_balance']
-        print("amount_balance:::::;",amount_balance)
     except:
         pass
     data = []
@@ -5464,11 +5464,13 @@ def get_selected_employee_details(request):
 
 def view_petty_cash_more_details(request):
     id = request.GET.get("id",False)
+    employee_id = request.GET.get("employee_id",False)
     petty_cash_more_details_url = api_domain+"api/get_petty_cash_form_data"
     payload = json.dumps({
         "jsonrpc": "2.0",
         "params": {
-            "petty_cash_id":id
+            "petty_cash_id":int(id),
+            "employee_id":employee_id
         }
     })
     odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -5479,6 +5481,8 @@ def view_petty_cash_more_details(request):
     }
     response_more_details = requests.request("GET", petty_cash_more_details_url, headers=headers, data=payload).json()
     response2 = response_more_details['result']['result']
+    today = date.today()
+    # print("response2::::::",response2)
     employee_name = ''
     expense_name = ''
     state = ''
@@ -5488,13 +5492,18 @@ def view_petty_cash_more_details(request):
     state = response2[0]['state']
     expense_lines = response2[0]['expense_lines']
     total_in_currency = response2[0]['total_in_currency']
+    show_button = response2[0]['show_button']
+    wizard_data = response2[0]['wizard_data']
     context = {
         "employee_name": employee_name,
         "expense_name": expense_name,
         "state":state,
         "expense_lines":expense_lines,
         "total_in_currency":total_in_currency,
-
+        "show_button":show_button,
+        "id":id,
+        'wizard_data':wizard_data,
+        "today":today,
     }
 
     return render(request,'super_admin/view_petty_cash_more_details.html',context)
@@ -5521,6 +5530,9 @@ def view_bills_more_details(request):
     response_more_details = requests.request("GET", bills_more_details_url, headers=headers, data=payload).json()
     bill_history = response_more_details['result']['result']
     today = date.today()
+    
+
+
    
     bill_name = ""
     vendor = ""
@@ -5559,6 +5571,8 @@ def view_bills_more_details(request):
     journal_total_credit = bill_history[0]['journal_total_credit']
     wizard_data = bill_history[0]['wizard_data']
     show_button = bill_history[0]['show_button']
+    reconciled_vals = bill_history[0]['reconciled_vals']
+    
    
     context = {
 
@@ -5581,7 +5595,8 @@ def view_bills_more_details(request):
         "wizard_data":wizard_data,
         "show_button":show_button,
         "today":today,
-        "id":id
+        "id":id,
+        'reconciled_vals':reconciled_vals
     }
     return render(request,'super_admin/view_bills_more_details.html',context)
 
@@ -5590,30 +5605,33 @@ def view_bills_more_details(request):
 def create_payment_action(request):
     if request.method == "POST":
         bill_id = request.POST.get("bill_id",False)
+        petty_id = request.POST.get("petty_id",False)
+        if petty_id == False:
+            bill = True
+            id = bill_id
+        else:
+            bill = False
+            id = petty_id
         amount = request.POST.get("amount",False)
         journal_id = request.POST.get("journal_id",False)
         selected_employee_id = request.POST.get("selected_employee_id",False)
         payment_date = request.POST.get("payment_date",False)
         memo = request.POST.get("memo",False)
         currency_id = request.POST.get("currency_id",False)
-        bank_account = request.POST.get("bank_account",False)
-        if(bank_account == False):
-            bank_account = bank_account
-        else:
-            bank_account = int(bank_account)
+       
        
         payment_url = api_domain+"api/post_register_payment"
         payload = json.dumps({
             "jsonrpc": "2.0",
             "params": {
-                "bill_id": int(bill_id),
+                "active_id": int(id),
                 "amount" : float(amount),
                 "journal_id" : int(journal_id),
                 "employee_id": int(selected_employee_id),
                 "payment_date": payment_date,
                 "communication" : memo,
                 "currency_id": int(currency_id),
-                "partner_bank_id":bank_account
+                "is_bill" : bill 
             }
         })
         odoo_token_data = odoo_api_request_token.objects.get(status="True")
@@ -5624,13 +5642,13 @@ def create_payment_action(request):
         }
         response_pbill1 = requests.request("POST", payment_url, headers=headers, data=payload).json()
         response2 = response_pbill1['result']
-        l1 = response2['result']
+        
         if response2['message'] == "success":
             messages.success(request,"success")
-            return redirect("petty_cash_management")
+            return redirect(request.META['HTTP_REFERER'])
         else:
             messages.warning(request,"api error ")
-            return redirect("petty_cash_management")
+            return redirect(request.META['HTTP_REFERER'])
 
 
 

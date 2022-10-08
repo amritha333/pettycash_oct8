@@ -65,7 +65,7 @@ border-top: 1px solid #dee2e6;
                                         <h3 class="leave-head">{{bill_name}}</h3>
                                     </div>
                                  
-                                    {%if show_button == True %}
+                                    {% if show_button == True %}
                                     <div class="col text-right">
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <button type="button" class="btn btn-pri" data-toggle="modal"
@@ -90,8 +90,6 @@ border-top: 1px solid #dee2e6;
                                                 <!-- end modalheader -->
                                                 <form action="create_payment_action" method="POST" >
                                                     {% csrf_token %}
-                                                
-                                                
                                                 <div class="modal-body">
                                                     {% for i in wizard_data %}
                                                     <div class="row mb-3">
@@ -130,7 +128,7 @@ border-top: 1px solid #dee2e6;
                                                                    
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
+                                                            <!-- <div class="row">
                                                                 <div class="col-md-3 br-right d-flex align-items-center">
                                                                     <h6>Recipient Bank Account</h6>
                                                                 </div>
@@ -142,7 +140,7 @@ border-top: 1px solid #dee2e6;
                             
                                                                     </select>
                                                                 </div>
-                                                            </div>
+                                                            </div> -->
                                                             <div class="row">
                                                                 <div class="col-md-3 br-right d-flex align-items-center">
                                                                     <h6>Branch</h6>
@@ -383,6 +381,20 @@ border-top: 1px solid #dee2e6;
                                                     <span class="border-t pb-2 pt-1">{{total}}</span>
                                                    
                                                 </div>
+
+                                              
+                                                    {% for i in reconciled_vals %}
+                                                    <div class="col-md-8 font-600 text-right py-2">
+                                                        Paid on {{i.date}} : 
+                                                    </div>
+                                                    <div class="col-md-4 font-600 text-right font-14 py-2">
+                                                        <span class="border-t pb-2 pt-1">{{i.amount}}</span>
+                                                       
+                                                    </div>
+                                                   
+
+                                                    {% endfor %}
+                                               
                                                 <div class="col-md-8 font-600 text-right py-2">
                                                     Amount Due:
                                                 </div>

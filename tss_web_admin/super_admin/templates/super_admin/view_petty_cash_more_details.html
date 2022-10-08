@@ -3,6 +3,15 @@
 {% load static %}
 
 {% block content %}
+<link href="{% static 'tss_new/css/style.css' %}" rel="stylesheet" type="text/css" />
+
+
+<style>
+    .btn-group>.btn:first-child {
+    margin-left: 0
+}
+</style>
+
 <div class="content ">
     <div class="container-fluid">
         <div class="row">
@@ -35,26 +44,157 @@
                 <div class="box_header">
                     <div class="row">
                         <div class="col-md-12 ">
+                            {% if show_button == True %}
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-pri" data-toggle="modal"
+                                    data-target="#staticBackdrop">Register Payment</button>
+                            </div>
+                            {% endif %}
+
                             <a  style="    float: right;
                             background: #15beff;
                             padding: 2px 4px;
                             color: white;
                             border-radius: 4px;
                             font-size: 12px;" href="#">{{state}}</a>
+
+
+
+                      <!-- staticBackdrop Modal -->
+                      <div class="modal modlbtns reg-modal" id="staticBackdrop" data-backdrop="static"
+                      data-keyboard="false" tabindex="-1" role="dialog"
+                      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="staticBackdropLabel">Register Payment</h5>
+                                  <button type="button" class="btn-close" data-dismiss="modal"
+                                      aria-label="Close">
+                                  </button>
+                              </div>
+                              <!-- end modalheader -->
+                              <form action="create_payment_action" method="POST" >
+                                  {% csrf_token %}
+                              <div class="modal-body">
+                                  {% for i in wizard_data %}
+                                  <div class="row mb-3">
+                                      <div class="col-md-6">
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Journal</h6>
+                                              </div>
+                                              <input type="hidden" name="petty_id" value="{{id}}">
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <input type="hidden" name="journal_id" value="{{i.journal_id.0}}">
+                                                  <input type="text" name="jornal" class="form-control" value="{{i.journal_id.1}}" disabled>
+
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Balance</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <input type="text" id="selected_employee_balance" name="balance" class="form-control" value="{{i.active_employee.amount_balance}}" disabled>
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Employee</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <!-- <input type="hidden" id="selected_employee_id" name="selected_employee_id"> -->
+                                                  <select class="form-control" name="selected_employee_id" onchange="employee_function(this)" id="emp_action">
+                                                   
+                                                      {% for j in i.employees %}
+                                                      <option value="{{j.id}}"  data-balance="{{j.amount_balance}}">{{j.name}}</option>
+                                                      {% endfor %}
+                                                  </select>
+                                                 
+                                              </div>
+                                          </div>
+                                          
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Branch</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <span class="branch">{{i.branch_id.1}}</span>
+                                              </div>
+                                          </div>
+          
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Amount</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <div class="row w-100">
+                                                      <div class="col-md-6">
+                                                          <input type="text" name="amount" class="form-control frm" value="{{i.amount}}" placeholder="">
+                                                      </div>
+                                                      <div class="col-md-5 pr-0">
+                                                          <select class="form-control frm" name="currency_id">
+                                                              <option value="{{i.currency_id.0}}" selected="">{{i.currency_id.1}}</option>
+                                                              {% for k in i.currencies %}
+                                                              {% if k.name == i.currency_id.1 %}
+                                                              {% else %}
+                                                              <option value="{{k.id}}">{{k.name}}</option>
+                                                              {% endif %}
+                                                              {% endfor %}
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Payment Date</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <input value="{{today|safe}}" type="date" name="payment_date" class="form-control">
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-md-3 br-right d-flex align-items-center">
+                                                  <h6>Memo</h6>
+                                              </div>
+                                              <div class="col-md-9 d-flex align-items-center">
+                                                  <input type="text" class="form-control" name="memo"  value="{{i.communication}}"> 
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  {% endfor %}
+                              </div>
+                              <!-- end modalbody -->
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-light"
+                                      data-dismiss="modal">Cancel</button>
+                                  <button type="submit" class="btn btn-prim">Create Payment</button>
+                              </div>
+
+                          </form>
+                              <!-- end modalfooter -->
+                          </div>
+                      </div>
+                  </div><!-- end modal -->
+              
+
+
+
+
+
                             <div class="row">
                                 <div class="col-md-6 colp_r_15">
                                     <div class="row">
-                                       
-            
-                                        <div class="col-md-12 colp_r_15 mt-4">
+                                        <div class="col-md-12 colp_r_15 mt-4"> 
+                                        <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Employee name</label> 
+                                            <input  readonly type="text" value="{{employee_name}}" class="form-control">
 
-                                                
-                                                <div class="form-group bmd-form-group required_item"> <label class="bmd-label-floating inputText">Employee name</label> 
-                                                 <input  readonly type="text" value="{{employee_name}}" class="form-control">
-
-                                                </div> 
+                                        </div> 
                                         </div>
-            
                                                 <!-- <select name="employee_name" class="form-control select2 select2-hidden-accessible" id="emp_name_action">
                                                     {% for i in child_response %}
                                                     <option value="{{i.id}}">{{i.name}}[{{i.registration_number}}]</option>
@@ -63,8 +203,6 @@
                                                 </select>
                                                 <input required autocomplete="off" value="{{request.user}}" name="employee_name" type="text" id="" class="input form-control">
                                                 <label class="inputText">Employee name</label> -->
-                                            
-            
                                         <div class="col-md-12 colp_r_15">
                                             <div class="form-group bmd-form-group required_item">
                                                 <input readonly  autocomplete="off" name="expense_name" value="{{expense_name}}" type="text" id="" class="input form-control">
@@ -207,4 +345,13 @@
 </div>
 
 
+<script>
+    function employee_function(value) {
+        var selected_employee_id = $('#emp_action').val();
+        $("#selected_employee_id").val(selected_employee_id)
+        var emp_balance = value.selectedOptions[0].getAttribute('data-balance');
+        $("#selected_employee_balance").val(emp_balance) 
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}
