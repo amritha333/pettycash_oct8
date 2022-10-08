@@ -15,7 +15,15 @@
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/jquery.dataTables.min.css' %}">
 <link rel="stylesheet" href="{% static 'tss_new/plugins/datatable/responsive.dataTables.min.css' %}">
 
+<style>
+    .not-tab .tab-content > .active {
+  display: block !important;
+}
 
+.not-tab .tab-content > .tab-pane{
+    display: none;
+}
+</style>
 
 <div class="content">
     <div class="container-fluid">
@@ -37,18 +45,17 @@
                                     </div>
                                 </h4>
                             </div>
-                            
+
                             <ul class="nav nav-pills float-right">
                                 <li class="nav-item">
-                                    <a class="nav-link nav-frst" data-toggle="pill"
-                                        href="#flamingo" role="tab" aria-controls="pills-flamingo"
-                                        aria-selected="false"><i class="fa fa-list-ul"></i>
+                                    <a class="nav-link nav-frst" data-toggle="pill" href="#flamingo" role="tab"
+                                        aria-controls="pills-flamingo" aria-selected="false"><i
+                                            class="fa fa-list-ul"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="pill" href="#cuckoo" role="tab"
-                                        aria-controls="pills-cuckoo" aria-selected="true"><i
-                                            class="fa fa-th"></i>
+                                        aria-controls="pills-cuckoo" aria-selected="true"><i class="fa fa-th"></i>
                                     </a>
                                 </li>
                             </ul>
@@ -58,11 +65,10 @@
                 <div class="card-box">
 
                     <div class="row">
-                    
-                        <div class="col-12">
+
+                        <div class="col-12 not-tab">
                             <div class="tab-content p-0">
-                                <div class="tab-pane fade" id="flamingo" role="tabpanel"
-                                    aria-labelledby="flamingo-tab">
+                                <div class="tab-pane fade" id="flamingo" role="tabpanel" aria-labelledby="flamingo-tab">
                                     <table id="example" class="display responsive nowrap" style="width:100%">
                                         <thead>
                                             <tr>
@@ -76,50 +82,37 @@
                                                 <th>Type</th>
                                                 <th>Add on</th>
                                                 <th>Action</th>
-                                                
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for i in notifictaion %}
-                                           
-                                          
-                                            <tr>
 
+
+                                            <tr>
                                                 <td>
                                                     {% if i.notification_type == "leave_type" %}
                                                     {{i.leave_apply_user_name}}
 
                                                     {% else %}
-                                                        
+
                                                     {{i.petty_cash_apply_username}}
 
                                                     {% endif %}
-                                                    
-                                                   
-                                                
-                                                
-                                                
                                                 </td>
-                                                <td> 
+                                                <td>
                                                     {% if i.notification_type == "leave_type" %}
                                                     {{i.leave_type_name}}
-
                                                     {% else %}
-                                                        
                                                     {{i.expense_name}}
+                                                    {% endif %}
 
-                                                    {% endif %}    
-                                                    
-                                                   
-                                                
                                                 </td>
-                                                <td> 
-                                                   {% if i.description == None %}
-
-                                                   {% else %}
-                                                   {{i.description}}
-                                                   {% endif %}
-                                                
+                                                <td>
+                                                    {% if i.description == None %}
+                                                    {% else %}
+                                                    {{i.description}}
+                                                    {% endif %}
                                                 </td>
                                                 <td>
                                                     {% if i.requested_from_dt == None %}
@@ -127,23 +120,17 @@
                                                     {% else %}
                                                     {{i.requested_from_dt}}
                                                     {% endif %}
-                                                    
-                                                   
-                                                
                                                 </td>
-                                                <td> 
+                                                <td>
                                                     {% if i.requested_to_dt == None %}
-
                                                     {% else %}
                                                     {{i.requested_to_dt}}
                                                     {% endif %}
-                                                    
-                                                  
                                                 </td>
-                                                <td>{{  i.dt|get_notifications_date_ago}}  days</td>
+                                                <td>{{  i.dt|get_notifications_date_ago}} days</td>
                                                 {% if i.status == "validate1" %}
                                                 <td><span class="badge badge-soft-warning">Second Approve</span> </td>
-                                                {% elif i.status == "validate" %} 
+                                                {% elif i.status == "validate" %}
                                                 <td><span class="badge badge-soft-success">Approved</span> </td>
                                                 {% else %}
                                                 <td><span class="badge btn-soft-warning">{{i.status}}</span> </td>
@@ -151,15 +138,17 @@
                                                 <td>
                                                     {% if i.notification_type == "leave_type" %}
 
-                                                    <span style="background: #491182;
+                                                    <span style="background: #02c0ce;
                                                     color: white;
-                                                    padding: 4px 4px;
-                                                    font-size: 12px;"> Leave Type</span>
+                                                    padding: 4px 7px;
+                                                    font-size: 12px;
+                                                    border-radius: 4px;"> Leave Type</span>
                                                     {% elif i.notification_type == "petty_cash_type" %}
-                                                    <span style="background: #4e7d82;
+                                                    <span style="background: #f18095;
                                                     color: white;
-                                                    padding: 4px 4px;
-                                                    font-size: 12px;">Petty Cash Type</span>
+                                                    padding: 4px 7px;
+                                                    font-size: 12px;
+                                                    border-radius: 4px;">Petty Cash Type</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
@@ -169,430 +158,436 @@
                                                     {% if i.notification_type == "leave_approve_request" %}
 
                                                     {% if i.status == "Pending" %}
-                                                    <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}"  class="approve_confirmation" href="#">
-                                                   
-                                                    <button type="button" class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop">Approve</button></a>
+                                                    <a data-id="{{i.mapping_id}}"
+                                                        data-status="{{i.current_leave_status}}"
+                                                        class="approve_confirmation" href="#">
 
-                                                    <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" class="refuse_confirmation"  href="#">
-                                                    <button type="button" class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop1">Reject</button></a>
-        
+                                                        <button type="button"
+                                                            class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top"
+                                                            data-toggle="modal"
+                                                            data-target="#staticBackdrop">Approve</button></a>
+
+                                                    <a data-id="{{i.mapping_id}}"
+                                                        data-status="{{i.current_leave_status}}"
+                                                        class="refuse_confirmation" href="#">
+                                                        <button type="button"
+                                                            class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top"
+                                                            data-toggle="modal"
+                                                            data-target="#staticBackdrop1">Reject</button></a>
 
                                                     {% endif %}
                                                     {% else %}
-       
                                                     {% endif %}
-
                                                 </td>
-                                               
                                             </tr>
-                                         
                                             {% endfor %}
                                         </tbody>
                                     </table>
-
-
                                 </div>
-
-
                                 <div class="tab-pane fade show active" id="cuckoo" role="tabpanel"
                                     aria-labelledby="profile-tab">
-                                <div class="row profil view_notifi" >
-                                {% for i in notifictaion %}
-                               
-                                
-                                    <div class="col-lg-4 col-xl-3 mb-3">
-                                        {% if i.notification_type == "petty_cash_type" %}
-                                        <a href="view_petty_cash_more_details?id={{i.mapping_id}}">
-                                        {% else %}
-                                        <a href="view_leave_more_details?id={{i.mapping_id}}">
-                                        {% endif %}
-                                        <div class="profile-card">
-                                            <div class="row">
-
-                                                <div class="">
-                                                   
-                                                  {% for i in i.auth_user_id.user_management_user_login.all %}
-                                              
-                                                  {% if i.user_img == "false" %}
-                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
-                                                  {% elif i.user_img == None  %}
-                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
-                                                  {% elif i.user_img == false %}
-                                                  <div><img style="padding: 0px 0px;"  height="128px" width="128px" src="{% static '60111.jpg' %}" alt=""></div>
-                                                  {% elif i.user_img == '' %}
-                                                  <div><img style="padding: 12px 12px;"  height="128px" width="128px"  src="{% static '60111.jpg' %}" alt=""></div>
-                                                  {% else %}
-                                                  <div><img style="padding: 12px 12px;"  height="128px" width="128px" src="data:image/jpeg;base64,{{i.user_img}}" alt=""></div>
-                                                
-                                                  {% endif %}
-                                                  {% endfor %}
-                                                
-                                               
-                                                    
-                                                </div>
-                                                <div class="col profile-info">
-                                                    {% if i.notification_type == "petty_cash_type" %}
-                                                   
-                                                    <h3 class="profile-name mb-3">{{i.petty_cash_apply_username}}<span
-                                                        class="badge badge-soft-info ml-2">Petty cash </span>
-                                                       
-
-                                                    {{i.total_amount_with_currency}}
-                                                 
-                                                    {% else %}
-                                                    <h3 class="profile-name mb-3">{{i.leave_apply_user_name}}<span
-                                                            class="badge badge-soft-info ml-2">{{i.leave_type_name}}</span>
+                                    <div class="row profil view_notifi">
+                                        {% for i in notifictaion %}
+                                        <div class="col-lg-4 col-xl-3 mb-3">
+                                            {% if i.notification_type == "petty_cash_type" %}
+                                            <a href="view_petty_cash_more_details?id={{i.mapping_id}}">
+                                                {% else %}
+                                                <a href="view_leave_more_details?id={{i.mapping_id}}">
                                                     {% endif %}
-                                                    {% if i.dt|get_notifications_date_ago == 0 %}
+                 
+                                                    <div class="profile-card">
+                                                        <div class="row">
 
-                                                    {% else %}
-                                                    <small class="text-muted float-end font-13 dys">{{  i.dt|get_notifications_date_ago}} day ago</small>
-                                                    {% endif %}
-                                                    </h3>
-                                                   
+                                                            <div class="">
 
-                                                    {% if i.notification_type == "petty_cash_type" %}
-                                                    <span class="text-muted mr-1">
-                                                        <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.dt}}
-                                                        <p>{{i.expense_name}}</p>
-                                                    {% else %}
-                                                    <span class="text-muted mr-1">
-                                                        <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_from_dt}}
-                                                        
-                                                    </span> - <span class="text-muted ml-1">
-                                                        <i class="fa fa-calendar mr-1 align-bottom"></i> {{i.requested_to_dt}}
-                                                    {% endif %}
-                                                        
-                                                    </span>
-                                                    {% if i.notification_type == "leave_approve_request" %}
+                                                                {% for i in i.auth_user_id.user_management_user_login.all %}
 
-                                                        {% if i.status == "Pending" %}
-                                                        <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}"  class="approve_confirmation" href="#">
-                                                        
-                                                        <button type="button" class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop">Approve</button></a>
+                                                                {% if i.user_img == "false" %}
+                                                                <div><img style="padding: 0px 0px;" height="138px"
+                                                                        width="128px" src="{% static '60111.jpg' %}"
+                                                                        alt=""></div>
+                                                                {% elif i.user_img == None  %}
+                                                                <div><img style="padding: 0px 0px;" height="138px"
+                                                                        width="128px" src="{% static '60111.jpg' %}"
+                                                                        alt=""></div>
+                                                                {% elif i.user_img == false %}
+                                                                <div><img style="padding: 0px 0px;" height="138px"
+                                                                        width="128px" src="{% static '60111.jpg' %}"
+                                                                        alt=""></div>
+                                                                {% elif i.user_img == '' %}
+                                                                <div><img style="padding: 12px 12px;" height="138px"
+                                                                        width="128px" src="{% static '60111.jpg' %}"
+                                                                        alt=""></div>
+                                                                {% else %}
+                                                                <div><img style="padding: 12px 12px;" height="138px"
+                                                                        width="128px"
+                                                                        src="data:image/jpeg;base64,{{i.user_img}}"
+                                                                        alt=""></div>
 
-                                                        <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" class="refuse_confirmation"  href="#">
-                                                        <button type="button" class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top" data-toggle="modal" data-target="#staticBackdrop1">Reject</button></a>
+                                                                {% endif %}
+                                                                {% endfor %}
 
+                                                            </div>
+                                                            <div class="col profile-info">
+                                                                {% if i.notification_type == "petty_cash_type" %}
+                                                                <h3 class="profile-name mb-1">
+                                                                    {{i.petty_cash_apply_username}}<span
+                                                                        class="badge badge-soft-info ml-2">Petty cash
+                                                                    </span>
+                                                                </h3>
+                                                                <span class="text-muted mr-1">
+                                                                    <i class="fa fa-calendar mr-1 align-bottom"></i>
+                                                                    {{i.dt}}
+                                                                </span>
+                                                                <h5 style="margin-bottom: 0;"
+                                                                class="d-flex justify-content-between">
+                                                                {{i.expense_name}}<span>{{i.total_amount_with_currency}} </span></h5>
+                                                                <h6 style="margin-bottom: 0;"
+                                                                class="d-flex justify-content-between">
+                                                                {{i.company_name}}<span>{{i.employee_branch}} </span></h6>
+                                                                    {% else %}
+                                                                    <h3 class="profile-name mb-1">{{i.leave_apply_user_name}}
+                                                                        <span class="badge badge-soft-info ml-2">{{i.leave_type_name}}</span>    
+                                                                    </h3>
+                                                                    <span class="text-muted" style="font-size: 12px;">
+                                                                        <i class="fa fa-calendar mr-1 align-bottom"></i>
+                                                                        {{i.requested_from_dt}}
+                                                                    </span> - <span class="text-muted" style="font-size: 12px;">
+                                                                        <i class="fa fa-calendar mr-1 align-bottom"></i>
+                                                                        {{i.requested_to_dt}}
+                                                                        {% endif %}
+                                                                    </span>
+                                                                        {% if i.dt|get_notifications_date_ago == 0 %}
 
-                                                        {% elif i.status == "approve" %}
-                                                        <button type="button"  class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                                                                        {% else %}
+                                                                        <small
+                                                                            class="text-muted float-end font-13 dys">{{  i.dt|get_notifications_date_ago}}
+                                                                            day ago</small>
+                                                                        {% endif %}
+                                                                        {% if i.notification_type == "leave_approve_request" %}
 
-                                                        {% elif i.status == "reject"  %}
-                                                        <button type="button"  class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Reject</button>
+                                                                        {% if i.status == "Pending" %}
+                                                                        <a data-id="{{i.mapping_id}}" data-status="{{i.current_leave_status}}" class="approve_confirmation" href="#">
+                                                                        
+                                                                            <button type="button"
+                                                                                class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top"
+                                                                                data-toggle="modal"
+                                                                                data-target="#staticBackdrop">Approve</button></a>
 
-                                                        {% elif i.status == "reassign"  %}
-                                                        <button type="button"  class="btn btn-soft-secondary waves-effect waves-light py-0 px-2 mg-top">Reassign</button>
+                                                                        <a data-id="{{i.mapping_id}}"
+                                                                            data-status="{{i.current_leave_status}}"
+                                                                            class="refuse_confirmation" href="#">
+                                                                            <button type="button"
+                                                                                class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top"
+                                                                                data-toggle="modal"
+                                                                                data-target="#staticBackdrop1">Reject</button></a>
+                                                                        {% elif i.status == "approve" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                                                                        {% elif i.status == "reject"  %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Reject</button>
+                                                                        {% elif i.status == "reassign"  %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-secondary waves-effect waves-light py-0 px-2 mg-top">Reassign</button>
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                                        {% if i.notification_type == "petty_cash_type" %}
+                                                                        {% if i.status == "pending" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Submitted</button>
+                                                                        {% elif i.status == "approve" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                                                                        {% else %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-primary waves-effect waves-light py-0 px-2 mg-top">{{i.status}}</button>
+                                                                        {% endif %}
+                                                                        {% endif %}
 
-                                                        {% endif %}
-                                                        {% endif %}
-                                                    {% if i.notification_type == "petty_cash_type" %}
-                                                           
-                                                    {% if i.status == "pending" %}
-                                                
-                                                    <button type="button"  class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Submitted</button>
+                                                                        {% if i.notification_type == "leave_type" %}
 
-                                                    {% elif i.status == "approve" %}
-                                                
-                                                    <button type="button"  class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                                                                        {% if i.status == "confirm" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-primary waves-effect waves-light py-0 px-2 mg-top">To
+                                                                            Approve</button>
 
-                                                    {% else %}
-                                                
-                                                    <button type="button"  class="btn btn-soft-primary waves-effect waves-light py-0 px-2 mg-top">{{i.status}}</button>
+                                                                        {% elif i.status == "refuse" %}
 
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Refused</button>
 
-                                                    {% endif %}
-                                                    {% endif %}
+                                                                        {% elif i.status == "validate1" %}
 
-                                                    
-                                                    {% if i.notification_type == "leave_type" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Second
+                                                                            Approval</button>
 
-                                                        {% if i.status == "confirm" %}
-                                                    
-                                                        <button type="button"  class="btn btn-soft-primary waves-effect waves-light py-0 px-2 mg-top">To Approve</button>
-
-                                                        {% elif i.status == "refuse" %}
-
-                                                        <button type="button"  class="btn btn-soft-danger waves-effect waves-light py-0 px-2 mg-top">Refused</button>
-
-                                                        {% elif i.status == "validate1" %}
-
-                                                        <button type="button"  class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">Second Approval</button>
-
-                                                        {% elif i.status == "validate" %}
-                                                        <button type="button"  class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
-                                                    {% else %}
-                                                    <button type="button" class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">{{i.status}}</button>
-                                                    {% endif %}
-                                                    {% endif %}
-                                                </div>
-                                            </div>
+                                                                        {% elif i.status == "validate" %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-success waves-effect waves-light py-0 px-2 mg-top">Approved</button>
+                                                                        {% else %}
+                                                                        <button type="button"
+                                                                            class="btn btn-soft-warning waves-effect waves-light py-0 px-2 mg-top">{{i.status}}</button>
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
                                         </div>
-                                    </a>
+                                        {% endfor %}
+
                                     </div>
-                                    {% endfor %}  
-
-
-                                   
-                                </div>
-                               {% if type == 'notification' %}
-                                <div class="row">
-                                    <div class="col-md-12" style="    align-items: center;
+                                    {% if type == 'notification' %}
+                                    <div class="row">
+                                        <div class="col-md-12" style="    align-items: center;
                                     text-align: center;">
-                                     <a id="cp2" href="#" style="background: #d7e0e1;
+                                            <a id="cp2" href="#" style="background: #d7e0e1;
                                      color: white;
-                                     padding: 9px 11px;" class="">Previous</a> 
-                              <a id="cp1"  href="#" style="background: #02c0ce;
-                              color: white;
-                              padding: 9px 11px;display: none;" class="card_view_prev_pag">Previous</a> <a href="#" class="card_view_next_pag" style="background: #02c0ce;
-    color: white;
-    padding: 9px 11px;">Next</a>
+                                     padding: 9px 11px;" class="">Previous</a>
+                                            <a id="cp1" href="#" style="background: #02c0ce;
+                                        color: white;
+                                        padding: 9px 11px;display: none;" class="card_view_prev_pag">Previous</a> <a href="#"
+                                                            class="card_view_next_pag" style="background: #02c0ce;
+                                        color: white;
+                                        padding: 9px 11px;">Next</a>
+                                                    </div>
                                     </div>
-                                </div>
 
-                                {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- end row -->
+            </div>
+            <!-- container -->
+        </div>
+    </div>
+
+    <!-- staticBackdrop Modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Leave
+                        Approve Confirmation
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form action="leave_approve_action" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="leave_mapping_id" id="leave_mapping_id">
+                    <input type="hidden" name="leave_status" id="leave_status">
+                    <!-- end modalheader -->
+                    <div class="modal-body">
+                        <p>Are you sure you want to approve this leave request ?</p>
+                    </div>
+                    <!-- end modalbody -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-prim">Confirm</button>
+                    </div>
+                </form>
+                <!-- end modalfooter -->
             </div>
         </div>
     </div>
-    <!-- end row -->
-    </div>
-    <!-- container -->
-</div>
-            
-</div>
+    <!-- staticBackdrop Modal -->
 
-<!-- staticBackdrop Modal -->
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content ">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Leave
-                Approve Confirmation
-            </h5>
-            <button type="button" class="btn-close" data-dismiss="modal"
-                aria-label="Close">
-            </button>
-        </div>
-        <form action="leave_approve_action" method="POST" >
-          {% csrf_token %}
-          <input type="hidden"  name="leave_mapping_id"  id="leave_mapping_id">
-          <input type="hidden" name="leave_status" id="leave_status" >
-        <!-- end modalheader -->
-        <div class="modal-body">
-            <p>Are you sure you want to approve this leave request ?</p>
-        </div>
-        <!-- end modalbody -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-light"
-                data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-prim">Confirm</button>
-        </div>
-        </form>
-        <!-- end modalfooter -->
-    </div>
-  </div>
-</div>
-<!-- staticBackdrop Modal -->
-
-
-<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Leave
-                    Reject Confirmation
-                </h5>
-                <button type="button" class="btn-close" data-dismiss="modal"
-                    aria-label="Close">
-                </button>
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Leave
+                        Reject Confirmation
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <form action="reject_leave_request_action" method="POST">
+                    {% csrf_token %}
+                    <!-- end modalheader -->
+                    <div class="modal-body">
+                        <p>Are you sure you want to reject this leave request ?</p>
+                        <input type="hidden" id="rj_leave_mapping_id" name="leave_mapping_id" value="{{id}}">
+                        <input type="hidden" id="rj_leave_status" name="leave_status" value="{{r1.state}}">
+                        <textarea class="form-control" placeholder="Note" id="floatingTextarea2" style="height: 60px"
+                            name="note"></textarea>
+                    </div>
+                    <!-- end modalbody -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-prim">Reject</button>
+                    </div>
+                </form>
+                <!-- end modalfooter -->
             </div>
-            <form action="reject_leave_request_action" method="POST">
-              {% csrf_token %}
-            <!-- end modalheader -->
-            <div class="modal-body">
-                <p>Are you sure you want to reject this leave request ?</p>
-                <input type="hidden" id="rj_leave_mapping_id" name="leave_mapping_id" value="{{id}}">
-                <input type="hidden" id="rj_leave_status" name="leave_status" value="{{r1.state}}">
-                <textarea class="form-control" placeholder="Note"
-                    id="floatingTextarea2" style="height: 60px" name="note"></textarea>
-            </div>
-            <!-- end modalbody -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light"
-                    data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-prim">Reject</button>
-            </div>
-            </form>
-            <!-- end modalfooter -->
         </div>
     </div>
-  </div>
 
 
-  <script src="https://code.jquery.com/jquery.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.6/dist/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-  <script>
-    $(".approve_confirmation").click(function(){
-      
-        var id = $(this).attr("data-id")
-        var status = $(this).attr("data-status")
-      
-        $("#leave_mapping_id").val(id)
-        $("#leave_status").val(status)
-        $("#exampleModal").modal("show")
-       
-    })
-    $(".refuse_confirmation").click(function(){
-       
-        var id = $(this).attr("data-id")
-        var status = $(this).attr("data-status")
-        $("#rj_leave_mapping_id").val(id)
-        $("#rj_leave_status").val(status)
-        $("#exampleModal1").modal("show")
-      
-    })
-  </script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.6/dist/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous">
+    </script>
+    <script>
+        $(".approve_confirmation").click(function () {
 
+            var id = $(this).attr("data-id")
+            var status = $(this).attr("data-status")
 
-<script src="{% static 'tss_new/js/custome.js' %}"></script>
-<script src="{% static 'tss_new/js/bootstrap.bundle.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{% if messages %}
+            $("#leave_mapping_id").val(id)
+            $("#leave_status").val(status)
+            $("#exampleModal").modal("show")
 
+        })
+        $(".refuse_confirmation").click(function () {
 
-   <script>
-    {% for message in messages %}
+            var id = $(this).attr("data-id")
+            var status = $(this).attr("data-status")
+            $("#rj_leave_mapping_id").val(id)
+            $("#rj_leave_status").val(status)
+            $("#exampleModal1").modal("show")
+
+        })
+    </script>
+
+    <script src="{% static 'tss_new/js/custome.js' %}"></script>
+    <script src="{% static 'tss_new/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+
+    <script>
+        {   
+            % for message in messages %
+        }
         message1 = "{{message}}"
         // alert(message1)
-        if(message1 == "error"){
-
+        if (message1 == "error") {
             Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: "{{ message }}",
- 
-})
-        }
-        else{
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ message }}",
 
+            })
+        } else {
             Swal.fire(
-				  '',
-				  '{{ message }}',
-				  '{{message.tags}}'
-				)
-      
+                '',
+                '{{ message }}',
+                '{{message.tags}}'
+            )
+        } {
+            % endfor %
         }
-    {% endfor %}
-   </script>
-{% endif %}
+    </script>
+    {% endif %}
 
 
 
 
-<script>
-    
-    $(document).ready(function() {
-        $('#example').DataTable();
-    } );
-</script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
 
 
 
 
-<script>
-    $(window).on('load resize', function () {
+    <script>
+        $(window).on('load resize', function () {
 
-	$('img.b').height("128px");
-    $('img.b').width("128px");
-}); 
-
-
-</script>
+            $('img.b').height("128px");
+            $('img.b').width("128px");
+        });
+    </script>
 
 
-<script>
-    count = 10
+    <script>
+        count = 10
 
-    $(".card_view_next_pag").click(function(){
-        var url ="notification_card_view";
-        $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-        data: {
-          'count':count
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-        
-          count = count+10
-          $(".view_notifi").html(data);  
+        $(".card_view_next_pag").click(function () {
+            var url = "notification_card_view";
+            $.ajax({ // initialize an AJAX request
+                url: url, // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'count': count
+                },
+                success: function (data) { // `data` is the return of the `load_cities` view function
 
-        $("#cp2").hide()
-        $("#cp1").show()
+                    count = count + 10
+                    $(".view_notifi").html(data);
 
-        }
-      });
+                    $("#cp2").hide()
+                    $("#cp1").show()
 
-    })
+                }
+            });
+
+        })
 
 
-    $(".card_view_prev_pag").click(function(){
-        count = count-20
-        if(count == 0){
-            $("#cp2").show()
-        $("#cp1").hide()
-        }
-        var url ="notification_card_view";
-        $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-        data: {
-          'count':count
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-         
-          
-          $(".view_notifi").html(data);  
-          count = count + 10
+        $(".card_view_prev_pag").click(function () {
+            count = count - 20
+            if (count == 0) {
+                $("#cp2").show()
+                $("#cp1").hide()
+            }
+            var url = "notification_card_view";
+            $.ajax({ // initialize an AJAX request
+                url: url, // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'count': count
+                },
+                success: function (data) { // `data` is the return of the `load_cities` view function
 
-        }
-      });  
-    })
-</script>
-<script>
-    $(document).ready(function() {
-  $("#example5").DataTable({
-    aaSorting: [],
-    responsive: true,
 
-    columnDefs: [
-      {
-        responsivePriority: 1,
-        targets: 0
-      },
-      {
-        responsivePriority: 2,
-        targets: -1
-      }
-    ]
-  });
+                    $(".view_notifi").html(data);
+                    count = count + 10
 
-  $(".dataTables_filter input")
-    .attr("placeholder", "Search here...")
-    .css({
-      width: "300px",
-      display: "inline-block"
-    });
+                }
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#example5").DataTable({
+                aaSorting: [],
+                responsive: true,
 
-  $('[data-toggle="tooltip"]').tooltip();
-});
+                columnDefs: [{
+                        responsivePriority: 1,
+                        targets: 0
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: -1
+                    }
+                ]
+            });
 
-</script>
-{% endblock %}
+            $(".dataTables_filter input")
+                .attr("placeholder", "Search here...")
+                .css({
+                    width: "300px",
+                    display: "inline-block"
+                });
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    {% endblock %}

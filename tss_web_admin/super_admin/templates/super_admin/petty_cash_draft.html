@@ -80,8 +80,8 @@
                                     </div>
                                     <div class="form-group mb-0">
                                         <div class="">
-                                            <input name="payment_type" value="Expense" type="radio" id="expense_id_draft" {% if data.payment_type == "Expense" %} checked {% else %} {% endif %} >
-                                            <label for="expense_id_draft" id="expense">Expense</label> <span>
+                                            <input name="payment_type" value="Expense" type="radio" id="dexpense_id" {% if data.payment_type == "Expense" %} checked {% else %} {% endif %} >
+                                            <label for="expense_id" id="expense">Expense</label> <span>
                                             <input type="number" class="password_day_countbox hide "
                                                    style="max-width: 50px;margin-left: 20px"> </span>
                                         </div>
@@ -96,6 +96,7 @@
                                 <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label>
                                     <select name="supplier" onchange="sel_supplier(this)" class="form-control select2 select2-hidden-accessible" id="supplier_idnew" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                         <option value="{{data.supplier_id}}">{{data.supplier}}</option>
+                                     
                                         {% for supplier in suppliers %}
                                             <option  value="{{supplier.id}},{{supplier.name}}">{{supplier.name}}</option>
                                         {% endfor %}
@@ -143,6 +144,7 @@
                 {% for j in data_expense %}
                 <tr>
                     <td class="th_btnpand"> 
+                      
                         <div class="appnd_user_minus_btn appnd_minus_btn">-</div>
                     </td>
                     <td class="th_exp_date">
@@ -152,9 +154,10 @@
                         <select name="product" data-v1={{ forloop.counter0 }} onchange="f3(this, {{ forloop.counter0 }})" class="form-control select2 select2-hidden-accessible" id="product{{ forloop.counter0 }}" style="width: 100%;" tabindex="-1" aria-hidden="true">
                             <option value="{{j.product_id}}">{{j.product}}</option>
                             {% for pro in  products %}
-                            <option value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" name="exp_type" id="dexp_type{{ forloop.counter0 }}" class="exp_type">
                     </td>
                     <td class="th_job_no">
                         <input type="hidden" id="selected_job_name0" value="{{job_name}}" name="selected_job_name">
@@ -172,11 +175,29 @@
                         <input name="partner" value="{{j.partner}}" autocomplete="off" class="form-control s_partner" readonly>
                     </td>
                     <td class="th_attachment" style="cursor: pointer;">
+                        <div id="selected_image">
+                        {% for img in j.expense_petty_cash_attachments.all %}
+                        {{img.id}}
+                        
+                        <label for="dfiles">
+                            <img  height="23px"  width="23px" style="margin-left:25px; cursor: pointer;"   src="{% static 'file_image1.png' %}">
+                        </label>
+                        
+                        <input style="display:none;"  value="{{img.image_value}}" data-count= {{ forloop.counter0 }} id="dfiles"  name="employee_attached_file" type="file"  accept="application/pdf,image/*" multiple />
+                        
+                       
+                        {% endfor %}
+                    </div>
+                        <div id="delete_selected_image" style="display: none">
+                            <span onclick="delete_selected_image(0)"><i style="color: red;
+                                margin-left: 32px;
+                                font-weight: bold;
+                                font-size: 19px;" class="fa fa-times" aria-hidden="true"></i></span>
+                        </div>
                         <div id="selected_image0">
-                            <label for="files">
-                                <img  height="23px"  width="23px" style="margin-left:25px; cursor: pointer;"   src="{% static 'file_image1.png' %}">
-                            </label>
-                                <input class="file-input1" value="{{j.attached_file}}" data-count= {{ forloop.counter0 }} id="files"  name="employee_attached_file" type="file"  accept="application/pdf,image/*" multiple />
+                            
+                           
+                                <!-- <input  value="{{j.attached_file}}" data-count= {{ forloop.counter0 }} id="dfiles{{ forloop.counter0 }}"  name="employee_attached_file" type="file"  accept="application/pdf,image/*" multiple /> -->
                         </div>
                         <div id="delete_selected_image0" style="display: none">
                             <span onclick="delete_selected_image(0)"><i style="color: red;
@@ -299,9 +320,10 @@
                         <select name="product[]" data-v1=`+append_count+` onchange="f3(this,`+append_count+`)"  class='myselect form-control product_select_data'   id="product`+append_count+`">
                             <option selected="">Select Product</option>
                             {% for pro in products %}
-                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}">{{pro.name}}</option>
+                            <option data-name="{{pro.name}}" value="{{pro.id}}&{{pro.standard_price}}&{{pro.expense_type}}">{{pro.name}}</option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" name="exp_type" id="dexp_type`+append_count+`" class="exp_type">
                     </td>
                      <td class="th_job_no">
                         <input type="hidden" id="selected_job_name`+append_count+`" value="{{job_name}}" name="selected_job_name">
@@ -437,12 +459,10 @@ function sel_supplier(sup){
 
 <script>
     function employee_function(event){
-    alert("jiyad")
+
 
         var selected_employee_id = $('#emp_name_action_new').val();
-        alert(selected_employee_id)
         company_id = $("#company_id").val()
-        alert(company_id)
         $.ajax({
 
                 url: 'get_selected_employee_details',
@@ -454,8 +474,7 @@ function sel_supplier(sup){
                 type: 'GET',
                 success: function (data) {
                     amount_balance1 = data['amount_balance']
-                    alert("llll")
-                    alert(amount_balance1)
+                   
                     $("#amount_balance_new").val(amount_balance1)
                 }
             });
@@ -465,8 +484,7 @@ function sel_supplier(sup){
 <script>
      function f4(sel,count){
 
-alert("hheeeeeee")
-alert(count)
+
 var unit_price = sel.value
             var quantity = document.getElementById("dquantity"+count).value;
             alert(count)
@@ -545,4 +563,226 @@ var unit_price = sel.value
 </script>
 
 
+<script>
+      function f3(sel,count){
+     
+            var pro_name = sel.selectedOptions[0].getAttribute('data-name');
+           
+            $("#selected_product_name"+count).val(pro_name)
+            product_list = sel.value
+           
+            const myArray = product_list.split("&");
+            st_price = myArray[1];
+            expense_type = myArray[2];
+           
+            if(expense_type == "project"){
+                
+                $("#dexp_type"+count).val(true)
+            }
+            else{
+                $("#dexp_type"+count).val(false)
+            }
+            if(st_price == 0.0)
+            {
+                $("#dquantity"+count).val(1)
+                document.getElementById("dquantity"+count).readOnly = true; 
+                const input = document.getElementById("dquantity"+count);
+                input.style.backgroundColor = '#2b2c422b';
+                var unit_price = document.getElementById("dunit_price"+count).value;
+                total_price = unit_price * 1
+                var tax_val  = $("#dtaxes"+count).val()
+                if(tax_val == 'Select Tax'){
+                   $("#dtotalcurrency"+count).val(total_price)
+                   $("#dtotalrupees"+count).val(total_price) 
+                    var amount = 0
+                    $(".dadd_line_amount").each(function(){
+                        var b = parseFloat( $(this).val());
+                        if (Number.isNaN(b) || b == "" || b === null) {
+                        b=parseFloat(0)
+                    }
+                        amount1 = parseFloat(amount) + b
+                        amount = amount1
+                    })
+                    $("#dTotal_amount").val(amount.toFixed(2))
+                }
+                else{
+                    const tax_array = tax_val.split("&");
+                    if(tax_array[1] == "percent"){
+                        per_value = parseInt(tax_array[0]);
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#dtotalcurrency"+count).val(total_amount1)
+                        $("#dtotalrupees"+count).val(total_amount1)
+                    }
+                    else if(tax_array[1] == 'fixed') { 
+                        per_value = parseInt(tax_array[0]);
+                        total_amount1 = total_price + per_value
+                        $("#dtotalcurrency"+count).val(total_amount1)
+                        $("#dtotalrupees"+count).val(total_amount1)
+                    }
+                    else{
+                        per_value = parseInt(tax_array[0]);
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#dtotalcurrency"+count).val(total_amount1)
+                        $("#dtotalrupees"+count).val(total_amount1)
 
+                    }
+                    var amount = 0
+                    $(".dadd_line_amount").each(function(){
+                        var b = parseFloat( $(this).val());
+                        if (Number.isNaN(b) || b == "" || b === null) {
+                        b=parseFloat(0)
+                    }
+                        amount1 = parseFloat(amount) + b
+                        amount = amount1
+                    })
+                    $("#dTotal_amount").val(amount.toFixed(2))
+                }
+            }
+            else{
+                document.getElementById("dquantity"+count).readOnly = false; 
+                const input = document.getElementById("dquantity"+count);
+                input.style.backgroundColor = '#ffff';
+                var unit_price = document.getElementById("dunit_price"+count).value;
+                var quantity = document.getElementById("dquantity"+count).value;
+                total_price = unit_price * quantity
+                var tax_val  = $("#dtaxes"+count).val()
+                if(tax_val == 'Select Tax'){
+                   $("#dtotalcurrency"+count).val(total_price)
+                   $("#dtotalrupees"+count).val(total_price)
+                }
+                else{
+                    const tax_array = tax_val.split("&");
+                    if(tax_array[1] == "percent"){
+                        per_value = parseInt( tax_array[0]);
+                        result = (total_price * per_value) / 100
+                        total_amount1 = total_price + result
+                        $("#dtotalcurrency"+count).val(total_amount1)
+                        $("#dtotalrupees"+count).val(total_amount1)
+                    }
+                }
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b = parseFloat( $(this).val());
+                    if (Number.isNaN(b) || b == "" || b === null) {
+                    b=parseFloat(0)
+                }
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+                $("#dTotal_amount").val(amount.toFixed(2))
+            }  
+        }
+
+
+        function quantityfn(sel,count){
+           
+            var unit_price = document.getElementById("dunit_price"+count).value;
+            var tax_perc = document.getElementById("dtaxes"+count).value;
+            var quantity = sel.value
+            result = unit_price * quantity
+          
+            // var amount_blnce = document.getElementById("amount_balance1").value;
+            $("#dtotalcurrency"+count).val(result)
+            $("#dtotalrupees"+count).val(result)
+            var totalrupees = document.getElementById("totalrupees"+count).value;
+            var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b = parseInt( $(this).val());
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            const myArray = tax_perc.split("&");
+            tax_value = myArray[0];
+            amnt_type = myArray[1];
+            if(amnt_type == 'percent') {
+                tax = ((unit_price * quantity) * tax_value)/100
+                total_price = unit_price * quantity
+                total = parseInt(total_price) + parseInt(tax)
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b =  $(this).val();
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            }
+            else if(amnt_type == 'fixed') { 
+                total = result + parseInt(tax_value)
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b =  parseFloat($(this).val());
+                    amount1 = parseFloat(amount) + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            }
+            else if (amnt_type == "group"){ 
+                total1 = ((unit_price * quantity) * tax_value)/100
+                total = ((unit_price * quantity) + total1)
+                $("#dtotalcurrency"+count).val(total)
+                $("#dtotalrupees"+count).val(total)
+                var totalrupees = document.getElementById("totalrupees"+count).value;
+                var amount = 0
+                $(".dadd_line_amount").each(function(){
+                    var b =  $(this).val();
+                    amount1 = amount + b
+                    amount = amount1
+                })
+               $("#dTotal_amount").val(amount.toFixed(2))
+            } 
+        }
+
+
+        $("#dexpense_id").click(function(){
+
+          
+            $("#select_supplier_draft").hide(); 
+            $(".s_partner").val('')
+        })
+</script>
+
+<script>
+   
+  
+     
+   
+
+   document.getElementById('dfiles').addEventListener('change', handleFileSelect1, false);
+
+   function handleFileSelect1(evt){
+    count_data = $(this).attr("data-count")
+    alert(count_data)
+    alert(count_data)
+        var files = evt.target.files; // FileList object
+       console.log(files)
+        upload(files,count_data);
+   }
+</script>
+
+
+
+<script>
+     $(document).ready(function(){
+        alert("hhhkkkk")
+        aaa = document.getElementById("dfiles").getAttribute("value");
+        bb = aaa.length;
+        alert(bb)
+        if (bb==""){
+            alert(aaa)
+            document.getElementById("delete_selected_image").style.display = "none";
+        }
+        else{
+            alert("bbb")
+            document.getElementById("selected_image").style.display = "none";
+            document.getElementById("delete_selected_image").style.display = "block";
+        }
+    })
+    </script>

@@ -8021,7 +8021,7 @@ body.modal-open {
     outline: none;
     border: 1px solid #96b4e4;
     border-bottom: none;
-    padding: 3px 6px;
+    padding: 6px 6px;
     padding-right: 15px;
     border-radius: 3px 3px 0 0;
 }

@@ -74,45 +74,7 @@
             
                                     </div>
                                 </div>
-                                <div class="col-md-6 colp_r_15">
-                                    <div class="row">
-                                        <div class="col-md-4 mt-4">
-                                            <div class="user_daterangpickrbox">
-                                                <div class="">
-                                                    <h3 class="big_title2">Payment Type</h3>
-                                                </div>
-                                                <div class="form-group mb-0">
-                                                    <div class="radio">
-                                                        
-                                                      
-                                                        <input onclick="this.checked = false;"  {% if payment_type == 'Expense' %} checked {% else %} {% endif %}  name="payment_type" value="Expense" type="radio" id="expense_id" >
-                                                        <label for="expense_id" id="expense">Expense</label> <span>
-                                                     
-                                                    </div>
-                                                  
-                                                    <div class="radio">
-                                                        <input onclick="this.checked = false;"  {% if payment_type == 'Supplier' %} checked {% else %} {% endif %} name="payment_type" type="radio" value="Supplier" id="supplier_id" >
-                                                        <label for="supplier_id" id="supplier">Supplier</label>
-                                                     
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {% if supplier == False %}
-                                        {% else %}
-                                        <div class="col-md-8 mt-4" id="select_supplier" style="display:block">
-                                            <div class="form-group bmd-form-group required_item"><label class="bmd-label-floating inputText">Supplier</label> 
-                                                    
-                                                <input type="text" readonly class="form-control" value="{{supplier}}">
-                                             </div> 
-                                        </div>
-                                        {% endif %}
-                                        <div></div>
-                                        <br>
-                                    </div>
-                                </div>  
+                                
                             </div>
                         </div>
                        
@@ -133,7 +95,6 @@
                                             <th class="th_product">Product</th>
                                             <th class="th_job_no">Job No</th>
                                             <th class="th_description">Description</th>
-                                            <th class="th_partner">Partner</th>
                                             <th class="th_attachment">Attachment</th>
                                             <th class="th_description">Reference</th>
                                             <th class="th_unit_price">Unit Price</th>
@@ -166,19 +127,10 @@
                                             <td class="th_description">
                                                <span>{{exp_lines.name}}</span>
                                             </td>
-                                            <td class="th_partner">
-                                               <span>
-
-                                                {% if exp_lines.vz_partner_id == False %}
-                                                {% else %}
-                                                {{exp_lines.vz_partner_id}}
-                                                {% endif %}
-                                               </span>
-                                            </td>
+                                            
                                             <td class="th_attachment" style="cursor: pointer;">
                                                {% if exp_lines.attachments %}
                                                 <span>{% for j in exp_lines.attachments %}
-
                                                     <span> 
                                                         <a href="data:{{j.mimetype}};base64,{{j.datas}}" download=""><i style="color: #100101;
                                                         margin-left: 31px;
@@ -189,6 +141,7 @@
                                                 </span>
 
                                                 {% else %}
+                                                
                                                 <span>  <i style="color: red;
                                                     margin-left: 32px;
                                                     font-weight: bold;
@@ -209,15 +162,11 @@
                                             <td class="th_unit_price" id="td_quantity0">
                                               <span>{{exp_lines.quantity}}</span>
                                             </td>
+                                           
                                             <td class="th_taxes">
-                                                <!-- <select name="taxes" data-v1=0 onchange="f2(this,0)" class="form-control taxes" id="taxes"  style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                                    <option selected="">Select Tax</option>
-                                                    
-                                                    <option value="15.0 , percent">vat 15</option>
-                                                   
-                                                </select> -->
-                                               
-                                              <span>{{exp_lines.taxes.0}}</span>
+                                              {% for i in exp_lines.taxes %}
+                                              <div>{{i}}</div>
+                                              {% endfor %}
                                                
                                             </td>
                                             <td class="th_total_currency">
@@ -227,7 +176,7 @@
                                                
                                             </td>
                                             <td class="th_total">
-                                              <span>{{exp_lines.total_amount}}</span>
+                                              <span>{{exp_lines.total_amount_company}}</span>
                                             </td>
                                            
                                         </tr>

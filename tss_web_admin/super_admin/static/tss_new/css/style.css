@@ -13811,3 +13811,140 @@ body.modal-open {
     left: 140px;
     opacity: 1;
 }
+
+.sub-head{
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.leave-head{
+    font-family: 'Roboto', sans-serif;
+}
+
+.tab-content>.tab-pane {
+    display: block;
+}
+
+.pill-table .nav-tabs{
+    width: 100%;
+    margin: 0 5px;
+}
+
+.pill-table .nav-tabs>li a.active, .pill-table .nav-tabs>li.active>a:focus, .pill-table .nav-tabs>li.active>a:hover {
+    color: #262435;
+    cursor: default;
+    /* font-weight: 600; */
+    background-color: #fff;
+    border: 1px solid #d2d8e1;
+    border-bottom-color: transparent;
+    border-top: 2.5px solid #72819c;
+
+}
+
+.pill-table .nav-tabs>li>a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 0;
+}
+
+.pill-table .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+
+.pill-table .nav-tabs>li {
+    float: left;
+    margin-bottom: -1px;
+}
+
+.pill-table .tab-content>.tab-pane{
+    display: none;
+}
+
+.pill-table .tab-content>.tab-pane.active{
+    display: block;
+}
+
+.pill-table .nav-tabs {
+    border-bottom: 1px solid #d2d8e1;
+}
+
+.border-t{
+    border-top: 1px solid #d1d8dc;
+}
+
+.vat{
+    padding: 3px 10px;
+    border: 1px solid #d1d8dc;
+    border-radius: 30px;
+}
+
+.reg-modal .modal-content{
+    background-color: white;
+}
+
+.reg-modal .modal-header{
+    border-bottom: 1px solid #d1d8dc !important;
+    padding: 0.7rem 1rem !important;
+}
+
+.reg-modal .modal-footer{
+    border-top: 1px solid #d1d8dc !important;
+    padding: 0.2rem 0.5rem !important;
+}
+
+.reg-modal .modal-title{
+    font-weight: 600;
+}
+
+.reg-modal .modal-footer .btn {
+    font-size: 14px;
+    outline: none !important;
+    padding: 0.25rem 0.7rem;
+    border-radius: 0.25rem;
+    margin-left: 10px !important;
+}
+
+.br-right {
+    border-right: 1px solid #e9ebec;
+}
+
+.reg-modal .modal-body .form-control {
+    max-width: 90%;
+    padding: 3px 5px !important;
+    font-size: 12px !important;
+}
+
+.reg-modal select{
+    display: block !important;
+}
+
+.reg-modal .branch{
+    color: #1c2d41;
+    font-weight: 600;
+}
+
+.frm{
+    max-width: 100% !important;
+}
+
+.reg-modal .btn-close {
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: 0.7em 0.7em;
+    color: #000;
+    background: transparent url(../images/close1.png) center/1em auto no-repeat;
+    border: 0;
+    border-radius: 0.25rem;
+    opacity: .6;
+}
+
+.reg-modal .btn-close:hover{
+    opacity: 1;
+}

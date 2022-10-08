@@ -60,20 +60,27 @@
                                                         <h3 class="big_title2">Password Option</h3>
                     
                                                         <div class="input-daterange" id="date-range">
-                                                            <div class="form-group bmd-form-group m-t-8">
+                                                            <div class="form-group bmd-form-group m-t-8 row">
                                                                 <!--                                                        <label class="">Gender</label>-->
                     
                                                               
 
                                                                 
-                                                                <div class="radio radio-info float_left_radio">
-                                                                    <input type="radio" value="True" id="customRadio1" {% if data.password_option == "Automatic" %} checked {% else %} {% endif %}  name="role_status1">
-                                                                    <label for="customRadio1">Automatic</label>
-                                                                </div>
-                                                                <div class="radio radio-info">
-                                                                    <input type="radio" value="False" {% if data.password_option == "Manual" %} checked {% else %} {% endif %} name="role_status1" id="customRadio2">
-                                                                    <label for="customRadio2">Manual </label>
-                                                                </div>
+                                                                   
+                                                                        <div class="col-md-6 ">
+                                                                            <input type="radio" value="True" id="customRadio1" {% if data.password_option == "Automatic" %} checked {% else %} {% endif %}  name="role_status1">
+                                                                            <label style="    font-size: 12px!important" for="customRadio1">Automatic</label>
+                                                                        </div>
+                                                                    
+                                                                        <div class=" col-md-6 ">
+                                                                            <input type="radio" value="False" {% if data.password_option == "Manual" %} checked {% else %} {% endif %} name="role_status1" id="customRadio2">
+                                                                            <label style="    font-size: 12px!important" for="customRadio2">Manual </label>
+                                                                        </div>
+                                                                    
+                                                              
+                                                                
+                                                              
+                                                              
                     
                                                             </div>
                                                         </div>
@@ -83,27 +90,27 @@
                                                     <div class="user_daterangpickrbox expirationbox m-t-10-imprtnt">
                                                         <h3 class="big_title2">Password </h3>
                                                     <div class="form-group bmd-form-group required_item">
-                                                        <input type="text" value="{{data.password}}" class="input form-control getVal" >
+                                                        <input readonly type="text" value="{{data.password}}" class="input form-control getVal" >
                                                         
                                                     </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 pad5  mt-4">
                                                     <div class="form-group bmd-form-group required_item">
-                                                        <input type="text" value="{{data.employee_branch}}" class="input form-control getVal" >
+                                                        <input readonly type="text" value="{{data.employee_branch}}" class="input form-control getVal" >
                                                         <label class="inputText"> Employee Branch</label>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6 pad5  mt-4">
                                                     <div class="form-group bmd-form-group required_item">
-                                                        <input type="text" value="{{data.employee_department}}" class="input form-control getVal" >
+                                                        <input readonly type="text" value="{{data.employee_department}}" class="input form-control getVal" >
                                                         <label class="inputText"> Employee Department</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 pad5  mt-4">
                                                     <div class="form-group bmd-form-group required_item">
-                                                        <input type="text" value="{{data.employee_name}}" class="input form-control getVal" >
+                                                        <input readonly type="text" value="{{data.employee_name}}" class="input form-control getVal" >
                                                         <label class="inputText"> Employee Name</label>
                                                     </div>
                                                 </div>
@@ -118,7 +125,7 @@
 
                                                 <div class="col-sm-12 pad5">
                                                     <div class="form-group bmd-form-group">
-                                                    <textarea rows="2"
+                                                    <textarea readonly rows="2"
                                                               class="form-control input_textaerea tstarea">{{data.description}}</textarea>
                                                         <label class="inputText">Description</label>
                                                     </div>
@@ -252,8 +259,8 @@
                                 </div>
                             </div>
                           
-                            <h4 data-toggle="collapse" href="#work" class="sub_hdng_edit"><i class="fa fa-chevron-down"></i>Company & Branch </h4>
-                            <div id="work" class="panel-collapse collapse show ">
+                            <h4 data-toggle="collapse" href="#work1" class="sub_hdng_edit"><i class="fa fa-chevron-down"></i>Company & Branch </h4>
+                            <div id="work1" class="panel-collapse collapse show ">
                                 <div class="m-t-30 m-b-15 col-12">
                                     <table id="educationdatatable"
                                     class="table table-bordered dt-responsive nowrap table-hover"
@@ -325,7 +332,17 @@
                
                             <!--*****************************************************-->
 
+                         
+{% if data.user_img == "false" %}
+
+
+{% elif data.user_img  == ''  %}
+
+{% else %}
                         <img src="data:image/jpeg;base64,{{data.user_img}}">    
+
+                        {% endif %}
+
                         </form>
                     </div>
                 </div>
